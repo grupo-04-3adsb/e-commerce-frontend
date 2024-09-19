@@ -18,7 +18,7 @@ const FormComponent = ({
 }) => {
   const [isVisible, setIsVisible] = useState(visible);
   const [messageVisible, setMessageVisible] = useState(false);
-  const [messageType, setMessageType] = useState("success"); // Default to success
+  const [messageType, setMessageType] = useState("success");
 
   useEffect(() => {
     setIsVisible(visible);

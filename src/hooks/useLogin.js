@@ -20,7 +20,7 @@ const useLogin = () => {
   const onSubmit = async (data) => {
     try {
       const response = await mutateAsync(data);
-      dispatch(login(response.usuario));
+      dispatch(login(response));
     } catch (err) {
       console.error("Erro ao fazer login");
       console.log(err);

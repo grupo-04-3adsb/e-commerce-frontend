@@ -120,7 +120,7 @@ const Header = () => {
                 variant="flat"
                 startContent={<BiUser />}
               >
-                <span>{usuario.nome}</span>
+                <span>{usuario.usuario.nome}</span>
               </Button>
               <Button
                 className={style.btnIcon}
