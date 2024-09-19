@@ -8,10 +8,10 @@ export const useCadastroUsuarioApi = () => {
             return response.data;
         },
         onError: (error) => {
-            console.error("Erro ao fazer login: ", error);
+            console.error("Erro ao fazer login");
         },
         onSuccess: (data) => {
-            console.log("Cadastro realizado: ", data)
+            console.log("Cadastro realizado")
         }
     })
 

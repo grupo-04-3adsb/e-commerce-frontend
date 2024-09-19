@@ -1,8 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
 import useGenericForm from "./hook/useGenericForm";
-import { useEffect, useState } from "react";
+import MessageGeneric from "../Message";
 
 const FormComponent = ({
   visible,
@@ -11,15 +12,31 @@ const FormComponent = ({
   fields,
   submitLabel,
   onSubmit,
-  isSocialLogin,
   error,
   register,
+  apiMessage,
 }) => {
   const [isVisible, setIsVisible] = useState(visible);
+  const [messageVisible, setMessageVisible] = useState(false);
+  const [messageType, setMessageType] = useState("success"); // Default to success
 
   useEffect(() => {
     setIsVisible(visible);
   }, [visible]);
+
+  useEffect(() => {
+    if (apiMessage.error) {
+      setMessageType("error");
+      setMessageVisible(true);
+    } else if (apiMessage.success) {
+      setMessageType("success");
+      setMessageVisible(true);
+    }
+  }, [apiMessage]);
+
+  const handleClose = () => {
+    setMessageVisible(false);
+  };
 
   const { formData, handleInputChange, handleSubmit } = useGenericForm(
     {},
@@ -41,6 +58,12 @@ const FormComponent = ({
               setIsVisible(false);
               onClose();
             }}
+          />
+          <MessageGeneric
+            type={messageType}
+            message={apiMessage.error || apiMessage.success || ""}
+            onClose={handleClose}
+            isVisible={messageVisible}
           />
           <form onSubmit={handleSubmit}>
             <h1>{title}</h1>

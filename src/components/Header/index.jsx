@@ -29,9 +29,7 @@ import { moedas } from "../../data/mock/moedas";
 import { idiomas } from "../../data/mock/idiomas";
 import useLogin from "../../hooks/useLogin";
 import useCadastroUsuario from "../../hooks/useCadastro";
-import roles from "../../enums/roles";
-
-const isUsuarioLogado = false;
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,9 +37,15 @@ const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCadastroOpen, setIsCadastroOpen] = useState(false);
 
-  const { onSubmitLogin, handleSubmitLogin, errorsLogin, registerLogin } = useLogin();
-  const { onSubmitCadastro, handleSubmitCadastro, errorsCadastro, registerCadastro } =
-    useCadastroUsuario();
+  const { onSubmitLogin, handleSubmitLogin, errorsLogin, registerLogin, apiLoginMessage } =
+    useLogin();
+  const {
+    onSubmitCadastro,
+    handleSubmitCadastro,
+    errorsCadastro,
+    registerCadastro,
+    apiCadastroMessage
+  } = useCadastroUsuario();
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,6 +58,8 @@ const Header = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const { isUsuarioLogado, usuario } = useSelector((state) => state.usuario);
 
   const onHandleSubmitLogin = () => {
     handleSubmitLogin(onSubmitLogin);
@@ -114,7 +120,7 @@ const Header = () => {
                 variant="flat"
                 startContent={<BiUser />}
               >
-                <span>Clara</span>
+                <span>{usuario.nome}</span>
               </Button>
               <Button
                 className={style.btnIcon}
@@ -310,6 +316,7 @@ const Header = () => {
         isSocialLogin={true}
         error={errorsCadastro}
         register={registerCadastro}
+        apiMessage={apiCadastroMessage}
       />
       <FormComponent
         visible={isLoginOpen}
@@ -323,6 +330,7 @@ const Header = () => {
         isSocialLogin={true}
         error={errorsLogin}
         register={registerLogin}
+        apiMessage={apiLoginMessage}
       />
     </nav>
   );

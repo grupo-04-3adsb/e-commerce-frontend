@@ -4,17 +4,16 @@ import UsuarioDTO from "../models/UsuarioDTO";
 import { useCadastroUsuarioApi } from "./api/useCadastroUsuarioApi";
 
 const useCadastroUsuario = () => {
-  const {mutate, error, data} = useCadastroUsuarioApi();
-  
+  const { mutate, error, data } = useCadastroUsuarioApi();
+
   const {
     handleSubmit,
     formState: { errors },
     register,
-    setError, 
+    setError,
   } = useForm({
     resolver: zodResolver(UsuarioDTO),
   });
-
 
   const onSubmit = (data) => {
     if (data.senha !== data.confirmarSenha) {
@@ -22,7 +21,7 @@ const useCadastroUsuario = () => {
         type: "manual",
         message: "A senha e a confirmação da senha não coincidem.",
       });
-      return; 
+      return;
     }
 
     data.role = "USER";
@@ -33,8 +32,10 @@ const useCadastroUsuario = () => {
     handleSubmitCadastro: handleSubmit(onSubmit),
     registerCadastro: register,
     errorsCadastro: errors,
-    data,
-    error
+    apiCadastroMessage: {
+      error: error?.response?.data || null,
+      success: data || null,
+    },
   };
 };
 

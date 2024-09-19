@@ -8,10 +8,10 @@ export const useLoginApi = () => {
       return response.data;
     },
     onError: (error) => {
-      console.error("Erro ao fazer login:", error);
+      console.error("Erro ao fazer login");
     },
     onSuccess: (data) => {
-      console.log("Login bem-sucedido:", data);
+      console.log("Login bem-sucedido");
     },
   });
 
