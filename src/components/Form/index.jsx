@@ -4,6 +4,7 @@ import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
 import useGenericForm from "./hook/useGenericForm";
 import MessageGeneric from "../Message";
+import useGoogle from "../../hooks/useGoogle";
 
 const FormComponent = ({
   visible,
@@ -20,8 +21,28 @@ const FormComponent = ({
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
 
+  const { error: googleError, data: googleData } = useGoogle();
+
   useEffect(() => {
     setIsVisible(visible);
+    if (visible) {
+      const intervalId = setInterval(() => {
+        const buttonDiv = document.getElementById("buttonDiv");
+        if (buttonDiv) {
+          window.google.accounts.id.renderButton(buttonDiv, {
+            type: "standard",
+            shape: "rectangular",
+            theme: "filled_black",
+            text: "continue_with",
+            size: "large",
+            locale: "pt-BR",
+            logo_alignment: "left",
+          });
+          clearInterval(intervalId);
+        }
+      }, 100);
+      return () => clearInterval(intervalId);
+    }
   }, [visible]);
 
   useEffect(() => {
@@ -124,6 +145,7 @@ const FormComponent = ({
             >
               {submitLabel}
             </Button>
+            <div id="buttonDiv"></div>
           </form>
         </div>
       </div>

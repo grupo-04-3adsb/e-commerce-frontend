@@ -13,7 +13,7 @@ import {
 import style from "./Navbar.module.css";
 
 import { FaFacebook, FaInstagram, FaSearch } from "react-icons/fa";
-import { BiCart, BiHeart, BiLogIn, BiUser } from "react-icons/bi";
+import { BiCart, BiHeart, BiLogIn, BiLogOut, BiUser } from "react-icons/bi";
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -37,14 +37,20 @@ const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCadastroOpen, setIsCadastroOpen] = useState(false);
 
-  const { onSubmitLogin, handleSubmitLogin, errorsLogin, registerLogin, apiLoginMessage } =
-    useLogin();
+  const {
+    onSubmitLogin,
+    handleSubmitLogin,
+    errorsLogin,
+    registerLogin,
+    apiLoginMessage,
+    onLogout,
+  } = useLogin();
   const {
     onSubmitCadastro,
     handleSubmitCadastro,
     errorsCadastro,
     registerCadastro,
-    apiCadastroMessage
+    apiCadastroMessage,
   } = useCadastroUsuario();
 
   useEffect(() => {
@@ -120,7 +126,7 @@ const Header = () => {
                 variant="flat"
                 startContent={<BiUser />}
               >
-                <span>{usuario.usuario.nome}</span>
+                <span>{usuario?.usuario?.nome}</span>
               </Button>
               <Button
                 className={style.btnIcon}
@@ -155,6 +161,18 @@ const Header = () => {
               </>
             )
           )}
+          {isUsuarioLogado && windowWidth >= 474 && (
+            <Button
+              onClick={() => onLogout()}
+              size="sm"
+              color="white"
+              variant="bordered"
+              endContent={<BiLogOut />}
+            >
+              Sair
+            </Button>
+          )}
+
           <Button
             className={style.btnIcon}
             size="lg"
@@ -282,7 +300,18 @@ const Header = () => {
               </Button>
             </>
           )}
-          {windowWidth <= 421 && (
+          {isUsuarioLogado && (
+            <Button
+              onClick={() => onLogout()}
+              size="sm"
+              color="white"
+              variant="bordered"
+              endContent={<BiLogOut />}
+            >
+              Sair
+            </Button>
+          )}
+          {isUsuarioLogado && windowWidth < 474 && (
             <NavbarItem>
               <Button
                 className={style.btnIcon}

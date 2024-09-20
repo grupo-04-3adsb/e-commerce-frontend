@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import LoginDTO from "../models/LoginDTO";
 import { useLoginApi } from "./api/useLoginApi";
 import { useDispatch } from "react-redux";
-import { login } from "../store/slices/UsuarioAutenticado/slice";
+import { login, logout } from "../store/slices/UsuarioAutenticado/slice";
 
 const useLogin = () => {
   const { mutateAsync, error, data } = useLoginApi();
@@ -27,6 +27,10 @@ const useLogin = () => {
     }
   };
 
+  const onLogout = () => {
+    dispatch(logout());
+  }
+
   return {
     handleSubmitLogin: handleSubmit(onSubmit),
     registerLogin: register,
@@ -38,6 +42,7 @@ const useLogin = () => {
           : null,
       success: data?.token ? "Login realizado com sucesso." : null,
     },
+    onLogout
   };
 };
 
