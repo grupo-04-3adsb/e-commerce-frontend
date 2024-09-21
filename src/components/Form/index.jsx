@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
-import useGenericForm from "./hook/useGenericForm";
 import MessageGeneric from "../Message";
 import useGoogle from "../../hooks/useGoogle";
+import { PatternFormat } from "react-number-format";
 
 const FormComponent = ({
   visible,
@@ -14,14 +14,14 @@ const FormComponent = ({
   submitLabel,
   onSubmit,
   error,
-  register,
   apiMessage,
+  defaultValues = {},
 }) => {
   const [isVisible, setIsVisible] = useState(visible);
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
-
-  const { error: googleError, data: googleData } = useGoogle();
+  const [formData, setFormData] = useState(defaultValues);
+  const { googleError, googleData } = useGoogle();
 
   useEffect(() => {
     setIsVisible(visible);
@@ -46,12 +46,21 @@ const FormComponent = ({
   }, [visible]);
 
   useEffect(() => {
-    if (apiMessage.error) {
-      setMessageType("error");
+    const isFormDataDifferent = Object.keys(defaultValues).some(
+      (key) => formData[key] !== defaultValues[key]
+    );
+
+    if (isFormDataDifferent) {
+      setFormData(defaultValues);
+    }
+  }, [defaultValues]);
+
+  useEffect(() => {
+    if (apiMessage?.error || apiMessage?.success) {
       setMessageVisible(true);
-    } else if (apiMessage.success) {
-      setMessageType("success");
-      setMessageVisible(true);
+      setMessageType(apiMessage.error ? "error" : "success");
+    } else {
+      setMessageVisible(false);
     }
   }, [apiMessage]);
 
@@ -59,10 +68,14 @@ const FormComponent = ({
     setMessageVisible(false);
   };
 
-  const { formData, handleInputChange, handleSubmit } = useGenericForm(
-    {},
-    onSubmit
-  );
+  const handleChange = (name, value) => {
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
     isVisible && (
@@ -80,12 +93,14 @@ const FormComponent = ({
               onClose();
             }}
           />
-          <MessageGeneric
-            type={messageType}
-            message={apiMessage.error || apiMessage.success || ""}
-            onClose={handleClose}
-            isVisible={messageVisible}
-          />
+          {(apiMessage.error || apiMessage.success) && (
+            <MessageGeneric
+              type={messageType}
+              message={apiMessage.error || apiMessage.success}
+              onClose={handleClose}
+              isVisible={messageVisible}
+            />
+          )}
           <form onSubmit={handleSubmit}>
             <h1>{title}</h1>
             {fields.map((fieldRow, rowIndex) => (
@@ -99,12 +114,11 @@ const FormComponent = ({
                       fullWidth={field.fullWidth}
                       variant="bordered"
                       isRequired={field.isRequired}
-                      {...register(field.name)}
-                      onSelect={handleInputChange}
+                      onChange={(e) => handleChange(field.name, e.target.value)}
                       isInvalid={error && error[field.name]}
                       errorMessage={
                         error && error[field.name]
-                          ? error[field.name].message
+                          ? error[field.name]._errors[0]
                           : null
                       }
                     >
@@ -114,7 +128,7 @@ const FormComponent = ({
                         </SelectItem>
                       ))}
                     </Select>
-                  ) : (
+                  ) : !field.mask ? (
                     <Input
                       key={index}
                       size="sm"
@@ -122,14 +136,37 @@ const FormComponent = ({
                       variant="bordered"
                       label={field.label}
                       name={field.name}
-                      {...register(field.name)}
-                      onChange={handleInputChange}
+                      value={formData[field.name] || defaultValues[field.name]}
+                      onChange={(e) => handleChange(field.name, e.target.value)}
                       fullWidth={field.fullWidth}
                       isRequired={field.isRequired}
                       isInvalid={error && error[field.name]}
                       errorMessage={
                         error && error[field.name]
-                          ? error[field.name].message
+                          ? error[field.name]._errors[0]
+                          : null
+                      }
+                    />
+                  ) : (
+                    <PatternFormat
+                      key={index}
+                      format={field.mask}
+                      placeholder={field.mask.replaceAll("#", "0")}
+                      value={formData[field.name] || defaultValues[field.name]}
+                      onValueChange={({ value }) =>
+                        handleChange(field.name, value)
+                      }
+                      customInput={Input}
+                      size="sm"
+                      type={field.type}
+                      variant="bordered"
+                      label={field.label}
+                      fullWidth={field.fullWidth}
+                      isRequired={field.isRequired}
+                      isInvalid={error && error[field.name]}
+                      errorMessage={
+                        error && error[field.name]
+                          ? error[field.name]._errors[0]
                           : null
                       }
                     />
