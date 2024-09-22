@@ -15,19 +15,6 @@ import styles from "./Footer.module.css";
 export const Footer = () => {
   return (
     <>
-      <div className={`${styles["contact-box"]} ${styles["contact-box-2"]}`}>
-        <div className={styles["contact-text"]}>
-          <h3>ENTRE EM CONTATO CONOSCO</h3>
-          <p>
-            TIRE QUALQUER DÚVIDA ENVIANDO UM SIMPLES EMAIL EM POUCOS SEGUNDOS
-          </p>
-        </div>
-        <button
-          onClick={() => (window.location.href = "mailto:contato@tcatelie.com")}
-        >
-          CLIQUE AQUI
-        </button>
-      </div>
       <footer className={styles.footer}>
         <div className={styles["contact-box"]}>
           <div className={styles["contact-text"]}>
