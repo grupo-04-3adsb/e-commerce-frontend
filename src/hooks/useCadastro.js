@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useCadastroUsuarioApi } from "./api/useCadastroUsuarioApi";
 import { UserDTO } from "../models/UsuarioSchema";
+import { useDispatch } from "react-redux";
+import { loading } from "../store/slices/Loading/slice";
+import { login } from "../store/slices/UsuarioAutenticado/slice";
 
 const validateForm = (data) => {
   const errors = {};
@@ -17,7 +20,7 @@ const useCadastroUsuario = () => {
     useCadastroUsuarioApi();
   const [formValues, setFormValues] = useState({});
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +33,8 @@ const useCadastroUsuario = () => {
   const handleSubmit = async (data) => {
     setErrors({})
     setFormValues(data);
+
+    console.log(data)
 
     const validationResult = UserDTO.safeParse(data);
 
@@ -45,11 +50,13 @@ const useCadastroUsuario = () => {
       return;
     }
 
-    setLoading(true);
+    dispatch(loading(true));
     data.role = "USER";
 
     try {
-      await cadastrarUsuario.mutateAsync(data);
+      const response = await cadastrarUsuario.mutateAsync(data);
+
+      dispatch(login(response));
       window.location.href = "/";
     } catch (err) {
       console.error("Erro ao cadastrar usuário:", err);
@@ -58,7 +65,7 @@ const useCadastroUsuario = () => {
         api: err.message || "Erro desconhecido. Tente novamente mais tarde.",
       });
     } finally {
-      setLoading(false);
+      dispatch(loading(false));
     }
   };
 
@@ -77,7 +84,7 @@ const useCadastroUsuario = () => {
 
   const handleValidarUsuario = async (data) => {
     setErrors({})
-    setLoading(true);
+    dispatch(loading(true));
 
     if (!data.email || !data.cpf) {
       setErrors({ api: "Ambos os campos devem ser preenchidos" });
@@ -96,7 +103,7 @@ const useCadastroUsuario = () => {
         api: err.message || "Erro desconhecido. Tente novamente mais tarde.",
       });
     } finally {
-      setLoading(false);
+      dispatch(loading(false));
     }
   };
 

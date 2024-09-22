@@ -7,12 +7,11 @@
     align-items: center;
     position: relative;
     font-family: 'Arial', sans-serif;
-    overflow-x: hidden;
 }
 
 .contact-box {
     position: absolute;
-    top: 150px;
+    top: -50px;
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(90deg, #D57878, #C15757);
@@ -24,13 +23,9 @@
     z-index: 10;
     border: 2px solid #fff;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.contact-box-2{
-    display: flex;
 }
 
 .contact-box:hover {
@@ -208,7 +203,6 @@
         position: static;
         transform: none;
         margin-bottom: 20px;
-        display: flex;        
     }
     
     .contact-box-2{

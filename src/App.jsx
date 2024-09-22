@@ -7,7 +7,6 @@ import { loading } from "./store/slices/Loading/slice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 function App() {
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,11 +16,10 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Loading/>
+        <Loading />
         <Header />
-        <Routes>
-        </Routes>
-        <Footer/>
+        <Routes></Routes>
+        <Footer />
       </Router>
     </div>
   );

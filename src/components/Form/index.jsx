@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import MessageGeneric from "../Message";
 import useGoogle from "../../hooks/useGoogle";
 import { PatternFormat } from "react-number-format";
@@ -21,6 +22,7 @@ const FormComponent = ({
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
   const [formData, setFormData] = useState(defaultValues);
+  const [passwordVisibility, setPasswordVisibility] = useState({}); // State for individual password visibility
   const { googleError, googleData } = useGoogle();
 
   useEffect(() => {
@@ -77,6 +79,13 @@ const FormComponent = ({
     onSubmit(formData);
   };
 
+  const togglePasswordVisibility = (fieldName) => {
+    setPasswordVisibility((prevState) => ({
+      ...prevState,
+      [fieldName]: !prevState[fieldName],
+    }));
+  };
+
   return (
     isVisible && (
       <div className={style.container}>
@@ -129,24 +138,75 @@ const FormComponent = ({
                       ))}
                     </Select>
                   ) : !field.mask ? (
-                    <Input
-                      key={index}
-                      size="sm"
-                      type={field.type}
-                      variant="bordered"
-                      label={field.label}
-                      name={field.name}
-                      value={formData[field.name] || defaultValues[field.name]}
-                      onChange={(e) => handleChange(field.name, e.target.value)}
-                      fullWidth={field.fullWidth}
-                      isRequired={field.isRequired}
-                      isInvalid={error && error[field.name]}
-                      errorMessage={
-                        error && error[field.name]
-                          ? error[field.name]._errors[0]
-                          : null
-                      }
-                    />
+                    field.type === "password" ? (
+                      <div key={index} className={style.passwordContainer}>
+                        <Input
+                          size="sm"
+                          type={
+                            passwordVisibility[field.name] ? "text" : "password"
+                          }
+                          variant="bordered"
+                          label={field.label}
+                          name={field.name}
+                          value={
+                            formData[field.name] || defaultValues[field.name]
+                          }
+                          onChange={(e) =>
+                            handleChange(field.name, e.target.value)
+                          }
+                          fullWidth={field.fullWidth}
+                          isRequired={field.isRequired}
+                          isInvalid={error && error[field.name]}
+                          description={field.infoMessage}
+                          errorMessage={
+                            error && error[field.name]
+                              ? error[field.name]._errors[0]
+                              : null
+                          }
+                          className="max-w-xs"
+                          endContent={
+                            <button
+                              className={style.eyeBtn}
+                              type="button"
+                              onClick={() =>
+                                togglePasswordVisibility(field.name)
+                              }
+                              aria-label="toggle password visibility"
+                            >
+                              {passwordVisibility[field.name] ? (
+                                <FaEyeSlash className="text-1xl text-default-400" />
+                              ) : (
+                                <FaEye className="text-1xl text-default-400" />
+                              )}
+                            </button>
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <Input
+                        key={index}
+                        size="sm"
+                        type={field.type}
+                        variant="bordered"
+                        label={field.label}
+                        name={field.name}
+                        value={
+                          formData[field.name] || defaultValues[field.name]
+                        }
+                        onChange={(e) =>
+                          handleChange(field.name, e.target.value)
+                        }
+                        fullWidth={field.fullWidth}
+                        isRequired={field.isRequired}
+                        isInvalid={error && error[field.name]}
+                        description={field.infoMessage}
+                        errorMessage={
+                          error && error[field.name]
+                            ? error[field.name]._errors[0]
+                            : null
+                        }
+                      />
+                    )
                   ) : (
                     <PatternFormat
                       key={index}
