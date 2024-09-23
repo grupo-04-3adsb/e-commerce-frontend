@@ -1,45 +1,42 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import LoginDTO from "../models/LoginDTO";
 import { useLoginApi } from "./api/useLoginApi";
 import { useDispatch } from "react-redux";
 import { login, logout } from "../store/slices/UsuarioAutenticado/slice";
+import { loading } from "../store/slices/Loading/slice";
 
 const useLogin = () => {
   const { mutateAsync, error, data } = useLoginApi();
   const dispatch = useDispatch();
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-  } = useForm({
-    resolver: zodResolver(LoginDTO),
-  });
-
   const onSubmit = async (data) => {
+
+    dispatch(loading(true));
     try {
       const response = await mutateAsync(data);
-      dispatch(login(response));
+      await dispatch(login(response));
+      window.location.href = "/"
     } catch (err) {
-      console.error("Erro ao fazer login");
-      console.log(err);
+      console.error("Erro ao fazer login", err);
+    } finally {
+      dispatch(loading(false));
     }
   };
 
-  const onLogout = () => {
-    dispatch(logout());
-  }
+  const onLogout = async () => {
+    dispatch(loading(true));
+    try {
+      dispatch(logout());
+    } catch (err) {
+      console.error("Erro ao fazer logout", err);
+    } finally {
+      dispatch(loading(false));
+      window.location.href = "/"
+    }
+  };
 
   return {
-    handleSubmitLogin: handleSubmit(onSubmit),
-    registerLogin: register,
-    errorsLogin: errors,
+    handleSubmitLogin: onSubmit,
     apiLoginMessage: {
-      error:
-        error?.status >= 400
-          ? "Email ou senha incorretos, tente novamente."
-          : null,
+      error: error?.status >= 400 ? "Email ou senha incorretos, tente novamente." : null,
       success: data?.token ? "Login realizado com sucesso." : null,
     },
     onLogout

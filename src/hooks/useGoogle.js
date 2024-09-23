@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { useGoogleApi } from "./api/useGoogleApi";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slices/UsuarioAutenticado/slice";
-import {loading} from "../store/slices/Loading/slice"
+import { loading } from "../store/slices/Loading/slice";
 
 const useGoogle = (callback) => {
   const { mutateAsync, error, data } = useGoogleApi();
@@ -27,23 +27,20 @@ const useGoogle = (callback) => {
         picture: decoded.picture || "",
       };
 
-      dispatch(loading(true))
-      
+      dispatch(loading(true));
+
       mutateAsync(googleAuthDTO)
         .then((result) => {
           dispatch(login(result));
-          if (callback) callback(); 
+          if (callback) callback();
         })
         .catch((err) => {
           console.error("Erro ao autenticar com Google:", err);
+        })
+        .finally(() => {
+          dispatch(loading(false));
+          window.location.href = "/";
         });
-      
-      setTimeout(() => {
-        dispatch(loading(false))
-        window.location.reload();
-      }, 3000);
-
-
     }
 
     const initializeGoogleSignIn = () => {
@@ -55,7 +52,6 @@ const useGoogle = (callback) => {
     };
 
     initializeGoogleSignIn();
-
   }, [dispatch, mutateAsync, callback]);
 
   return { error, data };
