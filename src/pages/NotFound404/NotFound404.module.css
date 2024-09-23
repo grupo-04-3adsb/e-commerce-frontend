@@ -23,7 +23,7 @@ body {
   justify-content: space-between;
   width: 100%;
   max-width: 1200px;
-  flex-wrap: wrap; /* Permite que os elementos se reorganizem em telas menores */
+  flex-wrap: wrap; 
 }
 
 .text-section {
