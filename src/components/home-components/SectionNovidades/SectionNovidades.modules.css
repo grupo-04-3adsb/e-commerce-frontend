@@ -1,0 +1,8 @@
+.carrossel {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .slick-slide {
+    margin: 0 10px;
+  }

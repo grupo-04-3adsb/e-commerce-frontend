@@ -1,0 +1,29 @@
+.produto {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .informacoes {
+    margin-top: 10px;
+  }
+  
+  .preco {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .desconto {
+    text-decoration: line-through;
+    color: #999;
+  }
+  
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ccc;
+  }
+  
+  .star.active {
+    color: gold;
+  }
