@@ -55,6 +55,14 @@ form h1 {
     align-items: flex-start;
 }
 
+.auxiliarInput{
+    display: none;
+}
+
+.eyeBtn{
+    margin-bottom: 10px;
+}
+
 @media(max-width: 400px){
     .row{
         flex-wrap: wrap;
