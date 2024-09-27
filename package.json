@@ -21,6 +21,7 @@
     "framer-motion": "^11.5.4",
     "i18n": "^0.15.1",
     "jwt-decode": "^4.0.0",
+    "node": "^22.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",

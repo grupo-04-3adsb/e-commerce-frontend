@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import './Card-produto.module.css'; // Importando o arquivo de estilos
 
-function Produto({ produtos }) {
+import style from '../Card-produto/Card-produto.module.css'; 
+import Objprodutos from '../../mock/cardProduto';
+import imagem from '../../assets/images/image 14.png';
 
+const Produto = () => {
     const [rating, setRating] = useState(0);
 
     const handleRating = (value) => {
@@ -23,19 +25,29 @@ function Produto({ produtos }) {
     }
 
   return (
-    <div className="produto">
-      <img src="caminho_para_a_imagem.jpg" alt={produtos.nome} />
-      <div className="informacoes">
-        <h2>{produtos.nome}</h2>
-        <div className="preco">
-          <span>R${produtos.preco}</span>
-          <span className="desconto">R$50,00</span>
-        </div>
-        <div className="avaliacao">
-          {stars}
-        </div>
-        <div className="acoes">
-          <button>♥</button>
+    <div className={style["produto"]}>
+      <div className={style["imagemProduto"]}>
+        <img src={imagem} alt="" />
+          <div className={style["novo"]}>
+            <p>{Objprodutos.produto1.status}</p>
+          </div>
+      </div>
+      <div className={style["informacoes"]}>
+          <h2>{Objprodutos.produto1.nome}</h2>
+          <div className={style["preco"]}>
+            <span>R${Objprodutos.produto1.preco}</span>
+            <span className={style["desconto"]}>R${Objprodutos.produto1.desconto}</span>
+          </div>
+        <div className={style["feedback"]}>
+            <div className={style["avaliacao"]}>
+              <button>{stars}</button>
+                <div className={style["qtdAvaliacao"]}>
+                  <span>{Objprodutos.produto1.avaliacao}</span>
+                </div>
+            </div>
+            <div className={style["acoes"]}>
+              <button>♥</button>
+            </div>
         </div>
       </div>
     </div>

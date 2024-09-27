@@ -1,14 +1,14 @@
 import Produto from '../../Card-produto/index';
 import Objprodutos from '../../../mock/cardProduto';
-import '../SectionNovidades/SectionNovidades.modules.css';
+import '../SectionProdutosMaisVendidos/SectionProdutosMaisVendidos.modules.css';
 
-const ProdutosNovidade = ()=> {
+const ProdutosMaisVendidos = ()=> {
 
   return (
     <div className="bannerNovidade">
       <div className="top-card">
-        <div className="today">
-          <p>HOJE</p>
+        <div className="produtos-mais-vendidos">
+          <p>OS MELHORES</p>
         </div>
         <div className="ver-mais">
           <a href="#">VER MAIS</a>
@@ -25,4 +25,4 @@ const ProdutosNovidade = ()=> {
   );
 }
 
-export default ProdutosNovidade;
+export default ProdutosMaisVendidos;
