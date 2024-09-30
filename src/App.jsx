@@ -14,7 +14,6 @@ function App() {
         <Home />
         <Routes>
         </Routes>
-
       </Router>
     </div>
   );

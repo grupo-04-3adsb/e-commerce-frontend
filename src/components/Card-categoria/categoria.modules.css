@@ -1,0 +1,17 @@
+.category-ball {
+  width: 150px;               
+  height: 150px;              
+  background-color: #D57878;  
+  border-radius: 50%;        
+  display: flex;             
+  justify-content: center;   
+  align-items: center;       
+  color: white;             
+  font-weight: bold;         
+  cursor: pointer;           
+  transition: transform 0.3s ease;
+}
+
+.category-ball:hover {
+  transform: scale(1.1);
+}

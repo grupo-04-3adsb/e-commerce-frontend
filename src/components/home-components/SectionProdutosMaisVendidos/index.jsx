@@ -19,7 +19,6 @@ const ProdutosMaisVendidos = ()=> {
         <Produto produto={Objprodutos.produto2} />
         <Produto produto={Objprodutos.produto3} />
         <Produto produto={Objprodutos.produto4} />
-        <Produto produto={Objprodutos.produto5} />
       </div>
     </div>
   );

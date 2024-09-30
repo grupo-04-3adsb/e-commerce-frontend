@@ -3,26 +3,10 @@ import React, { useState } from 'react';
 import style from '../Card-produto/Card-produto.module.css'; 
 import Objprodutos from '../../mock/cardProduto';
 import imagem from '../../assets/images/image 14.png';
+import star from '../../assets/images/star.png';
+import like from '../../assets/images/heart.png';
 
 const Produto = () => {
-    const [rating, setRating] = useState(0);
-
-    const handleRating = (value) => {
-      setRating(value);
-    };
-
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span
-          key={i}
-          onClick={() => handleRating(i)}
-          className={i <= rating ? 'star active' : 'star'}
-        >
-          ★
-        </span>
-      );
-    }
 
   return (
     <div className={style["produto"]}>
@@ -40,13 +24,19 @@ const Produto = () => {
           </div>
         <div className={style["feedback"]}>
             <div className={style["avaliacao"]}>
-              <button>{stars}</button>
+              <div className={style["estrelas"]}>
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+                <img src={star} alt="" />
+              </div>
                 <div className={style["qtdAvaliacao"]}>
                   <span>{Objprodutos.produto1.avaliacao}</span>
                 </div>
             </div>
             <div className={style["acoes"]}>
-              <button>♥</button>
+              <img src={like} alt="" />
             </div>
         </div>
       </div>

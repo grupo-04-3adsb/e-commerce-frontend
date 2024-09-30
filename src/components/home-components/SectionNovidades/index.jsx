@@ -8,7 +8,7 @@ const ProdutosNovidade = ()=> {
     <div className="bannerNovidade">
       <div className="top-card">
         <div className="today">
-          <p>HOJE</p>
+          <p>NOVIDADES</p>
         </div>
         <div className="ver-mais">
           <a href="#">VER MAIS</a>
@@ -19,7 +19,6 @@ const ProdutosNovidade = ()=> {
         <Produto produto={Objprodutos.produto2} />
         <Produto produto={Objprodutos.produto3} />
         <Produto produto={Objprodutos.produto4} />
-        <Produto produto={Objprodutos.produto5} />
       </div>
     </div>
   );

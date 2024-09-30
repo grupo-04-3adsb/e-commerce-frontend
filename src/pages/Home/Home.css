@@ -1,11 +1,26 @@
-.banner-principal{
-    width: 100%;
-    height: 70vh;
-    background-size: cover;
-    background-position: center;
-}
-
-.banner-principal img{
+.main-page{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     height: 100%;
+}
+
+.carrossel-principal{
+    width: 100%;
+    height: 70vh;
+
+}
+
+.carrossel-principal img{
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
+.banner{
+    width: 60%;
+    padding-top: 10PX;
+    margin-top: 10px;
 }
