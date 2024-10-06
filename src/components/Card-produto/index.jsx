@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
-
-import style from '../Card-produto/Card-produto.module.css'; 
 import Objprodutos from '../../mock/cardProduto';
 import imagem from '../../assets/images/image 14.png';
 import star from '../../assets/images/star.png';
 import like from '../../assets/images/heart.png';
+import style from '../Card-produto/Card-produto.module.css'; 
 
 const Produto = () => {
 
   return (
     <div className={style["produto"]}>
-      <div className={style["imagemProduto"]}>
-        <img src={imagem} alt="" />
           <div className={style["novo"]}>
             <p>{Objprodutos.produto1.status}</p>
           </div>
+      <div className={style["imagemProduto"]}>
+        <img src={imagem} alt="" />
       </div>
       <div className={style["informacoes"]}>
           <h2>{Objprodutos.produto1.nome}</h2>
@@ -38,7 +36,7 @@ const Produto = () => {
             <div className={style["acoes"]}>
               <img src={like} alt="" />
             </div>
-        </div>
+        </div>  
       </div>
     </div>
   );

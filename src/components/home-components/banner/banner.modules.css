@@ -1,4 +1,6 @@
 .banner-container {
+    height: 60vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,15 +46,14 @@
     z-index: 1;
   }
 
-/* Responsividade para telas menores */
 @media (max-width: 770px) {
   .banner-container {
-    margin-top: 15px; /* Reduzindo a margem superior */
-    width: 90%; /* Reduzindo a largura do container */
+    margin-top: 15px;
+    width: 90%;
   }
 
   .banner-content {
-    padding: 0 15px; /* Reduzindo o padding lateral */
+    padding: 0 15px;
   }
 
   .banner-content img {
@@ -72,15 +73,15 @@
   }
 }
 
-/* Responsividade para telas muito pequenas (smartphones) */
 @media (max-width: 480px) {
   .banner-container {
-    margin-top: 10px; /* Reduzindo ainda mais a margem superior */
-    width: 400px;
+    height: 400px;
+    width: 100%;
+    margin-top: 10px;
   }
 
   .banner-content {
-    padding: 0 10px; /* Reduzindo o padding lateral para smartphones */
+    padding: 0 10px;
     display: flex;
     flex-direction: center;
     align-items: center;
@@ -94,9 +95,9 @@
   }
 
   .banner-content img {
-    height: 40vh; /* Reduzindo a altura da imagem */
+    height: 40vh;
     width: 400px;
-    
+    background-position: center;
     object-fit: cover;
   }
 

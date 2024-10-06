@@ -34,7 +34,11 @@
 
 @media (max-width: 480px) {
   .category-ball {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
+  }
+  
+  .category-ball p {
+    font-size: 10px;
   }
 }
