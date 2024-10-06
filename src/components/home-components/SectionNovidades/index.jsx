@@ -2,6 +2,12 @@ import Produto from '../../Card-produto/index';
 import Objprodutos from '../../../mock/cardProduto';
 import '../SectionNovidades/SectionNovidades.modules.css';
 
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css/bundle';
+
 const ProdutosNovidade = ()=> {
 
   return (
@@ -15,10 +21,22 @@ const ProdutosNovidade = ()=> {
         </div>
       </div>
       <div className="cards">
-        <Produto produto={Objprodutos.produto1} />
-        <Produto produto={Objprodutos.produto2} />
-        <Produto produto={Objprodutos.produto3} />
-        <Produto produto={Objprodutos.produto4} />
+        <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={0}
+        slidesPerView={4}
+        navigation
+        onSwiper={(swiper) => console.log(swiper)}
+        onSlideChange={() => console.log('slide change')}
+        >
+        <SwiperSlide><Produto produto={Objprodutos.produto1} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto2} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto3} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto4} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto4} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto4} /></SwiperSlide>
+        <SwiperSlide><Produto produto={Objprodutos.produto4} /></SwiperSlide> 
+        </Swiper>
       </div>
     </div>
   );

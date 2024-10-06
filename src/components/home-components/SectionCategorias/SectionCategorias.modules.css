@@ -38,3 +38,25 @@
     width: 90%;
     margin-top: 10px;
 }
+
+@media (max-width: 768px) {
+    .main {
+      height: 400px;
+      width: 100%;
+    }
+
+    .categories {
+      width: 90%;
+    }
+
+    .categorias{
+        width: 100%;
+        gap: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .category-ball {
+      width: 100%;
+    }
+  }
