@@ -1,0 +1,217 @@
+.footer {
+    background: linear-gradient(180deg, #444, #222);
+    color: #fff;
+    padding: 60px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; 
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+}
+.contact-box {
+    transform: none; 
+    background: linear-gradient(90deg, #D57878, #C15757);
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 10;
+    border: 2px solid #fff;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; 
+}
+
+.contact-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+.contact-text {
+    margin-bottom: 10px;
+}
+
+.contact-box h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.contact-box p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.contact-box button {
+    background-color: #fff;
+    color: #C15757;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.contact-box button:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.05);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+}
+
+.footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 80px;
+    margin-bottom: 20px;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 220px;
+    margin: 10px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    width: 60px;
+    margin-right: 10px;
+}
+
+.footer-description {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.social-media-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.social-media-links svg {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.social-media-links svg:hover {
+    transform: scale(1.1);
+    color: #C15757;
+}
+
+.footer-column h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #F5C5E8;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin: 5px 0;
+}
+
+.footer-column ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: #F5C5E8;
+}
+
+.footer-column p {
+    font-size: 14px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer-column p svg {
+    margin-right: 10px;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.newsletter-form input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    color: #C15757;
+}
+
+.newsletter-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #c87c7c, #C15757);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-weight: bold;
+}
+
+.newsletter-form button:hover {
+    background-color: #c279ae;
+    transform: scale(1.05);
+}
+
+.footer-bottom {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .contact-box {
+        position: static;
+        transform: none;
+        margin-bottom: 20px;
+        display: flex;        
+    }
+
+    .contact-box-2 {
+        display: none;
+    }
+
+    .footer-top {
+        margin-top: 20px;
+    }
+
+    .contact-box:hover {
+        transform: scale(1);
+    }
+}
