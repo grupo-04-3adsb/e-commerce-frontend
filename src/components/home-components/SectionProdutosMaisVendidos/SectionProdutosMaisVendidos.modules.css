@@ -1,0 +1,124 @@
+.bannerNovidade {
+  width: 95%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.top-card {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.produtos-mais-vendidos{
+  width: 150px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.produtos-mais-vendidos p {
+  color: #DB4444;
+  font-size: 18px;
+}
+
+.cards {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.slick-slider {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slick-slide {
+  padding: 5px;
+}
+
+.slick-dots li button:before {
+  margin-top: 10px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .bannerNovidade {
+    height: auto;
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .top-card {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+  }
+  .today p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bannerNovidade {
+    height: auto;
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .top-card {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+  }
+  .today p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerNovidade {
+    height: auto;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .top-card {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .today p {
+    font-size: 14px;
+  }
+}

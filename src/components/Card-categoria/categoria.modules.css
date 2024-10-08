@@ -1,0 +1,44 @@
+.category-ball {
+  width: 150px;               
+  height: 150px;              
+  background-color: #D57878;  
+  border-radius: 50%;        
+  display: flex;             
+  justify-content: center;   
+  align-items: center;       
+  color: white;             
+  font-weight: bold;         
+  cursor: pointer;           
+  transition: transform 0.3s ease;
+}
+
+.category-ball p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.category-ball:hover {
+  transform: scale(1.1);
+} 
+
+
+@media (max-width: 768px) {
+  .category-ball {
+    width: 100px;
+    height: 100px;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .category-ball {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .category-ball p {
+    font-size: 10px;
+  }
+}
