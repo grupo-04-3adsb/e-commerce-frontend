@@ -2,22 +2,26 @@ import React from 'react';
 import styles from './Produtos.module.css';
 import bannerProdutos from '../../assets/images/banner-produtos.png';
 import produtosCriancas from '../../assets/images/produtos-criancas.png';
+import cadernoBanner from '../../assets/images/caderno-banner-produtos.png'; // Adicionando o caderno
 import CardProduto from '../../components/Card-produto';
+import Objprodutos from '../../mock/cardProduto';
 
 function Produtos() {
+  const produtos = Object.values(Objprodutos); // Transformando os produtos em um array
+
   return (
     <div className={styles.produtosPage}>
       <div className={styles.banner}>
         <img src={bannerProdutos} alt="Banner de Produtos" className={styles.bannerImage} />
         <div className={styles.bannerContent}>
-          <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
+          <h1>Aproveite Agora e Ganhe 5% OFF!</h1>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla maximus quis eleifend luctus.
-            Etiam quis viverra augue. Nulla scelerisque.
+            Não perca essa chance! Cadastre-se hoje e receba 5% de desconto na sua próxima compra. Aproveite para garantir seu caderno com essa oferta exclusiva!
           </p>
-          <button className={styles.discountButton}>5% de desconto na compra do caderno</button>
+          <button className={styles.discountButton}>Quero Meu Desconto!</button>
         </div>
         <img src={produtosCriancas} alt="Crianças com produtos" className={styles.criancasImage} />
+        <img src={cadernoBanner} alt="Caderno no banner" className={styles.cadernoBannerImage} /> {/* Adicionando o caderno */}
       </div>
 
       <div className={styles.produtosContainer}>
@@ -50,12 +54,12 @@ function Produtos() {
         <section className={styles.produtos}>
           <h2>Produtos</h2>
           <div className={styles.produtoGrid}>
-            {Array.from({ length: 20 }).map((_, index) => (
+            {produtos.map(produto => (
               <CardProduto
-                key={index}
-                nome={`Caderno Inteligente - Verde ${index + 1}`}
-                preco="R$ 50,00"
-                desconto={index % 2 === 0 ? "20%" : "10%"}
+                key={produto.id}
+                nome={produto.nome}
+                preco={`R$ ${produto.preco}`}
+                desconto={produto.desconto}
               />
             ))}
           </div>
