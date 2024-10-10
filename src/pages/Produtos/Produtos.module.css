@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Impede a rolagem horizontal */
+}
+
 .produtosPage {
   display: flex;
   flex-direction: column;
@@ -91,8 +97,9 @@
   justify-content: space-between;
   margin: 40px 0;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 20px; /* Certifique-se de que o padding não cause overflow */
   gap: 40px;
+  box-sizing: border-box; /* Inclui padding e margens na largura total */
 }
 
 .produtos {
@@ -105,61 +112,61 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;
   justify-items: center;
+  width: 100%; /* Garante que a grade dos produtos ocupe 100% da largura */
 }
 
-/* Media Queries para responsividade */
 @media (max-width: 1200px) {
   .produtoGrid {
     grid-template-columns: repeat(2, 1fr); /* 2 colunas para telas menores */
   }
 
   .banner {
-    height: 300px; /* Altura do banner para telas menores */
+    height: 300px;
   }
 
   .bannerContent h1 {
-    font-size: 1.5rem; /* Tamanho da fonte do título */
+    font-size: 1.5rem;
   }
 
   .bannerContent p {
-    font-size: 0.9rem; /* Tamanho da fonte do parágrafo */
+    font-size: 0.9rem; 
   }
 
   .discountButton {
-    padding: 8px 16px; /* Ajusta o padding do botão */
-    font-size: 0.9rem; /* Ajusta o tamanho da fonte do botão */
+    padding: 8px 16px; 
+    font-size: 0.9rem; 
   }
 
   .criancasImage,
   .cadernoImage {
-    width: 300px; /* Ajusta as imagens para telas menores */
+    width: 300px;
   }
 }
 
 @media (max-width: 768px) {
   .produtoGrid {
-    grid-template-columns: 1fr; /* 1 coluna para telas pequenas */
+    grid-template-columns: 1fr;
   }
 
   .banner {
-    height: 200px; /* Altura do banner para telas pequenas */
+    height: 200px; 
   }
 
   .bannerContent h1 {
-    font-size: 1.2rem; /* Tamanho da fonte do título */
+    font-size: 1.2rem; 
   }
 
   .bannerContent p {
-    font-size: 0.8rem; /* Tamanho da fonte do parágrafo */
+    font-size: 0.8rem; 
   }
 
   .discountButton {
-    padding: 6px 12px; /* Ajusta o padding do botão */
-    font-size: 0.8rem; /* Ajusta o tamanho da fonte do botão */
+    padding: 6px 12px; 
+    font-size: 0.8rem; 
   }
 
   .criancasImage,
   .cadernoImage {
-    width: 200px; /* Ajusta as imagens para telas pequenas */
+    width: 200px;
   }
 }

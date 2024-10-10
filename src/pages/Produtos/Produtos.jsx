@@ -4,7 +4,7 @@ import bannerProdutos from '../../assets/images/banner-produtos.png';
 import produtosCriancas from '../../assets/images/produtos-criancas.png';
 import cadernoBanner from '../../assets/images/caderno-banner-produtos.png';
 import CardProduto from '../../components/Card-produto';
-import FilterComponent from '../../components/Filtro-Produto/FilterComponent'; // Renomeado corretamente
+import FilterComponent from '../../components/Filtro-Produto/FilterComponent';
 import Objprodutos from '../../mock/cardProduto';
 
 function Produtos() {
@@ -26,7 +26,7 @@ function Produtos() {
       </div>
 
       <div className={styles.produtosContainer}>
-        <FilterComponent /> {/* Componente Filtro renomeado corretamente */}
+        <FilterComponent />
         <section className={styles.produtos}>
           <h2>Produtos</h2>
           <div className={styles.produtoGrid}>
