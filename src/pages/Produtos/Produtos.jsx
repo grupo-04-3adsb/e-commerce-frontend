@@ -2,12 +2,13 @@ import React from 'react';
 import styles from './Produtos.module.css';
 import bannerProdutos from '../../assets/images/banner-produtos.png';
 import produtosCriancas from '../../assets/images/produtos-criancas.png';
-import cadernoBanner from '../../assets/images/caderno-banner-produtos.png'; // Adicionando o caderno
+import cadernoBanner from '../../assets/images/caderno-banner-produtos.png';
 import CardProduto from '../../components/Card-produto';
+import FilterComponent from '../../components/Filtro-Produto/FilterComponent'; // Renomeado corretamente
 import Objprodutos from '../../mock/cardProduto';
 
 function Produtos() {
-  const produtos = Object.values(Objprodutos); // Transformando os produtos em um array
+  const produtos = Object.values(Objprodutos);
 
   return (
     <div className={styles.produtosPage}>
@@ -20,37 +21,12 @@ function Produtos() {
           </p>
           <button className={styles.discountButton}>Quero Meu Desconto!</button>
         </div>
+        <img src={cadernoBanner} alt="Caderno de Produtos" className={styles.cadernoImage} />
         <img src={produtosCriancas} alt="Crianças com produtos" className={styles.criancasImage} />
-        <img src={cadernoBanner} alt="Caderno no banner" className={styles.cadernoBannerImage} /> {/* Adicionando o caderno */}
       </div>
 
       <div className={styles.produtosContainer}>
-        <aside className={styles.filtro}>
-          <h3>Filtrar</h3>
-          <div>
-            <h4>Categorias</h4>
-            <ul>
-              <li>Cadernos</li>
-              <li>Agendas</li>
-              <li>Presentes</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4>Preço</h4>
-            <input type="range" min="10" max="500" />
-          </div>
-
-          <div>
-            <h4>Avaliação</h4>
-            <ul>
-              <li>★★★★★</li>
-              <li>★★★★☆</li>
-              <li>★★★☆☆</li>
-            </ul>
-          </div>
-        </aside>
-
+        <FilterComponent /> {/* Componente Filtro renomeado corretamente */}
         <section className={styles.produtos}>
           <h2>Produtos</h2>
           <div className={styles.produtoGrid}>
