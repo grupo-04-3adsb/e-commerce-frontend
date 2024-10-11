@@ -1,0 +1,123 @@
+.filterContainer {
+    max-width: 100%;
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    gap: 20px;
+  }
+  
+  .filterHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filterImage {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .filterTitle {
+    color: #242220;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+    font-weight: bold;
+  }
+  
+  .filterContent {
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .filterSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .filterSection h3 {
+    color: #121212;
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    font-weight: bold;
+  }
+  
+  .filterSection ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .filterSection ul li {
+    font-size: 14px;
+    color: #807E7E;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+  }
+  
+  .filterSection ul li:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  
+  .sliderValue {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: #807E7E;
+    text-align: right;
+    width: 80px;
+  }
+  
+  .slider {
+    flex-grow: 1;
+  }
+  
+  .filterSection label {
+    font-size: 14px;
+    color: #807E7E;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+  }
+  
+  .filterSection span {
+    font-size: 20px;
+  }
+  
+  label input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+   .filterContent::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .filterContent::-webkit-scrollbar-track {
+    background: #fdf9f9;
+    border-radius: 10px;
+  }
+  
+  .filterContent::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  .filterContent::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+ 
+  .customCheckbox {
+    font-size: 14px;
+  }
+  

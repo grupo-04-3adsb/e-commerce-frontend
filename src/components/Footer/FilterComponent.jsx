@@ -3,16 +3,17 @@ import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
+import cn from "classnames";
 
 export default function FilterComponent() {
   const [rating, setRating] = useState(0);
+
+
   const changeRating = (newRating) => {
     setRating(newRating);
   };
 
-  const [preco, setPreco] = useState([0, 1000]);
-  const [producao, setProducao] = useState([0, 1000]);
-  const [lucro, setLucro] = useState([50, 150]);
+  
 
   return (
     <div className={styles.filterContainer}>
@@ -59,26 +60,14 @@ export default function FilterComponent() {
 
         <div className={styles.filterSection}>
           <h3>Preço</h3>
-          <div className="flex flex-col gap-4 w-full h-full max-w-md items-start justify-center">
-            <div>
-              <p className="text-default-500 font-medium text-small">
-                Preço: {Array.isArray(preco) && preco.map((p) => `$${p}`).join(" – ")}
-              </p>
-              <Slider
-                color="danger"
-                size="sm"
-                formatOptions={{ style: "currency", currency: "USD" }}
-                step={10}
-                maxValue={1000}
-                minValue={0}
-                value={preco}
-                onChange={setPreco}
-                className="max-w-md"
-              />
-            </div>
-          </div>
+          <Slider
+            min={0}
+            max={100}
+            step={1}
+            defaultValue={[0, 100]}
+            className={styles.slider}
+          />
         </div>
-        
         <div className={styles.filterSection}>
           <h3>Avaliação</h3>
           <StarRatings
