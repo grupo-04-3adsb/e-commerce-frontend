@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Produtos.module.css';
 import bannerProdutos from '../../assets/images/banner-produtos.png';
 import produtosCriancas from '../../assets/images/produtos-criancas.png';
 import cadernoBanner from '../../assets/images/caderno-banner-produtos.png';
 import CardProduto from '../../components/Card-produto';
 import FilterComponent from '../../components/Filtro-Produto/FilterComponent';
-import Objprodutos from '../../mock/cardProduto';
+import { getTodosOsProdutos } from '../../hooks/api/produtosApi';
 
 function Produtos() {
-  const produtos = Object.values(Objprodutos);
+  const [produtosFiltrados, setFilteredProducts] = useState([]); // Guardar produtos filtrados
+
+  const fetchProdutos = async () => {
+    try {
+      const produtos = await getTodosOsProdutos();
+      setFilteredProducts(produtos.content);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProdutos();
+  }, []);
 
   return (
     <div className={styles.produtosPage}>
@@ -26,11 +39,11 @@ function Produtos() {
       </div>
 
       <div className={styles.produtosContainer}>
-        <FilterComponent />
+        <FilterComponent setFilteredProducts={setFilteredProducts} />
         <section className={styles.produtos}>
           <h2>Produtos</h2>
           <div className={styles.produtoGrid}>
-            {produtos.map(produto => (
+            {produtosFiltrados.map(produto => (
               <CardProduto
                 key={produto.id}
                 nome={produto.nome}

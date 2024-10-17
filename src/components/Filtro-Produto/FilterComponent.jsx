@@ -3,16 +3,47 @@ import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
+import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
 
-export default function FilterComponent() {
+export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);
   const changeRating = (newRating) => {
     setRating(newRating);
   };
 
   const [preco, setPreco] = useState([0, 1000]);
-  const [producao, setProducao] = useState([0, 1000]);
-  const [lucro, setLucro] = useState([50, 150]);
+  const [categoria, setCategoria] = useState("");
+  const [subcategoria, setSubcategoria] = useState("");
+  const [personalizavel, setPersonalizavel] = useState(false);
+  const [novo, setNovo] = useState(false);
+  const [desconto, setDesconto] = useState(false);
+
+  const applyFilters = async () => {
+    const filters = {
+      categoria,
+      subcategoria,
+      precoMinimo: preco[0],
+      precoMaximo: preco[1],
+      avaliacao: rating,
+      personalizavel,
+      novo,
+      desconto,
+    };
+
+    try {
+      // Verifica se algum filtro foi aplicado
+      if (Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)) {
+        // Se não houver filtros, busca todos os produtos
+        const todosOsProdutos = await getTodosOsProdutos();
+        setFilteredProducts(todosOsProdutos.content);
+      } else {
+        const produtosFiltrados = await getProdutosFiltrados(filters);
+        setFilteredProducts(produtosFiltrados.content);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
 
   return (
     <div className={styles.filterContainer}>
@@ -24,36 +55,24 @@ export default function FilterComponent() {
         <div className={styles.filterSection}>
           <h3>Categorias</h3>
           <ul>
-            <li>Todas as categorias</li>
-            <li>Cadernos</li>
-            <li>Topo de bolo</li>
-            <li>Centro de mesa</li>
-            <li>Agendas</li>
-            <li>Festa</li>
-            <li>Presente</li>
+            <li onClick={() => setCategoria("")}>Todas as categorias</li>
+            <li onClick={() => setCategoria("Cadernos")}>Cadernos</li>
+            <li onClick={() => setCategoria("Topo de bolo")}>Topo de bolo</li>
+            <li onClick={() => setCategoria("Centro de mesa")}>Centro de mesa</li>
+            <li onClick={() => setCategoria("Agendas")}>Agendas</li>
+            <li onClick={() => setCategoria("Festa")}>Festa</li>
+            <li onClick={() => setCategoria("Presente")}>Presente</li>
           </ul>
         </div>
         <div className={styles.filterSection}>
           <h3>Subcategorias</h3>
           <ul>
-            <li>Todas as subcategorias</li>
-            <li>Caderno argolado</li>
-            <li>Caderno inteligente</li>
-            <li>Caderno de espiral</li>
-            <li>Calendário</li>
-            <li>Presente dia dos pais</li>
-          </ul>
-        </div>
-        <div className={styles.filterSection}>
-          <h3>Material</h3>
-          <ul>
-            <li>Folha A4</li>
-            <li>Argola</li>
-            <li>Papelão</li>
-            <li>Espiral</li>
-            <li>Papel adesivo</li>
-            <li>Folha vegetal</li>
-            <li>Tubo plástico</li>
+            <li onClick={() => setSubcategoria("")}>Todas as subcategorias</li>
+            <li onClick={() => setSubcategoria("Caderno argolado")}>Caderno argolado</li>
+            <li onClick={() => setSubcategoria("Caderno inteligente")}>Caderno inteligente</li>
+            <li onClick={() => setSubcategoria("Caderno de espiral")}>Caderno de espiral</li>
+            <li onClick={() => setSubcategoria("Calendário")}>Calendário</li>
+            <li onClick={() => setSubcategoria("Presente dia dos pais")}>Presente dia dos pais</li>
           </ul>
         </div>
 
@@ -62,12 +81,11 @@ export default function FilterComponent() {
           <div className="flex flex-col gap-4 w-full h-full max-w-md items-start justify-center">
             <div>
               <p className="text-default-500 font-medium text-small">
-                Preço: {Array.isArray(preco) && preco.map((p) => `$${p}`).join(" – ")}
+                Preço: {Array.isArray(preco) && preco.map((p) => `R$ ${p}`).join(" – ")}
               </p>
               <Slider
                 color="danger"
                 size="sm"
-                formatOptions={{ style: "currency", currency: "USD" }}
                 step={10}
                 maxValue={1000}
                 minValue={0}
@@ -78,7 +96,7 @@ export default function FilterComponent() {
             </div>
           </div>
         </div>
-        
+
         <div className={styles.filterSection}>
           <h3>Avaliação</h3>
           <StarRatings
@@ -100,17 +118,27 @@ export default function FilterComponent() {
             defaultSelected
             size="sm"
             color="danger"
-            className="customCheckbox"
+            onChange={(e) => setPersonalizavel(e.target.checked)}
           >
             Personalizável
           </Checkbox>
-          <Checkbox size="sm" color="danger" className="customCheckbox">
+          <Checkbox
+            size="sm"
+            color="danger"
+            onChange={(e) => setNovo(e.target.checked)}
+          >
             Novo
           </Checkbox>
-          <Checkbox size="sm" color="danger" className="customCheckbox">
+          <Checkbox
+            size="sm"
+            color="danger"
+            onChange={(e) => setDesconto(e.target.checked)}
+          >
             Desconto
           </Checkbox>
         </div>
+
+        <button onClick={applyFilters} className={styles.applyFiltersButton}>Aplicar Filtros</button>
       </div>
     </div>
   );
