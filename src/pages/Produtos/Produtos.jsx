@@ -8,12 +8,12 @@ import FilterComponent from '../../components/Filtro-Produto/FilterComponent';
 import { getTodosOsProdutos } from '../../hooks/api/produtosApi';
 
 function Produtos() {
-  const [produtosFiltrados, setFilteredProducts] = useState([]); // Guardar produtos filtrados
+  const [produtosFiltrados, setFilteredProducts] = useState([]);
 
   const fetchProdutos = async () => {
     try {
       const produtos = await getTodosOsProdutos();
-      setFilteredProducts(produtos.content);
+      setFilteredProducts(produtos.content); 
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
     }
@@ -47,8 +47,12 @@ function Produtos() {
               <CardProduto
                 key={produto.id}
                 nome={produto.nome}
-                preco={`R$ ${produto.preco}`}
+                preco={produto.preco.toFixed(2)} // formatação do preço
                 desconto={produto.desconto}
+                urlProduto={produto.urlProduto}
+                status={produto.status || 'NOVO'} 
+                avaliacao={produto.avaliacao || '(0)'} 
+                imagensAdicionais={produto.imagensAdicionais}
               />
             ))}
           </div>
