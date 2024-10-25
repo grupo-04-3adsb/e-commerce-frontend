@@ -47,7 +47,7 @@ function Produtos() {
               <CardProduto
                 key={produto.id}
                 nome={produto.nome}
-                preco={produto.preco.toFixed(2)} // formatação do preço
+                preco={produto.preco}
                 desconto={produto.desconto}
                 urlProduto={produto.urlProduto}
                 status={produto.status || 'NOVO'} 

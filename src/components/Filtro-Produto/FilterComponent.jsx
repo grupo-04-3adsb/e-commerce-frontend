@@ -1,15 +1,13 @@
 import styles from "./FilterComponent.module.css";
 import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
 import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
 
 export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);
-  const changeRating = (newRating) => {
-    setRating(newRating);
-  };
+  const changeRating = (newRating) => setRating(newRating);
 
   const [preco, setPreco] = useState([0, 1000]);
   const [categoria, setCategoria] = useState("");
@@ -18,7 +16,10 @@ export default function FilterComponent({ setFilteredProducts }) {
   const [novo, setNovo] = useState(false);
   const [desconto, setDesconto] = useState(false);
 
-  const applyFilters = async () => {
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const applyFilters = async (reset = false) => {
     const filters = {
       categoria,
       subcategoria,
@@ -31,18 +32,50 @@ export default function FilterComponent({ setFilteredProducts }) {
     };
 
     try {
-      // Verifica se algum filtro foi aplicado
-      if (Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)) {
-        // Se não houver filtros, busca todos os produtos
-        const todosOsProdutos = await getTodosOsProdutos();
-        setFilteredProducts(todosOsProdutos.content);
+      const produtos = Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)
+        ? await getTodosOsProdutos(page, 9)
+        : await getProdutosFiltrados({ ...filters }, page, 9);
+
+      // Se não houver produtos, desabilite a carga de mais produtos
+      if (produtos.content.length === 0) {
+        setHasMore(false);
       } else {
-        const produtosFiltrados = await getProdutosFiltrados(filters);
-        setFilteredProducts(produtosFiltrados.content);
+        // Se reset for verdadeiro, limpa a lista anterior e adiciona os novos produtos
+        if (reset) {
+          setFilteredProducts(produtos.content);
+        } else {
+          setFilteredProducts((prev) => {
+            // Adiciona novos produtos se não estiverem presentes
+            const newProducts = produtos.content.filter(produto => 
+              !prev.some(existingProduct => existingProduct.id === produto.id)
+            );
+            return [...prev, ...newProducts];
+          });
+        }
       }
     } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
+      console.error("Erro ao buscar produtos filtrados:", error);
     }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [page]);
+
+  const handleApplyFilters = () => {
+    setPage(0);
+    setHasMore(true);
+    applyFilters(true); // Limpa a lista anterior ao aplicar novos filtros
   };
 
   return (
@@ -64,6 +97,7 @@ export default function FilterComponent({ setFilteredProducts }) {
             <li onClick={() => setCategoria("Presente")}>Presente</li>
           </ul>
         </div>
+
         <div className={styles.filterSection}>
           <h3>Subcategorias</h3>
           <ul>
@@ -115,7 +149,7 @@ export default function FilterComponent({ setFilteredProducts }) {
         <div className={styles.filterSection}>
           <h3>Outros</h3>
           <Checkbox
-            defaultSelected
+            defaultSelected={personalizavel}
             size="sm"
             color="danger"
             onChange={(e) => setPersonalizavel(e.target.checked)}
@@ -123,6 +157,7 @@ export default function FilterComponent({ setFilteredProducts }) {
             Personalizável
           </Checkbox>
           <Checkbox
+            defaultSelected={novo}
             size="sm"
             color="danger"
             onChange={(e) => setNovo(e.target.checked)}
@@ -130,6 +165,7 @@ export default function FilterComponent({ setFilteredProducts }) {
             Novo
           </Checkbox>
           <Checkbox
+            defaultSelected={desconto}
             size="sm"
             color="danger"
             onChange={(e) => setDesconto(e.target.checked)}
@@ -138,7 +174,7 @@ export default function FilterComponent({ setFilteredProducts }) {
           </Checkbox>
         </div>
 
-        <button onClick={applyFilters} className={styles.applyFiltersButton}>Aplicar Filtros</button>
+        <button onClick={handleApplyFilters} className={styles.applyFiltersButton}>Aplicar Filtros</button>
       </div>
     </div>
   );

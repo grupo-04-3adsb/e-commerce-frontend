@@ -2,10 +2,9 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/produtos";
 
-// Função para procurar todos os produtos
-export const getTodosOsProdutos = async () => {
+export const getTodosOsProdutos = async (page = 0, size = 9) => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await axios.get(API_URL, { params: { page, size } });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar todos os produtos:", error);
@@ -13,11 +12,10 @@ export const getTodosOsProdutos = async () => {
   }
 };
 
-// Função para procurar os produtos filtrados
-export const getProdutosFiltrados = async (filters) => {
+export const getProdutosFiltrados = async (filters, page = 0, size = 9) => {
   try {
-    const response = await axios.get(API_URL, { params: filters });
-    return response.data; 
+    const response = await axios.get(API_URL, { params: { ...filters, page, size } });
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar produtos filtrados:", error);
     throw error;
