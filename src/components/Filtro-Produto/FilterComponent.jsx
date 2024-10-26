@@ -3,9 +3,9 @@ import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
-import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
-import { getCategorias } from "../../hooks/api/categoriasApi";
-import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
+import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/useProdutosApi";
+import { getCategorias } from "../../hooks/api/useCategoriasApi";
+import { getSubcategorias } from "../../hooks/api/useSubCategoriasApi";
 
 export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);

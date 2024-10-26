@@ -5,7 +5,7 @@ import produtosCriancas from '../../assets/images/produtos-criancas.png';
 import cadernoBanner from '../../assets/images/caderno-banner-produtos.png';
 import CardProduto from '../../components/Card-produto';
 import FilterComponent from '../../components/Filtro-Produto/FilterComponent';
-import { getTodosOsProdutos } from '../../hooks/api/produtosApi';
+import { getTodosOsProdutos } from '../../hooks/api/useProdutosApi';
 
 function Produtos() {
   const [produtosFiltrados, setFilteredProducts] = useState([]);
