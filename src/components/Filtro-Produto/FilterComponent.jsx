@@ -4,6 +4,8 @@ import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
 import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
+import { getCategorias } from "../../hooks/api/categoriasApi"; // Certifique-se de que o caminho esteja correto
+import { getSubcategorias } from "../../hooks/api/subCategoriasApi"; // Importar a função para buscar subcategorias
 
 export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);
@@ -18,6 +20,10 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+
+  // Estado para armazenar categorias e subcategorias
+  const [categorias, setCategorias] = useState([]);
+  const [subcategorias, setSubcategorias] = useState([]); // Estado para subcategorias
 
   const applyFilters = async (reset = false) => {
     const filters = {
@@ -36,16 +42,13 @@ export default function FilterComponent({ setFilteredProducts }) {
         ? await getTodosOsProdutos(page, 9)
         : await getProdutosFiltrados({ ...filters }, page, 9);
 
-      // Se não houver produtos, desabilite a carga de mais produtos
       if (produtos.content.length === 0) {
         setHasMore(false);
       } else {
-        // Se reset for verdadeiro, limpa a lista anterior e adiciona os novos produtos
         if (reset) {
           setFilteredProducts(produtos.content);
         } else {
           setFilteredProducts((prev) => {
-            // Adiciona novos produtos se não estiverem presentes
             const newProducts = produtos.content.filter(produto => 
               !prev.some(existingProduct => existingProduct.id === produto.id)
             );
@@ -72,6 +75,24 @@ export default function FilterComponent({ setFilteredProducts }) {
     applyFilters();
   }, [page]);
 
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      const fetchedCategorias = await getCategorias();
+      setCategorias(fetchedCategorias.slice(0, 5)); // Limita a 5 categorias
+    };
+
+    fetchCategorias();
+  }, []);
+
+  useEffect(() => {
+    const fetchSubcategorias = async () => {
+      const fetchedSubcategorias = await getSubcategorias();
+      setSubcategorias(fetchedSubcategorias.slice(0, 5)); // Limita a 5 subcategorias
+    };
+
+    fetchSubcategorias();
+  }, []);
+
   const handleApplyFilters = () => {
     setPage(0);
     setHasMore(true);
@@ -88,13 +109,14 @@ export default function FilterComponent({ setFilteredProducts }) {
         <div className={styles.filterSection}>
           <h3>Categorias</h3>
           <ul>
-            <li onClick={() => setCategoria("")}>Todas as categorias</li>
-            <li onClick={() => setCategoria("Cadernos")}>Cadernos</li>
-            <li onClick={() => setCategoria("Topo de bolo")}>Topo de bolo</li>
-            <li onClick={() => setCategoria("Centro de mesa")}>Centro de mesa</li>
-            <li onClick={() => setCategoria("Agendas")}>Agendas</li>
-            <li onClick={() => setCategoria("Festa")}>Festa</li>
-            <li onClick={() => setCategoria("Presente")}>Presente</li>
+            {categorias.map((cat) => (
+              <li key={cat.idCategoria} onClick={() => {
+                setCategoria(cat.nomeCategoria);
+                setSubcategoria(""); // Reseta a subcategoria ao mudar de categoria
+              }}>
+                {cat.nomeCategoria}
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -102,11 +124,11 @@ export default function FilterComponent({ setFilteredProducts }) {
           <h3>Subcategorias</h3>
           <ul>
             <li onClick={() => setSubcategoria("")}>Todas as subcategorias</li>
-            <li onClick={() => setSubcategoria("Caderno argolado")}>Caderno argolado</li>
-            <li onClick={() => setSubcategoria("Caderno inteligente")}>Caderno inteligente</li>
-            <li onClick={() => setSubcategoria("Caderno de espiral")}>Caderno de espiral</li>
-            <li onClick={() => setSubcategoria("Calendário")}>Calendário</li>
-            <li onClick={() => setSubcategoria("Presente dia dos pais")}>Presente dia dos pais</li>
+            {subcategorias.map((subcat) => (
+              <li key={subcat.idSubcategoria} onClick={() => setSubcategoria(subcat.nomeSubcategoria)}>
+                {subcat.nomeSubcategoria}
+              </li>
+            ))}
           </ul>
         </div>
 
