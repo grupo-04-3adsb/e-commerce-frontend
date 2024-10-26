@@ -26,20 +26,22 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const applyFilters = async (reset = false) => {
     const filters = {
-      categoria: selectedCategorias.join(","),
-      subcategoria: selectedSubcategorias.join(","),
+      nome: "", 
+      sku: "", 
+      margemLucroMinima: null, 
+      margemLucroMaxima: null, 
       precoMinimo: preco[0],
       precoMaximo: preco[1],
-      avaliacao: rating,
-      personalizavel,
-      novo,
-      desconto,
+      nomeCategoria: selectedCategorias.join(","),
+      nomeSubcategoria: selectedSubcategorias.join(","),
+      isPersonalizavel: personalizavel,
+      isPersonalizacaoObrigatoria: novo || desconto, 
     };
 
     try {
       const produtos = Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)
         ? await getTodosOsProdutos(page, 9)
-        : await getProdutosFiltrados({ ...filters }, page, 9);
+        : await getProdutosFiltrados(filters, page, 9);
 
       if (produtos.content.length === 0) {
         setHasMore(false);

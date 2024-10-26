@@ -1,11 +1,7 @@
-import axios from "axios";
+import axios from 'axios';
+import axiosConfig from '../../axiosConfig';
 
 export const getCategorias = async () => {
-  try {
-    const response = await axios.get("http://localhost:8080/categorias");
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar categorias:", error);
-    return [];
-  }
+  const response = await axiosConfig.get('/categorias');
+  return response.data;
 };
