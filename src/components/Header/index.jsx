@@ -33,6 +33,7 @@ import { idiomas } from "../../data/mock/idiomas";
 import useLogin from "../../hooks/useLogin";
 import useCadastroUsuario from "../../hooks/useCadastro";
 import { useSelector } from "react-redux";
+import { CgClose } from "react-icons/cg";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,7 +65,7 @@ const Header = () => {
   }, []);
 
   const { isUsuarioLogado, usuario } = useSelector((state) => state.usuario);
-  const [auxiliarValues, setAuxiliarValues] = useState({})
+  const [auxiliarValues, setAuxiliarValues] = useState({});
 
   const handleValidaCadastro = async (data) => {
     try {
@@ -76,7 +77,7 @@ const Header = () => {
         setIsCadastroOpen(false);
       }
 
-      setAuxiliarValues(data)
+      setAuxiliarValues(data);
     } catch (error) {
       console.error("Erro ao validar o cadastro:", error);
     }
@@ -340,47 +341,73 @@ const Header = () => {
           )}
         </NavbarMenu>
       </Navbar>
-      <FormComponent
-        visible={isCadastroOpen}
-        onClose={() => {
-          setIsCadastroOpen(false);
-        }}
-        title={"Cadastro"}
-        onSubmit={handleValidaCadastro}
-        fields={[validaCadastroFields]}
-        submitLabel={"Enviar"}
-        isSocialLogin={true}
-        error={errors}
-        apiMessage={apiCadastroMessage}
-      />
-      <FormComponent
-        visible={isCadastroValido}
-        onClose={() => {
-          setIsCadastroValido(false);
-        }}
-        title={"Cadastro"}
-        fields={cadastroFields}
-        submitLabel={"Cadastrar"}
-        onSubmit={handleSubmit}
-        isSocialLogin={true}
-        error={errors}
-        apiMessage={apiCadastroMessage}
-        defaultValues={auxiliarValues}
-      />
-      <FormComponent
-        visible={isLoginOpen}
-        onClose={() => {
-          setIsLoginOpen(false);
-        }}
-        title={"Login"}
-        fields={loginFields}
-        submitLabel={"Entrar"}
-        onSubmit={handleSubmitLogin}
-        isSocialLogin={true}
-        error={errorsLogin}
-        register={registerLogin}
-        apiMessage={apiLoginMessage}
-      />
+      {isCadastroOpen ||
+        isCadastroValido ||
+        (isLoginOpen && (
+          <div className={style.container}>
+            <div className={style.content}>
+              <Button
+                className={style.btnIcon}
+                size="sm"
+                color="white"
+                variant="bordered"
+                isIconOnly
+                endContent={<CgClose />}
+                onPress={() => {
+                  setIsVisible(false);
+                  onClose();
+                }}
+              />
+            </div>
+            {isCadastroOpen && (
+              <FormComponent
+                visible={isCadastroOpen}
+                onClose={() => {
+                  setIsCadastroOpen(false);
+                }}
+                title={"Cadastro"}
+                onSubmit={handleValidaCadastro}
+                fields={[validaCadastroFields]}
+                submitLabel={"Enviar"}
+                isSocialLogin={true}
+                error={errors}
+                apiMessage={apiCadastroMessage}
+              />
+            )}
+            {isCadastroValido && (
+              <FormComponent
+                visible={isCadastroValido}
+                onClose={() => {
+                  setIsCadastroValido(false);
+                }}
+                title={"Cadastro"}
+                fields={cadastroFields}
+                submitLabel={"Cadastrar"}
+                onSubmit={handleSubmit}
+                isSocialLogin={true}
+                error={errors}
+                apiMessage={apiCadastroMessage}
+                defaultValues={auxiliarValues}
+              />
+            )}
+            {isLoginOpen && (
+              <FormComponent
+                visible={isLoginOpen}
+                onClose={() => {
+                  setIsLoginOpen(false);
+                }}
+                title={"Login"}
+                fields={loginFields}
+                submitLabel={"Entrar"}
+                onSubmit={handleSubmitLogin}
+                isSocialLogin={true}
+                error={errorsLogin}
+                register={registerLogin}
+                apiMessage={apiLoginMessage}
+              />
+            )}
+          </div>
+        ))}
     </nav>
   );
 };
