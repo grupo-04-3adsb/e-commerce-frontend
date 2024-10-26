@@ -4,8 +4,8 @@ import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
 import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
-import { getCategorias } from "../../hooks/api/categoriasApi"; // Certifique-se de que o caminho esteja correto
-import { getSubcategorias } from "../../hooks/api/subCategoriasApi"; // Importar a função para buscar subcategorias
+import { getCategorias } from "../../hooks/api/categoriasApi";
+import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
 
 export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);
@@ -13,7 +13,7 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const [preco, setPreco] = useState([0, 1000]);
   const [categorias, setCategorias] = useState([]);
-  const [subcategorias, setSubcategorias] = useState([]); // Estado para subcategorias
+  const [subcategorias, setSubcategorias] = useState([]);
   const [selectedCategorias, setSelectedCategorias] = useState([]);
   const [selectedSubcategorias, setSelectedSubcategorias] = useState([]);
   
