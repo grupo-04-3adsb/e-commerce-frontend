@@ -12,8 +12,11 @@ export default function FilterComponent({ setFilteredProducts }) {
   const changeRating = (newRating) => setRating(newRating);
 
   const [preco, setPreco] = useState([0, 1000]);
-  const [categoria, setCategoria] = useState("");
-  const [subcategoria, setSubcategoria] = useState("");
+  const [categorias, setCategorias] = useState([]);
+  const [subcategorias, setSubcategorias] = useState([]); // Estado para subcategorias
+  const [selectedCategorias, setSelectedCategorias] = useState([]);
+  const [selectedSubcategorias, setSelectedSubcategorias] = useState([]);
+  
   const [personalizavel, setPersonalizavel] = useState(false);
   const [novo, setNovo] = useState(false);
   const [desconto, setDesconto] = useState(false);
@@ -21,14 +24,10 @@ export default function FilterComponent({ setFilteredProducts }) {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // Estado para armazenar categorias e subcategorias
-  const [categorias, setCategorias] = useState([]);
-  const [subcategorias, setSubcategorias] = useState([]); // Estado para subcategorias
-
   const applyFilters = async (reset = false) => {
     const filters = {
-      categoria,
-      subcategoria,
+      categoria: selectedCategorias.join(","),
+      subcategoria: selectedSubcategorias.join(","),
       precoMinimo: preco[0],
       precoMaximo: preco[1],
       avaliacao: rating,
@@ -99,6 +98,22 @@ export default function FilterComponent({ setFilteredProducts }) {
     applyFilters(true); // Limpa a lista anterior ao aplicar novos filtros
   };
 
+  const handleCategoriaChange = (categoria) => {
+    setSelectedCategorias((prev) => 
+      prev.includes(categoria) 
+        ? prev.filter(cat => cat !== categoria) 
+        : [...prev, categoria]
+    );
+  };
+
+  const handleSubcategoriaChange = (subcategoria) => {
+    setSelectedSubcategorias((prev) => 
+      prev.includes(subcategoria) 
+        ? prev.filter(subcat => subcat !== subcategoria) 
+        : [...prev, subcategoria]
+    );
+  };
+
   return (
     <div className={styles.filterContainer}>
       <div className={styles.filterHeader}>
@@ -108,28 +123,64 @@ export default function FilterComponent({ setFilteredProducts }) {
       <div className={styles.filterContent}>
         <div className={styles.filterSection}>
           <h3>Categorias</h3>
-          <ul>
+          <div>
+            <Checkbox
+              size="sm"
+              color="danger"
+              isSelected={selectedCategorias.length === 0} // Checkbox para "Todas as categorias"
+              onChange={() => {
+                if (selectedCategorias.length === 0) {
+                  setSelectedCategorias(categorias.map(cat => cat.nomeCategoria));
+                } else {
+                  setSelectedCategorias([]);
+                }
+              }}
+            >
+              Todas as categorias
+            </Checkbox>
             {categorias.map((cat) => (
-              <li key={cat.idCategoria} onClick={() => {
-                setCategoria(cat.nomeCategoria);
-                setSubcategoria(""); // Reseta a subcategoria ao mudar de categoria
-              }}>
+              <Checkbox
+                key={cat.idCategoria}
+                size="sm"
+                color="danger"
+                isSelected={selectedCategorias.includes(cat.nomeCategoria)}
+                onChange={() => handleCategoriaChange(cat.nomeCategoria)}
+              >
                 {cat.nomeCategoria}
-              </li>
+              </Checkbox>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className={styles.filterSection}>
           <h3>Subcategorias</h3>
-          <ul>
-            <li onClick={() => setSubcategoria("")}>Todas as subcategorias</li>
+          <div>
+            <Checkbox
+              size="sm"
+              color="danger"
+              isSelected={selectedSubcategorias.length === 0} // Checkbox para "Todas as subcategorias"
+              onChange={() => {
+                if (selectedSubcategorias.length === 0) {
+                  setSelectedSubcategorias(subcategorias.map(subcat => subcat.nomeSubcategoria));
+                } else {
+                  setSelectedSubcategorias([]);
+                }
+              }}
+            >
+              Todas as subcategorias
+            </Checkbox>
             {subcategorias.map((subcat) => (
-              <li key={subcat.idSubcategoria} onClick={() => setSubcategoria(subcat.nomeSubcategoria)}>
+              <Checkbox
+                key={subcat.idSubcategoria}
+                size="sm"
+                color="danger"
+                isSelected={selectedSubcategorias.includes(subcat.nomeSubcategoria)}
+                onChange={() => handleSubcategoriaChange(subcat.nomeSubcategoria)}
+              >
                 {subcat.nomeSubcategoria}
-              </li>
+              </Checkbox>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className={styles.filterSection}>
