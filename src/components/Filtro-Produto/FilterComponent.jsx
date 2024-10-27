@@ -16,7 +16,7 @@ export default function FilterComponent({ setFilteredProducts }) {
   const [subcategorias, setSubcategorias] = useState([]);
   const [selectedCategorias, setSelectedCategorias] = useState([]);
   const [selectedSubcategorias, setSelectedSubcategorias] = useState([]);
-  
+
   const [personalizavel, setPersonalizavel] = useState(false);
   const [novo, setNovo] = useState(false);
   const [desconto, setDesconto] = useState(false);
@@ -44,11 +44,18 @@ export default function FilterComponent({ setFilteredProducts }) {
       if (produtos.content.length === 0) {
         setHasMore(false);
       } else {
+        const filteredProducts = produtos.content.filter(produto => {
+          const isCategoriaValid = selectedCategorias.length === 0 || selectedCategorias.includes(produto.categoria.nomeCategoria);
+          const isSubcategoriaValid = selectedSubcategorias.length === 0 || selectedSubcategorias.includes(produto.subcategoria.nomeSubcategoria);
+          
+          return isCategoriaValid && isSubcategoriaValid;
+        });
+
         if (reset) {
-          setFilteredProducts(produtos.content);
+          setFilteredProducts(filteredProducts);
         } else {
           setFilteredProducts((prev) => {
-            const newProducts = produtos.content.filter(produto => 
+            const newProducts = filteredProducts.filter(produto => 
               !prev.some(existingProduct => existingProduct.id === produto.id)
             );
             return [...prev, ...newProducts];
