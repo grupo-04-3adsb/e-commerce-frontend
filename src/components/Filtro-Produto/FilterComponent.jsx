@@ -23,6 +23,7 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [allProducts, setAllProducts] = useState([]); // Armazena todos os produtos
 
   const applyFilters = async (reset = false) => {
     const filters = {
@@ -44,18 +45,23 @@ export default function FilterComponent({ setFilteredProducts }) {
       if (produtos.content.length === 0) {
         setHasMore(false);
       } else {
-        const filteredProducts = produtos.content.filter(produto => {
+        // Atualiza todos os produtos para a filtragem
+        setAllProducts(prev => [...prev, ...produtos.content]);
+
+        const filteredProducts = allProducts.filter(produto => {
           const isCategoriaValid = selectedCategorias.length === 0 || selectedCategorias.includes(produto.categoria.nomeCategoria);
           const isSubcategoriaValid = selectedSubcategorias.length === 0 || selectedSubcategorias.includes(produto.subcategoria.nomeSubcategoria);
-          
-          return isCategoriaValid && isSubcategoriaValid;
+          const isPrecoValid = produto.preco >= preco[0] && produto.preco <= preco[1];
+          const isRatingValid = rating === 0 || produto.avaliacao >= rating; 
+          return isCategoriaValid && isSubcategoriaValid && isPrecoValid && isRatingValid;
         });
 
+        // Atualiza os produtos filtrados
         if (reset) {
           setFilteredProducts(filteredProducts);
         } else {
           setFilteredProducts((prev) => {
-            const newProducts = filteredProducts.filter(produto => 
+            const newProducts = filteredProducts.filter(produto =>
               !prev.some(existingProduct => existingProduct.id === produto.id)
             );
             return [...prev, ...newProducts];
@@ -78,7 +84,7 @@ export default function FilterComponent({ setFilteredProducts }) {
   }, [hasMore]);
 
   useEffect(() => {
-    applyFilters();
+    applyFilters(true); // Aplica filtros sempre que a página mudar
   }, [page]);
 
   useEffect(() => {
@@ -102,21 +108,22 @@ export default function FilterComponent({ setFilteredProducts }) {
   const handleApplyFilters = () => {
     setPage(0);
     setHasMore(true);
+    setAllProducts([]); // Limpa todos os produtos ao aplicar novos filtros
     applyFilters(true); // Limpa a lista anterior ao aplicar novos filtros
   };
 
   const handleCategoriaChange = (categoria) => {
-    setSelectedCategorias((prev) => 
-      prev.includes(categoria) 
-        ? prev.filter(cat => cat !== categoria) 
+    setSelectedCategorias((prev) =>
+      prev.includes(categoria)
+        ? prev.filter(cat => cat !== categoria)
         : [...prev, categoria]
     );
   };
 
   const handleSubcategoriaChange = (subcategoria) => {
-    setSelectedSubcategorias((prev) => 
-      prev.includes(subcategoria) 
-        ? prev.filter(subcat => subcat !== subcategoria) 
+    setSelectedSubcategorias((prev) =>
+      prev.includes(subcategoria)
+        ? prev.filter(subcat => subcat !== subcategoria)
         : [...prev, subcategoria]
     );
   };
@@ -254,7 +261,9 @@ export default function FilterComponent({ setFilteredProducts }) {
           </Checkbox>
         </div>
 
-        <button onClick={handleApplyFilters} className={styles.applyFiltersButton}>Aplicar Filtros</button>
+        <button onClick={handleApplyFilters} className={styles.applyFiltersButton}>
+          Aplicar Filtros
+        </button>
       </div>
     </div>
   );
