@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import NotFound404 from "./pages/NotFound404";
 import Home from "./pages/Home/Home";
+import Produtos from "./pages/Produtos/Produtos";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,9 +27,10 @@ function App() {
           <Route path="*" element={<NotFound404 />} />
           <Footer />
           <Route path="/" element={<Home />} />
+          <Route path="/produtos" element={<Produtos />} />
         </Routes>
       </Router>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
