@@ -1,21 +1,21 @@
 import { generoOptions } from "../../enums/genero";
 
-const cadastroFields = [
+export const cadastroFields = [
   [
     {
       label: "Nome",
       name: "nome",
       type: "text",
       fullWidth: true,
-      isInvalid: true,
+      isRequired: true,
     },
     {
       label: "Telefone",
       name: "telefone",
       type: "text",
       fullWidth: true,
-      isInvalid: true,
-      mask: "(99) 99999-9999",
+      isRequired: true,
+      mask: "(##) #####-####",
     },
   ],
   [
@@ -32,8 +32,7 @@ const cadastroFields = [
       name: "dataNascimento",
       type: "date",
       fullWidth: true,
-      isInvalid: true,
-      mask: "99/99/9999",
+      isRequired: true,
     },
   ],
   [
@@ -42,8 +41,8 @@ const cadastroFields = [
       name: "cpf",
       type: "text",
       fullWidth: true,
-      isInvalid: true,
-      mask: "999.999.999-99",
+      isRequired: true,
+      mask: "###.###.###-##",
     },
   ],
   [
@@ -51,7 +50,7 @@ const cadastroFields = [
       label: "Email",
       name: "email",
       type: "email",
-      isInvalid: true,
+      isRequired: true,
       fullWidth: true,
     },
   ],
@@ -60,17 +59,32 @@ const cadastroFields = [
       label: "Senha",
       name: "senha",
       type: "password",
-      fullWidth: true,
-      isInvalid: true,
+      isRequired: true,
+      infoMessage: "A senha deve ter 8 caracteres ou mais, pelo menos 1 letra minúscula e maiúscula, 1 número, 1 caractere especial (@$!%*?&#)",
     },
     {
       label: "Confirmar Senha",
       name: "confirmarSenha",
       type: "password",
-      fullWidth: true,
-      isInvalid: true,
+      isRequired: true,
     },
-  ]
+  ],
 ];
 
-export default cadastroFields;
+export const validaCadastroFields = [
+  {
+    label: "CPF",
+    name: "cpf",
+    type: "text",
+    fullWidth: true,
+    isRequired: true,
+    mask: "###.###.###-##",
+  },
+  {
+    label: "Email",
+    name: "email",
+    type: "email",
+    isRequired: true,
+    fullWidth: true,
+  },
+];

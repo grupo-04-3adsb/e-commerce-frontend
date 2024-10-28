@@ -4,7 +4,9 @@ import './categoria.modules.css';
 const CardCategoria = ({ categoryName, onClick }) => {
   return (
     <div className="category-ball" onClick={() => onClick(categoryName)}>
-      {categoryName}
+      <p>
+        {categoryName}
+      </p>
     </div>
   );
 };

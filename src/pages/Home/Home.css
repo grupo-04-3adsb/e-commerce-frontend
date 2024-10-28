@@ -24,3 +24,9 @@
     padding-top: 10PX;
     margin-top: 10px;
 }
+
+@media screen and (max-width: 480px){
+    .carrossel-principal{
+        height: 300px;
+    }
+}

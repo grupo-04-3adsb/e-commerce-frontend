@@ -20,7 +20,10 @@ import { useEffect, useState } from "react";
 
 import FormComponent from "../Form";
 
-import cadastroFields from "../../models/forms/cadastroUsuarioFields";
+import {
+  cadastroFields,
+  validaCadastroFields,
+} from "../../models/forms/cadastroUsuarioFields";
 import loginFields from "../../models/forms/loginUsuarioFields";
 
 import { categoriaMocks } from "../../data/mock/categorias";
@@ -36,22 +39,17 @@ const Header = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCadastroOpen, setIsCadastroOpen] = useState(false);
+  const [isCadastroValido, setIsCadastroValido] = useState(false);
 
   const {
-    onSubmitLogin,
     handleSubmitLogin,
     errorsLogin,
     registerLogin,
     apiLoginMessage,
     onLogout,
   } = useLogin();
-  const {
-    onSubmitCadastro,
-    handleSubmitCadastro,
-    errorsCadastro,
-    registerCadastro,
-    apiCadastroMessage,
-  } = useCadastroUsuario();
+  const { handleSubmit, apiCadastroMessage, errors, handleValidarUsuario } =
+    useCadastroUsuario();
 
   useEffect(() => {
     const handleResize = () => {
@@ -66,13 +64,22 @@ const Header = () => {
   }, []);
 
   const { isUsuarioLogado, usuario } = useSelector((state) => state.usuario);
+  const [auxiliarValues, setAuxiliarValues] = useState({})
 
-  const onHandleSubmitLogin = () => {
-    handleSubmitLogin(onSubmitLogin);
-  };
+  const handleValidaCadastro = async (data) => {
+    try {
+      const isValid = await handleValidarUsuario(data);
 
-  const onHandleSubmitCadastro = (data) => {
-    handleSubmitCadastro(onSubmitCadastro);
+      setIsCadastroValido(isValid);
+
+      if (isValid) {
+        setIsCadastroOpen(false);
+      }
+
+      setAuxiliarValues(data)
+    } catch (error) {
+      console.error("Erro ao validar o cadastro:", error);
+    }
   };
 
   return (
@@ -339,13 +346,26 @@ const Header = () => {
           setIsCadastroOpen(false);
         }}
         title={"Cadastro"}
+        onSubmit={handleValidaCadastro}
+        fields={[validaCadastroFields]}
+        submitLabel={"Enviar"}
+        isSocialLogin={true}
+        error={errors}
+        apiMessage={apiCadastroMessage}
+      />
+      <FormComponent
+        visible={isCadastroValido}
+        onClose={() => {
+          setIsCadastroValido(false);
+        }}
+        title={"Cadastro"}
         fields={cadastroFields}
         submitLabel={"Cadastrar"}
-        onSubmit={onHandleSubmitCadastro}
+        onSubmit={handleSubmit}
         isSocialLogin={true}
-        error={errorsCadastro}
-        register={registerCadastro}
+        error={errors}
         apiMessage={apiCadastroMessage}
+        defaultValues={auxiliarValues}
       />
       <FormComponent
         visible={isLoginOpen}
@@ -355,7 +375,7 @@ const Header = () => {
         title={"Login"}
         fields={loginFields}
         submitLabel={"Entrar"}
-        onSubmit={onHandleSubmitLogin}
+        onSubmit={handleSubmitLogin}
         isSocialLogin={true}
         error={errorsLogin}
         register={registerLogin}

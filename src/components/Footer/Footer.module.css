@@ -7,9 +7,12 @@
     align-items: center;
     position: relative; 
     font-family: 'Arial', sans-serif;
-    overflow-x: hidden;
 }
 .contact-box {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
     transform: none; 
     background: linear-gradient(90deg, #D57878, #C15757);
     color: #fff;
@@ -200,7 +203,6 @@
         position: static;
         transform: none;
         margin-bottom: 20px;
-        display: flex;        
     }
 
     .contact-box-2 {
