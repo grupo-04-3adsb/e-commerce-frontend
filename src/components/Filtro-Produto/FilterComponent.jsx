@@ -3,7 +3,7 @@ import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
-import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
+import { getProdutos } from "../../hooks/api/produtosApi";
 import { getCategorias } from "../../hooks/api/categoriasApi";
 import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
 
@@ -23,59 +23,55 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [allProducts, setAllProducts] = useState([]); // Armazena todos os produtos
+  const [allProducts, setAllProducts] = useState([]);
 
-  const applyFilters = async (reset = false) => {
-    const filters = {
-      categoria: selectedCategorias.join(","),
-      subcategoria: selectedSubcategorias.join(","),
+  const fetchProdutos = async (filtro = {}) => {
+    try {
+      const produtosResponse = await getProdutos({
+        filter: filtro,
+        page,
+      });
+
+      const produtos = produtosResponse.content;
+
+      setFilteredProducts((prevFilteredProducts) => {
+        const prevIds = new Set(
+          prevFilteredProducts.map((produto) => produto.id)
+        );
+
+        const newProducts = produtos.filter(
+          (produto) => !prevIds.has(produto.id)
+        );
+
+        return [...prevFilteredProducts, ...newProducts];
+      });
+
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
+
+  const applyFilters = async () => {
+    const filtro = {
+      nomeCategoria: selectedCategorias[0],
+      nomeSubcategoria: selectedSubcategorias[0],
       precoMinimo: preco[0],
       precoMaximo: preco[1],
+      isPersonalizavel: personalizavel,
+      isNovo: novo,
+      isDesconto: desconto,
       avaliacao: rating,
-      personalizavel,
-      novo,
-      desconto,
-    };
-
-    try {
-      const produtos = Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)
-        ? await getTodosOsProdutos(page, 9)
-        : await getProdutosFiltrados({ ...filters }, page, 9);
-
-      if (produtos.content.length === 0) {
-        setHasMore(false);
-      } else {
-        // Atualiza todos os produtos para a filtragem
-        setAllProducts(prev => [...prev, ...produtos.content]);
-
-        const filteredProducts = allProducts.filter(produto => {
-          const isCategoriaValid = selectedCategorias.length === 0 || selectedCategorias.includes(produto.categoria.nomeCategoria);
-          const isSubcategoriaValid = selectedSubcategorias.length === 0 || selectedSubcategorias.includes(produto.subcategoria.nomeSubcategoria);
-          const isPrecoValid = produto.preco >= preco[0] && produto.preco <= preco[1];
-          const isRatingValid = rating === 0 || produto.avaliacao >= rating; 
-          return isCategoriaValid && isSubcategoriaValid && isPrecoValid && isRatingValid;
-        });
-
-        // Atualiza os produtos filtrados
-        if (reset) {
-          setFilteredProducts(filteredProducts);
-        } else {
-          setFilteredProducts((prev) => {
-            const newProducts = filteredProducts.filter(produto =>
-              !prev.some(existingProduct => existingProduct.id === produto.id)
-            );
-            return [...prev, ...newProducts];
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao buscar produtos filtrados:", error);
     }
+    fetchProdutos(filtro);
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight && hasMore) {
+      if (
+        window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight &&
+        hasMore
+      ) {
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -84,13 +80,13 @@ export default function FilterComponent({ setFilteredProducts }) {
   }, [hasMore]);
 
   useEffect(() => {
-    applyFilters(true); // Aplica filtros sempre que a página mudar
+    applyFilters(true);
   }, [page]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
       const fetchedCategorias = await getCategorias();
-      setCategorias(fetchedCategorias.slice(0, 5)); // Limita a 5 categorias
+      setCategorias(fetchedCategorias.slice(0, 5));
     };
 
     fetchCategorias();
@@ -99,7 +95,7 @@ export default function FilterComponent({ setFilteredProducts }) {
   useEffect(() => {
     const fetchSubcategorias = async () => {
       const fetchedSubcategorias = await getSubcategorias();
-      setSubcategorias(fetchedSubcategorias.slice(0, 5)); // Limita a 5 subcategorias
+      setSubcategorias(fetchedSubcategorias.slice(0, 5));
     };
 
     fetchSubcategorias();
@@ -108,14 +104,14 @@ export default function FilterComponent({ setFilteredProducts }) {
   const handleApplyFilters = () => {
     setPage(0);
     setHasMore(true);
-    setAllProducts([]); // Limpa todos os produtos ao aplicar novos filtros
-    applyFilters(true); // Limpa a lista anterior ao aplicar novos filtros
+    setFilteredProducts([]);
+    applyFilters(true);
   };
 
   const handleCategoriaChange = (categoria) => {
     setSelectedCategorias((prev) =>
       prev.includes(categoria)
-        ? prev.filter(cat => cat !== categoria)
+        ? prev.filter((cat) => cat !== categoria)
         : [...prev, categoria]
     );
   };
@@ -123,7 +119,7 @@ export default function FilterComponent({ setFilteredProducts }) {
   const handleSubcategoriaChange = (subcategoria) => {
     setSelectedSubcategorias((prev) =>
       prev.includes(subcategoria)
-        ? prev.filter(subcat => subcat !== subcategoria)
+        ? prev.filter((subcat) => subcat !== subcategoria)
         : [...prev, subcategoria]
     );
   };
@@ -141,10 +137,12 @@ export default function FilterComponent({ setFilteredProducts }) {
             <Checkbox
               size="sm"
               color="danger"
-              isSelected={selectedCategorias.length === 0} // Checkbox para "Todas as categorias"
+              isSelected={selectedCategorias.length === 0}
               onChange={() => {
                 if (selectedCategorias.length === 0) {
-                  setSelectedCategorias(categorias.map(cat => cat.nomeCategoria));
+                  setSelectedCategorias(
+                    categorias.map((cat) => cat.nomeCategoria)
+                  );
                 } else {
                   setSelectedCategorias([]);
                 }
@@ -172,10 +170,12 @@ export default function FilterComponent({ setFilteredProducts }) {
             <Checkbox
               size="sm"
               color="danger"
-              isSelected={selectedSubcategorias.length === 0} // Checkbox para "Todas as subcategorias"
+              isSelected={selectedSubcategorias.length === 0} 
               onChange={() => {
                 if (selectedSubcategorias.length === 0) {
-                  setSelectedSubcategorias(subcategorias.map(subcat => subcat.nomeSubcategoria));
+                  setSelectedSubcategorias(
+                    subcategorias.map((subcat) => subcat.nomeSubcategoria)
+                  );
                 } else {
                   setSelectedSubcategorias([]);
                 }
@@ -188,8 +188,12 @@ export default function FilterComponent({ setFilteredProducts }) {
                 key={subcat.idSubcategoria}
                 size="sm"
                 color="danger"
-                isSelected={selectedSubcategorias.includes(subcat.nomeSubcategoria)}
-                onChange={() => handleSubcategoriaChange(subcat.nomeSubcategoria)}
+                isSelected={selectedSubcategorias.includes(
+                  subcat.nomeSubcategoria
+                )}
+                onChange={() =>
+                  handleSubcategoriaChange(subcat.nomeSubcategoria)
+                }
               >
                 {subcat.nomeSubcategoria}
               </Checkbox>
@@ -202,7 +206,9 @@ export default function FilterComponent({ setFilteredProducts }) {
           <div className="flex flex-col gap-4 w-full h-full max-w-md items-start justify-center">
             <div>
               <p className="text-default-500 font-medium text-small">
-                Preço: {Array.isArray(preco) && preco.map((p) => `R$ ${p}`).join(" – ")}
+                Preço:{" "}
+                {Array.isArray(preco) &&
+                  preco.map((p) => `R$ ${p}`).join(" – ")}
               </p>
               <Slider
                 color="danger"
@@ -261,7 +267,10 @@ export default function FilterComponent({ setFilteredProducts }) {
           </Checkbox>
         </div>
 
-        <button onClick={handleApplyFilters} className={styles.applyFiltersButton}>
+        <button
+          onClick={handleApplyFilters}
+          className={styles.applyFiltersButton}
+        >
           Aplicar Filtros
         </button>
       </div>
