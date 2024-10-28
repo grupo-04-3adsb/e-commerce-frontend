@@ -15,7 +15,7 @@ const CardProduto = ({ nome, preco, desconto, urlProduto, status, avaliacao }) =
       <div className={style.informacoes}>
         <h2>{nome}</h2>
         <div className={style.preco}>
-          <span>R${preco.toFixed(2)}</span>
+          <span>R${preco}</span>
           <span className={style.desconto}>R${(preco - desconto).toFixed(2)}</span>
         </div>
         <div className={style.feedback}>

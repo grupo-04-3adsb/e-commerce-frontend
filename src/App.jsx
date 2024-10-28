@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import { Footer } from "./components/Footer";
@@ -16,7 +15,7 @@ function App() {
 
   useEffect(() => {
     dispatch(loading(false));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="app">
@@ -25,12 +24,11 @@ function App() {
         <Header />
         <Routes>
           <Route path="*" element={<NotFound404 />} />
-          <Footer />
           <Route path="/" element={<Home />} />
           <Route path="/produtos" element={<Produtos />} />
         </Routes>
+        <Footer />
       </Router>
-      <Footer />
     </div>
   );
 }
