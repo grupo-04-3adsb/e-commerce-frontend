@@ -3,9 +3,9 @@ import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
 import { Slider, Checkbox } from "@nextui-org/react";
-import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/useProdutosApi";
-import { getCategorias } from "../../hooks/api/useCategoriasApi";
-import { getSubcategorias } from "../../hooks/api/useSubCategoriasApi";
+import { getTodosOsProdutos, getProdutosFiltrados } from "../../hooks/api/produtosApi";
+import { getCategorias } from "../../hooks/api/categoriasApi";
+import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
 
 export default function FilterComponent({ setFilteredProducts }) {
   const [rating, setRating] = useState(0);
@@ -27,22 +27,20 @@ export default function FilterComponent({ setFilteredProducts }) {
 
   const applyFilters = async (reset = false) => {
     const filters = {
-      nome: "", 
-      sku: "", 
-      margemLucroMinima: null, 
-      margemLucroMaxima: null, 
+      categoria: selectedCategorias.join(","),
+      subcategoria: selectedSubcategorias.join(","),
       precoMinimo: preco[0],
       precoMaximo: preco[1],
-      nomeCategoria: selectedCategorias.join(","),
-      nomeSubcategoria: selectedSubcategorias.join(","),
-      isPersonalizavel: personalizavel,
-      isPersonalizacaoObrigatoria: novo || desconto, 
+      avaliacao: rating,
+      personalizavel,
+      novo,
+      desconto,
     };
 
     try {
       const produtos = Object.values(filters).every((filter) => filter === "" || filter === 0 || filter === false)
         ? await getTodosOsProdutos(page, 9)
-        : await getProdutosFiltrados(filters, page, 9);
+        : await getProdutosFiltrados({ ...filters }, page, 9);
 
       if (produtos.content.length === 0) {
         setHasMore(false);
