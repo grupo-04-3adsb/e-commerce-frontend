@@ -1,12 +1,36 @@
-import Produto from '../../Card-produto/index';
-import Objprodutos from '../../../mock/cardProduto';
-import '../SectionNovidades/SectionNovidades.modules.css';
-
-import Slider from 'react-slick';
+import React, { useState, useEffect } from "react";
+import Produto from "../../Card-produto/index";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "../SectionNovidades/SectionNovidades.modules.css";
+import { getProdutos } from "../../../hooks/api/produtosApi";
 
-const ProdutosNovidade = ()=> {
+const ProdutosNovidade = () => {
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      try {
+        console.log("Carregando produtos mais recentes...");
+        const produtosDataRes = await getProdutos({
+          filter: {},
+          page: 0,
+          size: 10,
+          sort: 'id,desc'
+        });
+
+        setProdutos(produtosDataRes.content);
+      } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProdutos();
+  }, []);
 
   const settings = {
     infinite: true,
@@ -24,8 +48,8 @@ const ProdutosNovidade = ()=> {
           slidesToScroll: 1,
           centerMode: false,
           infinite: true,
-          dots: true
-        }
+          dots: true,
+        },
       },
       {
         breakpoint: 768,
@@ -33,18 +57,18 @@ const ProdutosNovidade = ()=> {
           slidesToShow: 2,
           centerMode: true,
           slidesToScroll: 1,
-          initialSlide: 2
-        }
+          initialSlide: 2,
+        },
       },
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           centerMode: true,
-          slidesToScroll: 1
-        }
-      }
-    ]
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -58,14 +82,29 @@ const ProdutosNovidade = ()=> {
         </div>
       </div>
       <div className="cards">
-        <Slider {...settings}>
-          {Object.keys(Objprodutos).map((key, index) => (
-            <Produto key={index} produto={Objprodutos[key]} />
-          ))}
-        </Slider>
+        {loading ? (
+          <p>Carregando produtos...</p>
+        ) : produtos.length > 0 ? (
+          <Slider {...settings}>
+            {produtos.map((produto) => (
+              <Produto
+                key={produto.id}
+                nome={produto.nome}
+                preco={produto.preco}
+                desconto={produto.desconto}
+                urlProduto={produto.urlProduto}
+                status={produto.status || "NOVO"}
+                avaliacao={produto.avaliacao || "(0)"}
+                imagensAdicionais={produto.imagensAdicionais}
+              />
+            ))}
+          </Slider>
+        ) : (
+          <p>Nenhum produto encontrado</p>
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default ProdutosNovidade;
