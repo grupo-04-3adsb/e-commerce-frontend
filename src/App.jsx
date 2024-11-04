@@ -9,6 +9,9 @@ import { useEffect } from "react";
 import NotFound404 from "./pages/NotFound404";
 import Home from "./pages/Home/Home";
 import Produtos from "./pages/Produtos/Produtos";
+import UserInfo from "./pages/UserInfo/UserInfo";
+import { APP_ROUTES } from "./data/models/appRoute";
+import AppBreadcrumb from "./components/CustomBreadCrumbs/BreadCrumbs";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,11 +25,16 @@ function App() {
       <Router>
         <Loading />
         <Header />
+        <AppBreadcrumb />
         <Routes>
-          <Route path="*" element={<NotFound404 />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/produtos" element={<Produtos />} />
-        </Routes>
+              {APP_ROUTES.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={<route.component />}
+                />
+              ))}
+            </Routes>
         <Footer />
       </Router>
     </div>
