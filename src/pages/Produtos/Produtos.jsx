@@ -42,7 +42,7 @@ function Produtos() {
       <div className={styles.produtosContainer}>
         <FilterComponent setFilteredProducts={setFilteredProducts} />
         <section className={styles.produtos}>
-          <h2>Produtos</h2>
+        <h2 className={styles.tituloProdutos}>Produtos</h2>
           <div className={styles.produtoGrid}>
             {produtosFiltrados.length > 0 ? (
               produtosFiltrados.map((produto) => (

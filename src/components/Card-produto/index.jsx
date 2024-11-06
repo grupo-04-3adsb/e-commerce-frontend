@@ -1,11 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa o useNavigate
 import style from './Card-produto.module.css'; 
 import star from '../../assets/images/star.png';
 import like from '../../assets/images/heart.png';
 
 const CardProduto = ({ nome, preco, desconto, urlProduto, status, avaliacao }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    window.scrollTo(0, 0); // Rola a página até o topo
+    navigate(`/produtos/${nome}`);
+  };
+
   return (
-    <div className={style.produto}>
+    <div className={style.produto} onClick={handleClick} style={{ cursor: 'pointer' }}>
       <div className={style.imagemProduto}>
         <img src={urlProduto} alt={nome} />
         <div className={style.novo}>

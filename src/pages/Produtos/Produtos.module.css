@@ -76,7 +76,7 @@ body {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 600px; /* Define um tamanho fixo para desktops */
+  width: 600px;
   height: auto;
   z-index: 2;
   opacity: 0.8;
@@ -86,7 +86,7 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 400px; /* Define um tamanho fixo para desktops */
+  width: 400px; 
   height: auto;
   z-index: 2;
   opacity: 0.8;
@@ -97,9 +97,9 @@ body {
   justify-content: space-between;
   margin: 40px 0;
   width: 100%;
-  padding: 0 20px; /* Certifique-se de que o padding não cause overflow */
+  padding: 0 20px;
   gap: 40px;
-  box-sizing: border-box; /* Inclui padding e margens na largura total */
+  box-sizing: border-box;
 }
 
 .produtos {
@@ -112,12 +112,19 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;
   justify-items: center;
-  width: 100%; /* Garante que a grade dos produtos ocupe 100% da largura */
+  width: 100%; 
+}
+
+.tituloProdutos {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #121212;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 1200px) {
   .produtoGrid {
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas para telas menores */
+    grid-template-columns: repeat(2, 1fr); 
   }
 
   .banner {
