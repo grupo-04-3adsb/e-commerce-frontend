@@ -1,7 +1,20 @@
 // import AppBreadcrumb from "../../components/CustomBreadCrumbs/BreadCrumbs";
 import styles from "./UserInfo.module.css"
+import CardEndereco from "../../components/Card-endereco/CardEndereco"
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
 
 function UserInfo() {
+
+  const {token} = useSelector((state) => state?.usuario)
+
+  useEffect(() => {
+    console.log(token)
+    console.log(useUsuariosInfos)
+    console.log()
+  }, [token])
+
   return (
     
     <div className={styles.container}>
@@ -42,7 +55,7 @@ function UserInfo() {
 
       <div className={styles.addresses}>
         <h2>Endereços cadastrados</h2>
-        <div className={styles.addressCard}>
+        {/* <div className={styles.addressCard}>
           <div className={styles.addressHeader}>
             <span>Casa</span>
             <span className={styles.default}>Padrão</span>
@@ -52,7 +65,13 @@ function UserInfo() {
           <p>Cidade XPTO</p>
           <p>CEP XPTO</p>
           <button type="button" className={styles.edit}>Editar</button>
-        </div>
+        </div> */}
+        <CardEndereco
+          rua= {"RUA"}
+          bairro= {"BAIRRO"}
+          cidade= {"CIDADE"}
+          cep= {"ALEATORIA"}
+        />
 
         {/* Repita o bloco acima para outros endereços */}
         
