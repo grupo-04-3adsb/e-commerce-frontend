@@ -84,7 +84,6 @@
 .pixContainer {
   display: flex;
   align-items: center;
-  justify-content: center;
   margin-top: 10px;
 }
 
@@ -145,4 +144,51 @@
   font-size: 16px;
   color: #666;
   line-height: 1.6;
+}
+
+.avaliacoesContainer {
+  margin-top: 30px;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+}
+
+.avaliacoesContainer h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.divisoriaAbaixoAvaliacoes {
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.botaoVerMaisContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.botaoVerMais {
+  background-color: #D57878;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  text-align: center;
+}
+
+.botaoVerMais:hover {
+  transform: scale(1.05);
+  background-color: #d46a6a;
+}
+
+.botaoVerMais:focus {
+  outline: none;
 }

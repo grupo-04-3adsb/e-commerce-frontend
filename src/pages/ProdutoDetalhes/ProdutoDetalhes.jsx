@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CardImagemComponent from '../../components/ProdutoDetalhes/CardImagemComponent/CardImagemComponent';
-import CardProduto from '../../components/Card-produto';
-import style from './ProdutoDetalhes.module.css';
 import { FaPix } from "react-icons/fa6";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import { getProdutoByName } from '../../hooks/api/produtoEspecificoApi';
+import style from './ProdutoDetalhes.module.css';
+import Teste from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
+import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent'; // Importando o componente de avaliações
 
 const ProdutoDetalhes = () => {
   const { productName } = useParams();
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduto = async () => {
       try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const data = await getProdutoByName(productName);
         setProduto(data);
       } catch (error) {
@@ -41,6 +44,11 @@ const ProdutoDetalhes = () => {
     return <div>Produto não encontrado.</div>;
   }
 
+  // Função para redirecionar para a página de produtos
+  const handleVerMaisClick = () => {
+    navigate('/produtos');
+  };
+
   return (
     <div className={style.produtoDetalhesContainer}>
       <div className={style.imagensContainer}>
@@ -62,12 +70,23 @@ const ProdutoDetalhes = () => {
           <FaPix className={style.pixIcon} />
         </div>
       </div>
-
+  
       <div className={style.descricaoContainer}>
         <h2>Descrição</h2>
         <p>{produto.descricao}</p>
       </div>
 
+      <div className={style.avaliacoesContainer}>
+        <h2>Avaliações</h2>
+        <AvaliacaoComponent produtoId={produto.id} />
+      </div>
+
+      <div className={style.divisoriaAbaixoAvaliacoes}></div>
+
+      <div className={style.botaoVerMaisContainer}>
+        <Teste />
+        <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>
+      </div>
     </div>
   );
 };

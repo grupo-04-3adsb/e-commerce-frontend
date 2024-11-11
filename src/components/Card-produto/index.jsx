@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa o useNavigate
+import { useNavigate } from 'react-router-dom';
 import style from './Card-produto.module.css'; 
 import star from '../../assets/images/star.png';
 import like from '../../assets/images/heart.png';
@@ -8,7 +8,7 @@ const CardProduto = ({ nome, preco, desconto, urlProduto, status, avaliacao }) =
   const navigate = useNavigate();
 
   const handleClick = () => {
-    window.scrollTo(0, 0); // Rola a página até o topo
+    window.scrollTo(0, 0);
     navigate(`/produtos/${nome}`);
   };
 

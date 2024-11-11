@@ -5,13 +5,12 @@
   flex-direction: column;
   border-radius: 5px;
   padding-top: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Suaviza as animações */
+  transition: transform 0.3s ease;
   background-color: #fff; /* Cor de fundo padrão */
 }
 
 .produto:hover {
   transform: scale(1.05); /* Aumenta o tamanho do card quando hover */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 .imagemProduto {
