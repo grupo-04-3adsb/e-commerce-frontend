@@ -6,6 +6,6 @@ export const getSubcategorias = async () => {
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar subcategorias:", error);
-    return []; // Retorna um array vazio em caso de erro
+    return [];
   }
 };

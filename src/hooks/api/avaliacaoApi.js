@@ -5,7 +5,7 @@ export const getAvaliacoesPorProduto = async (produtoId) => {
     
     const response = await axios.get(`http://localhost:8080/avaliacoes/produto/${produtoId}`);
 
-    const avaliacoes = response.data.slice(0, 3);
+    const avaliacoes = response.data.slice(0, 4);
 
     return avaliacoes;
   } catch (error) {

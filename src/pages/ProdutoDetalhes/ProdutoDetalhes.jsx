@@ -6,7 +6,8 @@ import { TbShoppingCartPlus } from "react-icons/tb";
 import { getProdutoByName } from '../../hooks/api/produtoEspecificoApi';
 import style from './ProdutoDetalhes.module.css';
 import Teste from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
-import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent'; // Importando o componente de avaliações
+import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent';
+import CategoriasComponent from '../../components/ProdutoDetalhes/CategoriasComponent/CategoriasComponent';
 
 const ProdutoDetalhes = () => {
   const { productName } = useParams();
@@ -44,7 +45,6 @@ const ProdutoDetalhes = () => {
     return <div>Produto não encontrado.</div>;
   }
 
-  // Função para redirecionar para a página de produtos
   const handleVerMaisClick = () => {
     navigate('/produtos');
   };
@@ -81,12 +81,17 @@ const ProdutoDetalhes = () => {
         <AvaliacaoComponent produtoId={produto.id} />
       </div>
 
+      <div className={style.avaliacoesContainer}>
+        <h2>Categorias</h2>
+        <CategoriasComponent produtoId={produto.id} />
+      </div>
+
       <div className={style.divisoriaAbaixoAvaliacoes}></div>
 
       <div className={style.botaoVerMaisContainer}>
         <Teste />
-        <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>
       </div>
+      <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>
     </div>
   );
 };
