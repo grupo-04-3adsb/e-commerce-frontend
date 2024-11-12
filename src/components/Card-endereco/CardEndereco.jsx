@@ -11,10 +11,10 @@ const CardEndereco = ({
                 <span>Casa</span>
                 <span className={styles.default}>Padrão</span>
             </div>
-            <p>{rua}</p>
-            <p>{bairro}</p>
-            <p>{cidade}</p>
-            <p>{cep}</p>
+            <p>RUA: {rua}</p>
+            <p>BAIRRO: {bairro}</p>
+            <p>CIDADE: {cidade}</p>
+            <p>CEP: {cep}</p>
             <button type="button" className={styles.edit}>Editar</button>
         </div>
     )

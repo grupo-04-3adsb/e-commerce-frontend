@@ -1,49 +1,72 @@
 // import AppBreadcrumb from "../../components/CustomBreadCrumbs/BreadCrumbs";
 import styles from "./UserInfo.module.css"
 import CardEndereco from "../../components/Card-endereco/CardEndereco"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
+import  { transformarData }  from "../../assets/utils/globals.js";
+import { data } from "autoprefixer";
 
 function UserInfo() {
 
-  const {token} = useSelector((state) => state?.usuario)
+  const { token } = useSelector((state) => state?.usuario.token)
+  const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
+
+  const { carregarInfos, dataUser } = useUsuariosInfos();
+  const [listaEndereco, setListaEndereco] = useState([])
+
+  async function recuperaValoresEndereco() {
+    try {
+      const response = await carregarInfos();
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
-    console.log(token)
-    console.log(useUsuariosInfos)
-    console.log()
+    if (dataUser) {
+      setListaEndereco(dataUser)
+    }
+  }, [dataUser])
+
+  useEffect(() => {
+    recuperaValoresEndereco();
+  }, [])
+
+  useEffect(() => {
+    console.log("TOKEN: " + token)
+
   }, [token])
 
   return (
-    
+
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <h2>Informações do usuário</h2>
         <form>
           <div className={styles.campo}>
             <label>Nome</label>
-            <input type="text" value="XPTO" disabled />
+            <input type="text" value={userInfos.nome} disabled />
           </div>
 
           <div className={styles.campo}>
-              <label>Email</label>
-              <input type="email" value="mail@mail.com" disabled />
+            <label>Email</label>
+            <input type="email" value={userInfos.email} disabled />
           </div>
 
           <div className={styles.campo}>
             <label>CPF</label>
-            <input type="text" value="123.456.912-03" disabled />
+            <input type="text" value={userInfos.cpf} disabled />
           </div>
 
           <div className={styles.campo}>
             <label>Data de Nascimento</label>
-            <input type="date" value="2005-01-01" disabled />
+            <input type="date" value={transformarData(userInfos.dataNascimento)} disabled />
           </div>
 
           <div className={styles.campo}>
             <label>Gênero</label>
-            <input type="text" value="Masculino" disabled />
+            <input type="text" value={userInfos.genero} disabled />
           </div>
 
           <div className={styles.buttons}>
@@ -66,19 +89,23 @@ function UserInfo() {
           <p>CEP XPTO</p>
           <button type="button" className={styles.edit}>Editar</button>
         </div> */}
-        <CardEndereco
-          rua= {"RUA"}
-          bairro= {"BAIRRO"}
-          cidade= {"CIDADE"}
-          cep= {"ALEATORIA"}
-        />
+        {
+          listaEndereco.map((endereco) => (
+              <CardEndereco
+                rua={endereco.rua}
+                bairro={endereco.bairro}
+                cidade={endereco.cidade}
+                cep={endereco.cep}
+              />
+          ))
+        }
 
         {/* Repita o bloco acima para outros endereços */}
-        
+
         <button type="button" className={styles.addAddress}>Cadastrar endereço</button>
       </div>
     </div>
   );
 }
-  
-  export default UserInfo;
+
+export default UserInfo;

@@ -13,7 +13,9 @@ const useLogin = () => {
     try {
       const response = await mutateAsync(data);
       await dispatch(login(response));
-      window.location.href = "/"
+      setTimeout(() => {
+        window.location.href = "/"
+      },1000)
     } catch (err) {
       console.error("Erro ao fazer login", err);
     } finally {
