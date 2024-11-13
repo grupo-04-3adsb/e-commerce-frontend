@@ -5,10 +5,10 @@ import { FaPix } from "react-icons/fa6";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import { getProdutoByName } from '../../hooks/api/produtoEspecificoApi';
 import style from './ProdutoDetalhes.module.css';
-import Teste from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
 import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent';
 import CategoriasComponent from '../../components/ProdutoDetalhes/CategoriasComponent/CategoriasComponent';
-import MockedProduct from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent'; 
+import Produtos from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
+import MockedProduct from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
 
 const ProdutoDetalhes = () => {
   const { productName } = useParams();
@@ -90,7 +90,7 @@ const ProdutoDetalhes = () => {
 
       <div className={style.avaliacoesContainer}>
         <h2>Produtos</h2>
-        <Teste />
+        <Produtos produtoAtualId={produto.id} />
       </div>
       <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>
     </div>

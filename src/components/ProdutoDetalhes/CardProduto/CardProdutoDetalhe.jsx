@@ -3,7 +3,7 @@ import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosConfig";
 
-export default function Produtos() {
+export default function Produtos({ produtoAtualId }) {
   const [produtos, setProdutos] = useState([]);
   const navigate = useNavigate();
 
@@ -11,14 +11,17 @@ export default function Produtos() {
     const fetchProdutos = async () => {
       try {
         const response = await axiosInstance.get("/produtos?page=0&size=8");
-        setProdutos(response.data.content);
+        const produtosFiltrados = response.data.content.filter(
+          (produto) => produto.id !== produtoAtualId
+        );
+        setProdutos(produtosFiltrados);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
       }
     };
 
     fetchProdutos();
-  }, []);
+  }, [produtoAtualId]);
 
   const handleCardClick = (nome) => {
     window.scrollTo(0, 0);

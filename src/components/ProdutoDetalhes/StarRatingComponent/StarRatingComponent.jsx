@@ -35,7 +35,7 @@ const ProductRating = ({ productId }) => {
         if (!isNaN(ratingValue) && ratingValue >= 0 && ratingValue <= 5) {
           setRating(ratingValue);
         } else {
-          setError('Média de avaliações inválida');
+          setError('Não existe avaliações neste produto');
         }
       } catch (error) {
         setError('Erro ao carregar a média de avaliações');
