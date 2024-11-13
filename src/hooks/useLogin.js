@@ -25,6 +25,9 @@ const useLogin = () => {
   const onLogout = async () => {
     dispatch(loading(true));
     try {
+      localStorage.removeItem('persist:root'); 
+      sessionStorage.removeItem('userData');
+  
       dispatch(logout());
     } catch (err) {
       console.error("Erro ao fazer logout", err);
@@ -32,9 +35,10 @@ const useLogin = () => {
       setTimeout(() => {
         dispatch(loading(false));
       }, 1000);
+  
       window.location.href = "/";
     }
-  };
+  };  
 
   return {
     handleSubmitLogin: onSubmit,
