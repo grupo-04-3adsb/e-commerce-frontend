@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
 import  { transformarData }  from "../../assets/utils/globals.js";
-import { data } from "autoprefixer";
+
 
 function UserInfo() {
 
@@ -14,6 +14,7 @@ function UserInfo() {
 
   const { carregarInfos, dataUser } = useUsuariosInfos();
   const [listaEndereco, setListaEndereco] = useState([])
+  const [isEditing, setIsEditing] = useState(false)
 
   async function recuperaValoresEndereco() {
     try {
@@ -22,6 +23,7 @@ function UserInfo() {
       console.error(error)
     }
   }
+
 
   useEffect(() => {
     if (dataUser) {
@@ -46,32 +48,32 @@ function UserInfo() {
         <form>
           <div className={styles.campo}>
             <label>Nome</label>
-            <input type="text" value={userInfos.nome} disabled />
+            <input type="text" value={userInfos.nome} disabled={!isEditing} />
           </div>
 
           <div className={styles.campo}>
             <label>Email</label>
-            <input type="email" value={userInfos.email} disabled />
+            <input type="email" value={userInfos.email} disabled={!isEditing} />
           </div>
 
           <div className={styles.campo}>
             <label>CPF</label>
-            <input type="text" value={userInfos.cpf} disabled />
+            <input type="text" value={userInfos.cpf} disabled={!isEditing} />
           </div>
 
           <div className={styles.campo}>
             <label>Data de Nascimento</label>
-            <input type="date" value={transformarData(userInfos.dataNascimento)} disabled />
+            <input type="date" value={transformarData(userInfos.dataNascimento)} disabled={!isEditing} />
           </div>
 
           <div className={styles.campo}>
             <label>Gênero</label>
-            <input type="text" value={userInfos.genero} disabled />
+            <input type="text" value={userInfos.genero} disabled={!isEditing} />
           </div>
 
           <div className={styles.buttons}>
-            <button type="button" className={styles.delete}>Encerrar Conta</button>
-            <button type="button" className={styles.update}>Atualizar informações</button>
+            <button type="button" className={styles.delete}>{isEditing ? "Cancelar" : "Encerrar Conta"}</button>
+            <button type="button" className={styles.update} onClick={() => isEditing ? setIsEditing(false) : setIsEditing(true)}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
           </div>
         </form>
       </div>
