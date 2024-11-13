@@ -8,6 +8,7 @@ import style from './ProdutoDetalhes.module.css';
 import Teste from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
 import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent';
 import CategoriasComponent from '../../components/ProdutoDetalhes/CategoriasComponent/CategoriasComponent';
+import MockedProduct from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent'; 
 
 const ProdutoDetalhes = () => {
   const { productName } = useParams();
@@ -56,6 +57,7 @@ const ProdutoDetalhes = () => {
       </div>
       <div className={style.infoContainer}>
         <h1>{produto.nome}</h1>
+        <MockedProduct productId={produto.id}/>
         <div className={style.precoContainer}>
           <span className={style.preco}>R${produto.preco.toFixed(2)}</span>
         </div>
@@ -86,9 +88,8 @@ const ProdutoDetalhes = () => {
         <CategoriasComponent produtoId={produto.id} />
       </div>
 
-      <div className={style.divisoriaAbaixoAvaliacoes}></div>
-
-      <div className={style.botaoVerMaisContainer}>
+      <div className={style.avaliacoesContainer}>
+        <h2>Produtos</h2>
         <Teste />
       </div>
       <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>

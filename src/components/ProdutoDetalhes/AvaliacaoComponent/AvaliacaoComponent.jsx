@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardBody, Divider, Image } from "@nextui-org/react";
+import StarRating from "./StarComponent";
 import { getAvaliacoesPorProduto } from '../../../hooks/api/avaliacaoApi';
 
 export default function AvaliacaoComponent({ produtoId }) {
@@ -19,7 +20,7 @@ export default function AvaliacaoComponent({ produtoId }) {
   }, [produtoId]);
 
   return (
-    <div className="avaliacoes flex flex-wrap gap-4">
+    <div className="avaliacoes flex flex gap-4">
       {avaliacoes.length > 0 ? (
         avaliacoes.map((avaliacao, index) => (
           <Card key={index} className="w-[300px] sm:w-[350px] md:w-[400px] lg:w-[450px]">
@@ -40,6 +41,7 @@ export default function AvaliacaoComponent({ produtoId }) {
               <h4>{avaliacao.titulo}</h4>
               <p>{avaliacao.descricao}</p>
               <p><strong>Nota:</strong> {avaliacao.nota}</p>
+              <StarRating rating={avaliacao.nota} />
             </CardBody>
             <Divider />
           </Card>

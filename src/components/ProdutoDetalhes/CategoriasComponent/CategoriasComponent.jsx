@@ -20,8 +20,8 @@ export default function CategoriasComponent({ produtoId }) {
 
   return (
     <div className="flex gap-4">
-      {categoria && <Chip color="primary">{categoria}</Chip>}
-      {subcategoria && <Chip color="secondary">{subcategoria}</Chip>}
+      {categoria && <Chip style={{ backgroundColor: '#D57878', color: 'white' }}>{categoria}</Chip>}
+      {subcategoria && <Chip style={{ backgroundColor: '#D57878', color: 'white' }}>{categoria}</Chip>}
     </div>
   );
 }
