@@ -1,5 +1,12 @@
 import { Select, SelectItem } from "@nextui-org/select";
-import { Input } from "@nextui-org/react";
+import {
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/react";
 import {
   Button,
   Navbar,
@@ -40,6 +47,7 @@ const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCadastroOpen, setIsCadastroOpen] = useState(false);
   const [isCadastroValido, setIsCadastroValido] = useState(false);
+  const [isModalLogOutOpen, setIsModalLogOutOpen] = useState(false);
 
   const {
     handleSubmitLogin,
@@ -64,7 +72,7 @@ const Header = () => {
   }, []);
 
   const { isUsuarioLogado, usuario } = useSelector((state) => state.usuario);
-  const [auxiliarValues, setAuxiliarValues] = useState({})
+  const [auxiliarValues, setAuxiliarValues] = useState({});
 
   const handleValidaCadastro = async (data) => {
     try {
@@ -76,7 +84,7 @@ const Header = () => {
         setIsCadastroOpen(false);
       }
 
-      setAuxiliarValues(data)
+      setAuxiliarValues(data);
     } catch (error) {
       console.error("Erro ao validar o cadastro:", error);
     }
@@ -84,24 +92,7 @@ const Header = () => {
 
   return (
     <nav className={style.navContainer}>
-      <div className={style.infobar}>
-        <span className={style.deliveryInfo}>
-          Realizamos entregas de <b>segunda</b> a <b>sexta</b>, das
-          <b>7h às 23h</b>
-        </span>
-        <div className={style.selection}>
-          <Select size="sm" placeholder="Idioma" variant="underlined">
-            {idiomas.map((idioma) => (
-              <SelectItem key={idioma.key}>{idioma.label}</SelectItem>
-            ))}
-          </Select>
-          <Select size="sm" placeholder="Moeda" variant="underlined">
-            {moedas.map((moeda) => (
-              <SelectItem key={moeda.key}>{moeda.label}</SelectItem>
-            ))}
-          </Select>
-        </div>
-      </div>
+
       <div className={style.mainNavbar}>
         {windowWidth >= 421 && (
           <div className={style.socialLinks}>
@@ -170,7 +161,7 @@ const Header = () => {
           )}
           {isUsuarioLogado && windowWidth >= 474 && (
             <Button
-              onClick={() => onLogout()}
+              onClick={() => setIsModalLogOutOpen(true)}
               size="sm"
               color="white"
               variant="bordered"
@@ -309,7 +300,7 @@ const Header = () => {
           )}
           {isUsuarioLogado && (
             <Button
-              onClick={() => onLogout()}
+              onClick={() => setIsModalLogOutOpen(true)}
               size="sm"
               color="white"
               variant="bordered"
@@ -318,6 +309,7 @@ const Header = () => {
               Sair
             </Button>
           )}
+
           {isUsuarioLogado && windowWidth < 474 && (
             <NavbarItem>
               <Button
@@ -340,6 +332,26 @@ const Header = () => {
           )}
         </NavbarMenu>
       </Navbar>
+      <Modal
+        size="sm"
+        isOpen={isModalLogOutOpen}
+        onClose={() => setIsModalLogOutOpen(false)}
+      >
+        <ModalContent>
+          <ModalHeader>
+            <h1>LogOut</h1>
+          </ModalHeader>
+          <ModalBody>
+            <p>Deseja realmente sair da sua conta?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setIsModalLogOutOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={onLogout}>Sair</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <FormComponent
         visible={isCadastroOpen}
         onClose={() => {

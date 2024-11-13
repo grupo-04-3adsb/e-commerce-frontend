@@ -38,13 +38,15 @@ const useGoogle = (callback) => {
           console.error("Erro ao autenticar com Google:", err);
         })
         .finally(() => {
-          dispatch(loading(false));
+          setTimeout(() => {
+            dispatch(loading(false));
+          }, 1000);
           window.location.href = "/";
         });
     }
 
     const initializeGoogleSignIn = () => {
-      window.google.accounts.id.initialize({
+      window?.google?.accounts.id.initialize({
         client_id:
           "480230079097-llntjmfcgkatg3um57bh7dba6o8velvv.apps.googleusercontent.com",
         callback: handleCredentialResponse,
