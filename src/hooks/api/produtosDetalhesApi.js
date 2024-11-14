@@ -1,6 +1,6 @@
 import axiosInstance from "../../axiosConfig";
 
-export const getProdutosDetalhes = async ({ filter = {}, page = 0, size = 10, sort }) => {
+export const getProdutosDetalhes = async ({ filter = {}, page = 0, size = 15, sort }) => {
   const params = new URLSearchParams();
 
   params.append("size", size);

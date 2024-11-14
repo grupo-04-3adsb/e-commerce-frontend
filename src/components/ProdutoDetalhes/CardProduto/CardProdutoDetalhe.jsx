@@ -10,11 +10,13 @@ export default function Produtos({ produtoAtualId }) {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        const response = await axiosInstance.get("/produtos?page=0&size=8");
-        const produtosFiltrados = response.data.content.filter(
-          (produto) => produto.id !== produtoAtualId
-        );
-        setProdutos(produtosFiltrados);
+        const response = await axiosInstance.get("/produtos?page=0&size=15");
+        
+        const produtosFiltrados = response.data.content
+          .filter((produto) => produto.id !== produtoAtualId)
+          .sort(() => Math.random() - 0.5)
+
+        setProdutos(produtosFiltrados.slice(0, 8));
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
       }
