@@ -59,6 +59,10 @@ form h1 {
     display: none;
 }
 
+.passwordContainer{
+    width: 100%;
+}
+
 .eyeBtn{
     margin-bottom: 10px;
 }

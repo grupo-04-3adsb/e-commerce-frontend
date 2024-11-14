@@ -16,8 +16,7 @@ const validateForm = (data) => {
 };
 
 const useCadastroUsuario = () => {
-  const { data, cadastrarUsuario, validarCPFEmail } =
-    useCadastroUsuarioApi();
+  const { data, cadastrarUsuario, validarCPFEmail } = useCadastroUsuarioApi();
   const [formValues, setFormValues] = useState({});
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
@@ -31,10 +30,10 @@ const useCadastroUsuario = () => {
   };
 
   const handleSubmit = async (data) => {
-    setErrors({})
+    setErrors({});
     setFormValues(data);
 
-    console.log(data)
+    console.log(data);
 
     const validationResult = UserDTO.safeParse(data);
 
@@ -57,7 +56,6 @@ const useCadastroUsuario = () => {
       const response = await cadastrarUsuario.mutateAsync(data);
 
       dispatch(login(response));
-      window.location.href = "/";
     } catch (err) {
       console.error("Erro ao cadastrar usuário:", err);
       setErrors({
@@ -65,7 +63,10 @@ const useCadastroUsuario = () => {
         api: err.message || "Erro desconhecido. Tente novamente mais tarde.",
       });
     } finally {
-      dispatch(loading(false));
+      setTimeout(() => {
+        dispatch(loading(false));
+      }, 1000);
+      window.location.href = "/";
     }
   };
 
@@ -83,7 +84,7 @@ const useCadastroUsuario = () => {
   };
 
   const handleValidarUsuario = async (data) => {
-    setErrors({})
+    setErrors({});
     dispatch(loading(true));
 
     if (!data.email || !data.cpf) {
