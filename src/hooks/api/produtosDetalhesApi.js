@@ -1,6 +1,6 @@
 import axiosInstance from "../../axiosConfig";
 
-export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
+export const getProdutosDetalhes = async ({ filter = {}, page = 0, size = 15, sort }) => {
   const params = new URLSearchParams();
 
   params.append("size", size);
@@ -9,13 +9,14 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
   if (sort) {
     params.append("sort", sort);
   }
+
   if (filter.nomeCategoria) {
     params.append("nomeCategoria", filter.nomeCategoria);
   }
   if (filter.nomeSubcategoria) {
     params.append("nomeSubcategoria", filter.nomeSubcategoria);
   }
-  if (filter.isPersonalizavel) {
+  if (filter.isPersonalizavel !== undefined) {
     params.append("isPersonalizavel", filter.isPersonalizavel);
   }
   if (filter.isPersonalizacaoObrigatoria !== undefined) {
@@ -30,11 +31,11 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
 
   try {
     const response = await axiosInstance.get(`/produtos?${params.toString()}`);
-    console.log("Filtro: ", filter);
-    console.log(response);
+    console.log("Filtro:", filter);
+    console.log("Resposta da API:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Erro ao buscar produtos:", error);
+    console.error("Erro ao buscar detalhes dos produtos:", error);
     throw error;
   }
 };
