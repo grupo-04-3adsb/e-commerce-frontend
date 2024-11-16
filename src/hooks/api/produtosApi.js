@@ -9,7 +9,6 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
   if (sort) {
     params.append("sort", sort);
   }
-
   if (filter.nomeCategoria) {
     params.append("nomeCategoria", filter.nomeCategoria);
   }
@@ -20,10 +19,7 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
     params.append("isPersonalizavel", filter.isPersonalizavel);
   }
   if (filter.isPersonalizacaoObrigatoria !== undefined) {
-    params.append(
-      "IsPersonalizacaoObrigatoria",
-      filter.isPersonalizacaoObrigatoria
-    );
+    params.append("isPersonalizacaoObrigatoria", filter.isPersonalizacaoObrigatoria);
   }
   if (filter.precoMinimo != null) {
     params.append("precoMinimo", filter.precoMinimo);
@@ -32,8 +28,13 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
     params.append("precoMaximo", filter.precoMaximo);
   }
 
-  const response = await axiosInstance.get(`/produtos?${params.toString()}`);
-  console.log("Filtro: ", filter);
-  console.log(response);
-  return response.data;
+  try {
+    const response = await axiosInstance.get(`/produtos?${params.toString()}`);
+    console.log("Filtro: ", filter);
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar produtos:", error);
+    throw error;
+  }
 };
