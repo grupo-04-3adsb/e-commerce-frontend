@@ -12,15 +12,26 @@ function UserInfo() {
   const { token } = useSelector((state) => state?.usuario.token)
   const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
 
-  const { carregarInfos, dataUser } = useUsuariosInfos();
+  const { carregarInfos, dataUser, atualizarInfos } = useUsuariosInfos();
   const [listaEndereco, setListaEndereco] = useState([])
   const [isEditing, setIsEditing] = useState(false)
+  const [nome, setNome] = useState(userInfos.nome || "")
 
   async function recuperaValoresEndereco() {
     try {
       const response = await carregarInfos();
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  function handleSalvar(){
+    if(isEditing){
+      atualizarInfos(dto)
+      userInfos.dataNascimento = "01/01/2001";
+      console.log(userInfos);
+    }else{
+      setIsEditing(true)
     }
   }
 
@@ -73,7 +84,7 @@ function UserInfo() {
 
           <div className={styles.buttons}>
             <button type="button" className={styles.delete}>{isEditing ? "Cancelar" : "Encerrar Conta"}</button>
-            <button type="button" className={styles.update} onClick={() => isEditing ? setIsEditing(false) : setIsEditing(true)}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
+            <button type="button" className={styles.update} onClick={handleSalvar()}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
           </div>
         </form>
       </div>

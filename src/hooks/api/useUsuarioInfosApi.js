@@ -28,9 +28,25 @@ export const useUsuariosInfos = () => {
 
 
     })
+
+    const atualizarInfosUsuario = useMutation({
+        mutationFn: async (putDto) => {
+            const response = await axiosInstance.put(
+                `/usuarios/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                },
+                putDto
+              );
+              return response.data;
+        }
+    })
     return {
         carregarInfos: mutationCarregarInfosUsuarioPorId.mutateAsync,
-        dataUser: mutationCarregarInfosUsuarioPorId.data
+        dataUser: mutationCarregarInfosUsuarioPorId.data,
+        atualizarInfos: atualizarInfosUsuario.mutateAsync
     };
 
 }
