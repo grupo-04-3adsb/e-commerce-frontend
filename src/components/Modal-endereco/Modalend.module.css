@@ -1,0 +1,35 @@
+.customButton {
+    background-color: #EB6D6D !important; 
+    color: white !important;
+    padding: 5px 50px !important; 
+    font-size: 18px !important; 
+    border-radius: 5px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: transform 0.3s ease, background-color 0.3s ease !important;
+    margin-top: 10px !important;
+  }
+  
+  .customButton:hover {
+    transform: scale(1.1) !important;
+    background-color: #d45a5a !important; 
+  }
+
+
+  .customButtonTwo {
+    background-color: #EB6D6D !important; 
+    color: white !important;
+    padding: 5px 15px !important; 
+    font-size: 15px !important; 
+    border-radius: 5px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: transform 0.3s ease, background-color 0.3s ease !important;
+    margin-top: 10px !important;
+  }
+  
+  .customButtonTwo:hover {
+    transform: scale(1.1) !important;
+    background-color: #d45a5a !important; 
+  }
+  
