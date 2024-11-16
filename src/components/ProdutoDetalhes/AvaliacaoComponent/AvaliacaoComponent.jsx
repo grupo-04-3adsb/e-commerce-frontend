@@ -20,10 +20,13 @@ export default function AvaliacaoComponent({ produtoId }) {
   }, [produtoId]);
 
   return (
-    <div className="avaliacoes flex flex gap-4">
+    <div className="avaliacoes flex flex-wrap gap-4 justify-center">
       {avaliacoes.length > 0 ? (
         avaliacoes.map((avaliacao, index) => (
-          <Card key={index} className="w-[300px] sm:w-[350px] md:w-[400px] lg:w-[450px]">
+          <Card
+            key={index}
+            className="w-full sm:w-[300px] md:w-[350px] lg:w-[400px]"
+          >
             <CardHeader className="flex gap-3">
               <Image
                 alt="Avatar"
