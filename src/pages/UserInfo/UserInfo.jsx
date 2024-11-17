@@ -1,0 +1,124 @@
+// import AppBreadcrumb from "../../components/CustomBreadCrumbs/BreadCrumbs";
+import styles from "./UserInfo.module.css"
+import CardEndereco from "../../components/Card-endereco/CardEndereco"
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
+import  { transformarData }  from "../../assets/utils/globals.js";
+
+
+function UserInfo() {
+
+  const { token } = useSelector((state) => state?.usuario.token)
+  const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
+
+  const { carregarInfos, dataUser, atualizarInfos } = useUsuariosInfos();
+  const [listaEndereco, setListaEndereco] = useState([])
+  const [isEditing, setIsEditing] = useState(false)
+  const [nome, setNome] = useState(userInfos.nome || "")
+
+  async function recuperaValoresEndereco() {
+    try {
+      const response = await carregarInfos();
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  function handleSalvar(){
+    if(isEditing){
+      atualizarInfos(dto)
+      userInfos.dataNascimento = "01/01/2001";
+      console.log(userInfos);
+    }else{
+      setIsEditing(true)
+    }
+  }
+
+
+  useEffect(() => {
+    if (dataUser) {
+      setListaEndereco(dataUser)
+    }
+  }, [dataUser])
+
+  useEffect(() => {
+    recuperaValoresEndereco();
+  }, [])
+
+  useEffect(() => {
+    console.log("TOKEN: " + token)
+
+  }, [token])
+
+  return (
+
+    <div className={styles.container}>
+      <div className={styles.userInfo}>
+        <h2>Informações do usuário</h2>
+        <form>
+          <div className={styles.campo}>
+            <label>Nome</label>
+            <input type="text" value={userInfos.nome} disabled={!isEditing} />
+          </div>
+
+          <div className={styles.campo}>
+            <label>Email</label>
+            <input type="email" value={userInfos.email} disabled={!isEditing} />
+          </div>
+
+          <div className={styles.campo}>
+            <label>CPF</label>
+            <input type="text" value={userInfos.cpf} disabled={!isEditing} />
+          </div>
+
+          <div className={styles.campo}>
+            <label>Data de Nascimento</label>
+            <input type="date" value={transformarData(userInfos.dataNascimento)} disabled={!isEditing} />
+          </div>
+
+          <div className={styles.campo}>
+            <label>Gênero</label>
+            <input type="text" value={userInfos.genero} disabled={!isEditing} />
+          </div>
+
+          <div className={styles.buttons}>
+            <button type="button" className={styles.delete}>{isEditing ? "Cancelar" : "Encerrar Conta"}</button>
+            <button type="button" className={styles.update} onClick={handleSalvar()}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
+          </div>
+        </form>
+      </div>
+
+      <div className={styles.addresses}>
+        <h2>Endereços cadastrados</h2>
+        {/* <div className={styles.addressCard}>
+          <div className={styles.addressHeader}>
+            <span>Casa</span>
+            <span className={styles.default}>Padrão</span>
+          </div>
+          <p>Rua XPTO</p>
+          <p>Bairro XPTO</p>
+          <p>Cidade XPTO</p>
+          <p>CEP XPTO</p>
+          <button type="button" className={styles.edit}>Editar</button>
+        </div> */}
+        {
+          listaEndereco.map((endereco) => (
+              <CardEndereco
+                rua={endereco.rua}
+                bairro={endereco.bairro}
+                cidade={endereco.cidade}
+                cep={endereco.cep}
+              />
+          ))
+        }
+
+        {/* Repita o bloco acima para outros endereços */}
+
+        <button type="button" className={styles.addAddress}>Cadastrar endereço</button>
+      </div>
+    </div>
+  );
+}
+
+export default UserInfo;

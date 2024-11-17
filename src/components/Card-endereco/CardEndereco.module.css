@@ -1,0 +1,39 @@
+.addresses {
+    flex: 1;
+  }
+  
+  .addressCard {
+    border: 1px solid #e57373;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  
+  .addressCard p {
+    margin: 5px 0;
+  }
+  
+  .addressHeader {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .default {
+    font-size: 0.8rem;
+    color: #D57878;
+  }
+
+  .edit {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: #e57373;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
