@@ -139,49 +139,47 @@ const FormComponent = ({
                     </Select>
                   ) : !field.mask ? (
                     field.type === "password" ? (
-                      <div key={index} className={style.passwordContainer}>
-                        <Input
-                          size="sm"
-                          type={
-                            passwordVisibility[field.name] ? "text" : "password"
-                          }
-                          variant="bordered"
-                          label={field.label}
-                          name={field.name}
-                          value={
-                            formData[field.name] || defaultValues[field.name]
-                          }
-                          onChange={(e) =>
-                            handleChange(field.name, e.target.value)
-                          }
-                          fullWidth={field.fullWidth}
-                          isRequired={field.isRequired}
-                          isInvalid={error && error[field.name]}
-                          description={field.infoMessage}
-                          errorMessage={
-                            error && error[field.name]
-                              ? error[field.name]._errors[0]
-                              : null
-                          }
-                          className="max-w-xs"
-                          endContent={
-                            <button
-                              className={style.eyeBtn}
-                              type="button"
-                              onClick={() =>
-                                togglePasswordVisibility(field.name)
-                              }
-                              aria-label="toggle password visibility"
-                            >
-                              {passwordVisibility[field.name] ? (
-                                <FaEyeSlash className="text-1xl text-default-400" />
-                              ) : (
-                                <FaEye className="text-1xl text-default-400" />
-                              )}
-                            </button>
-                          }
-                        />
-                      </div>
+                      <Input
+                        size="sm"
+                        type={
+                          passwordVisibility[field.name] ? "text" : "password"
+                        }
+                        style={{
+                          width: "100%", // Força o campo a ocupar 100% da largura disponível
+                        }}
+                        fullWidth={true} // Garante que o campo expanda na largura completa
+                        variant="bordered"
+                        label={field.label}
+                        name={field.name}
+                        value={
+                          formData[field.name] || defaultValues[field.name]
+                        }
+                        onChange={(e) =>
+                          handleChange(field.name, e.target.value)
+                        }
+                        isRequired={field.isRequired}
+                        isInvalid={error && error[field.name]}
+                        description={field.infoMessage}
+                        errorMessage={
+                          error && error[field.name]
+                            ? error[field.name]._errors[0]
+                            : null
+                        }
+                        endContent={
+                          <button
+                            className={style.eyeBtn}
+                            type="button"
+                            onClick={() => togglePasswordVisibility(field.name)}
+                            aria-label="toggle password visibility"
+                          >
+                            {passwordVisibility[field.name] ? (
+                              <FaEyeSlash className="text-1xl text-default-400" />
+                            ) : (
+                              <FaEye className="text-1xl text-default-400" />
+                            )}
+                          </button>
+                        }
+                      />
                     ) : (
                       <Input
                         key={index}
