@@ -1,0 +1,144 @@
+  
+  .container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 16px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .userInfo, .addresses {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .userInfo h2, .addresses h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: baseline;
+    margin: 0;
+  }
+  
+  form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+  }
+  
+  form input[disabled] {
+    color: #a1a1a1;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .buttons .delete, .buttons .update {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #D57878;
+    cursor: pointer;
+    width: 50%;
+  }
+  
+  .delete {
+    background-color: #e57373;
+  }
+  
+  .update {
+    background-color: #81c784;
+  }
+  
+  .addresses {
+    flex: 1;
+  }
+  
+  .addressCard {
+    border: 1px solid #e57373;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  
+  .addressCard p {
+    margin: 5px 0;
+  }
+  
+  .addressHeader {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .default {
+    font-size: 0.8rem;
+    color: #D57878;
+  }
+  
+  .edit {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: #e57373;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .addAddress {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #e57373;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  @media(max-width:700px) {
+    .container{
+      flex-direction: column;
+    }
+  }
+  
