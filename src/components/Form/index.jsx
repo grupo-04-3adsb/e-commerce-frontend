@@ -145,9 +145,9 @@ const FormComponent = ({
                           passwordVisibility[field.name] ? "text" : "password"
                         }
                         style={{
-                          width: "100%", // Força o campo a ocupar 100% da largura disponível
+                          width: "100%", 
                         }}
-                        fullWidth={true} // Garante que o campo expanda na largura completa
+                        fullWidth={true}
                         variant="bordered"
                         label={field.label}
                         name={field.name}
