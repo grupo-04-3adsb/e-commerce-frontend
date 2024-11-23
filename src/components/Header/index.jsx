@@ -118,14 +118,16 @@ const Header = () => {
         <div className={style.navActions}>
           {isUsuarioLogado ? (
             <>
-              <Button
-                size="sm"
-                color="white"
-                variant="flat"
-                startContent={<BiUser />}
-              >
-                <span>{usuario?.usuario?.nome}</span>
-              </Button>
+             <Link to="/info-usuarios">
+                <Button
+                  size="sm"
+                  color="white"
+                  variant="flat"
+                  startContent={<BiUser />}
+                >
+                  <span>{usuario?.usuario?.nome}</span>
+                </Button>
+              </Link>
               <Button
                 className={style.btnIcon}
                 size="sm"

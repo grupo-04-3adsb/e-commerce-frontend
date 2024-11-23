@@ -1,16 +1,15 @@
 import Home from "../../pages/Home/Home";
 import NotFound404 from "../../pages/NotFound404";
 import Produtos from "../../pages/Produtos/Produtos";
-import React, { Suspense } from "react";
 import UserInfo from "../../pages/UserInfo/UserInfo";
-import path from "path";
 import Carrinho from "../../pages/Carrinho";
 import ProdutoDetalhes from "../../pages/ProdutoDetalhes/ProdutoDetalhes";
+import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
 
 export const APP_ROUTES = [
   {
     path: "/informacoes",
-    component: () => <h1>Informações</h1>,
+    component: InfoUsuarios,
     meta: {
       breadcrumb: [{ parent: "Home", label: "Informações" }],
     },
