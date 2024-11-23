@@ -178,6 +178,11 @@ const Header = () => {
             variant="flat"
             isIconOnly
             endContent={<BiCart />}
+            onClick={
+              () => {
+                window.location.href = "/carrinho";
+              }
+            }
           />
         </div>
       </div>
