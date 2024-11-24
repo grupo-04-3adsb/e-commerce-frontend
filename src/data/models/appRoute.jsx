@@ -20,6 +20,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "", label: "Home" }],
     },
+    isVisible: false,
   },
   {
     path: "/produtos",
@@ -27,6 +28,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Home", label: "Produtos" }],
     },
+    isVisible: false,
   },
   {
     path: "*",
@@ -34,6 +36,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "", label: "NotFound" }],
     },
+    isVisible: true,
   },
   {
     path: "/user-info",
@@ -41,6 +44,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Informações", label: "Usuário" }],
     },
+    isVisible: true,
   },
   {
     path: "/carrinho",
@@ -48,6 +52,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Home", label: "Carrinho" }],
     },
+    isVisible: true,
   },
   {
     path: "/produtos/:productName",
@@ -55,5 +60,6 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Produtos", label: "Detalhes do Produto" }],
     },
+    isVisible: true,
   },
 ];

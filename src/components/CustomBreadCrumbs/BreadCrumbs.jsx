@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
-import { APP_ROUTES } from "../../data/models/appRoute"
+import { APP_ROUTES } from "../../data/models/appRoute";
 
 const matchRoute = (routePath, locationPath) => {
   const routeParts = routePath.split("/").filter(Boolean);
@@ -50,11 +50,18 @@ const AppBreadcrumb = () => {
   const navigate = useNavigate();
 
   const breadcrumbs = buildBreadcrumb(location.pathname);
+  if (
+    !breadcrumbs.length ||
+    !APP_ROUTES.find(
+      (route) => matchRoute(route.path, location.pathname) && route.isVisible
+    )
+  ) {
+    return null;
+  }
 
   return (
     <div className="route-bar p-4 ml-4 mt-4">
       <Breadcrumbs radius="lg" variant="bordered">
-
         {breadcrumbs.map((crumb, index) => (
           <BreadcrumbItem
             key={crumb.label}

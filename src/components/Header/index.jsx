@@ -128,14 +128,6 @@ const Header = () => {
                   <span>{usuario?.usuario?.nome}</span>
                 </Button>
               </Link>
-              <Button
-                className={style.btnIcon}
-                size="sm"
-                color="white"
-                variant="flat"
-                isIconOnly
-                endContent={<BiHeart />}
-              />
             </>
           ) : (
             windowWidth >= 474 && (

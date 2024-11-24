@@ -22,10 +22,10 @@ const useLogin = () => {
         await sincronizarCarrinho(usuarioId);
       }
 
-      // setTimeout(() => {
+      setTimeout(() => {
         
-      //   window.location.href = "/";
-      // }, 2000);
+        window.location.href = "/";
+      }, 1500);
     } catch (err) {
       console.error("Erro ao fazer login:", err);
     } finally {
@@ -36,9 +36,11 @@ const useLogin = () => {
   const onLogout = async () => {
     dispatch(loading(true));
     try {
-      localStorage.removeItem("persist:root");
-      sessionStorage.removeItem("userData");
+      localStorage.clear();
+      sessionStorage.clear();
+
       dispatch(logout());
+
     } catch (err) {
       console.error("Erro ao fazer logout:", err);
     } finally {
