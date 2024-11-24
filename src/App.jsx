@@ -30,6 +30,7 @@ function App() {
         <Header />
         <AppBreadcrumb />
         <Routes>
+            {/* <Route path="/produtos/:nomeProduto" element={<ProdutoDetalhes />} /> */}
               {APP_ROUTES.map((route, index) => (
                 <Route
                   key={index}

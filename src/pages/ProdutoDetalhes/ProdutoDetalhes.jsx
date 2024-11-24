@@ -11,16 +11,18 @@ import Produtos from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDe
 import MockedProduct from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
 
 const ProdutoDetalhes = () => {
-  const { productName } = useParams();
+  const { nomeProduto }  = useParams();
+  // const  productName  = "Camisa%20Pokemon";
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduto = async () => {
+      console.log("Valor do product name: " + nomeProduto)
       try {
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const data = await getProdutoByName(productName);
+        const data = await getProdutoByName(nomeProduto);
         setProduto(data);
       } catch (error) {
         console.error("Erro ao carregar o produto:", error);
@@ -31,7 +33,7 @@ const ProdutoDetalhes = () => {
     };
 
     fetchProduto();
-  }, [productName]);
+  }, [nomeProduto]);
 
   if (loading) {
     return (

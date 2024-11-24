@@ -44,7 +44,7 @@ export const APP_ROUTES = [
       },
       {
         path: "/produtos/:nomeProduto",
-        component: ProdutoDetalhes,
+        component: ProdutoDetalhes ,
         meta: {
           breadcrumb: [{ parent: "Produtos", label: "Produto" }],
         }
