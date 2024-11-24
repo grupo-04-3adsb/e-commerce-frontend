@@ -22,7 +22,7 @@ const FormComponent = ({
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
   const [formData, setFormData] = useState(defaultValues);
-  const [passwordVisibility, setPasswordVisibility] = useState({}); // State for individual password visibility
+  const [passwordVisibility, setPasswordVisibility] = useState({}); 
   const { googleError, googleData } = useGoogle();
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const FormComponent = ({
           <form onSubmit={handleSubmit}>
             <h1>{title}</h1>
             {fields.map((fieldRow, rowIndex) => (
-              <div key={rowIndex} className={style.row}>
+              <div key={rowIndex + fieldRow} className={style.row}>
                 {fieldRow.map((field, index) =>
                   field.type === "select" ? (
                     <Select

@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import CardImagemComponent from '../../components/ProdutoDetalhes/CardImagemComponent/CardImagemComponent';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import CardImagemComponent from "../../components/ProdutoDetalhes/CardImagemComponent/CardImagemComponent";
 import { FaPix } from "react-icons/fa6";
 import { TbShoppingCartPlus } from "react-icons/tb";
-import { getProdutoByName } from '../../hooks/api/produtoEspecificoApi';
-import style from './ProdutoDetalhes.module.css';
-import AvaliacaoComponent from '../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent';
-import CategoriasComponent from '../../components/ProdutoDetalhes/CategoriasComponent/CategoriasComponent';
-import Produtos from '../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe';
-import MockedProduct from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
+import { getProdutoByName } from "../../hooks/api/produtoEspecificoApi";
+import style from "./ProdutoDetalhes.module.css";
+import AvaliacaoComponent from "../../components/ProdutoDetalhes/AvaliacaoComponent/AvaliacaoComponent";
+import CategoriasComponent from "../../components/ProdutoDetalhes/CategoriasComponent/CategoriasComponent";
+import Produtos from "../../components/ProdutoDetalhes/CardProduto/CardProdutoDetalhe";
+import MockedProduct from "../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent";
+import useCarrinho from "../../hooks/useCarrinho";
 
 const ProdutoDetalhes = () => {
   const { productName } = useParams();
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { addItem } = useCarrinho();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduto = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const data = await getProdutoByName(productName);
         setProduto(data);
       } catch (error) {
@@ -46,24 +48,38 @@ const ProdutoDetalhes = () => {
     return <div>Produto não encontrado.</div>;
   }
 
+  const handleAdicionarCarrinho = () => {
+    addItem(produto);
+    alert("Produto adicionado ao carrinho!");
+  };
+
   const handleVerMaisClick = () => {
-    navigate('/produtos');
+    navigate("/produtos");
   };
 
   return (
     <div className={style.produtoDetalhesContainer}>
       <div className={style.imagensContainer}>
-        <CardImagemComponent imagens={[produto.urlProduto, produto.urlProduto, ...produto.imagensAdicionais.map(img => img.url)]} nome={produto.nome} />
+        <CardImagemComponent
+          imagens={[
+            produto.urlProduto,
+            produto.urlProduto,
+            ...produto.imagensAdicionais.map((img) => img.url),
+          ]}
+          nome={produto.nome}
+        />
       </div>
       <div className={style.infoContainer}>
         <h1>{produto.nome}</h1>
-        <MockedProduct productId={produto.id}/>
+        <MockedProduct productId={produto.id} />
         <div className={style.precoContainer}>
           <span className={style.preco}>R${produto.preco.toFixed(2)}</span>
         </div>
         <div className={style.botoesContainer}>
           <button className={style.comprarAgora}>Comprar agora</button>
-          <button className={style.carrinhoIcone}>
+          <button 
+            onClick={handleAdicionarCarrinho}
+            className={style.carrinhoIcone}>
             <TbShoppingCartPlus />
           </button>
         </div>
@@ -72,7 +88,7 @@ const ProdutoDetalhes = () => {
           <FaPix className={style.pixIcon} />
         </div>
       </div>
-  
+
       <div className={style.descricaoContainer}>
         <h2>Descrição</h2>
         <p>{produto.descricao}</p>
@@ -92,7 +108,9 @@ const ProdutoDetalhes = () => {
         <h2>Produtos</h2>
         <Produtos produtoAtualId={produto.id} />
       </div>
-      <button className={style.botaoVerMais} onClick={handleVerMaisClick}>Ver mais</button>
+      <button className={style.botaoVerMais} onClick={handleVerMaisClick}>
+        Ver mais
+      </button>
     </div>
   );
 };

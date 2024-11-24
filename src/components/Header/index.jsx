@@ -397,6 +397,7 @@ const Header = () => {
         onSubmit={handleSubmitLogin}
         isSocialLogin={true}
         error={errorsLogin}
+        defaultValues={{}}
         register={registerLogin}
         apiMessage={apiLoginMessage}
       />

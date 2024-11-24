@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { carrinho } from "../../mock/produtosCarrinho";
 import { BiCart, BiPencil, BiTrash } from "react-icons/bi";
 import {
   Card,
@@ -12,8 +11,11 @@ import {
   Input,
 } from "@nextui-org/react";
 import ModalGeneric from "../../components/Modal";
+import useCarrinho from "../../hooks/useCarrinho";
 
 const Carrinho = () => {
+  const { carrinho, removeItem } = useCarrinho();
+
   const [cep, setCep] = useState("");
   const [isModalVisualizarItem, setIsModalVisualizarItem] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
@@ -35,12 +37,17 @@ const Carrinho = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    console.log("Item Selecionado:", itemSelecionado);
+  }, [itemSelecionado]);
+
   const consultarFrete = async () => {
     console.log("Consultando frete para o CEP:", cep);
   };
 
   const handleRemoveItem = (item) => {
     console.log("Removendo item:", item);
+    removeItem(item);
   };
 
   const handleVisualizarItem = (item) => {
@@ -149,7 +156,7 @@ const Carrinho = () => {
                     {(
                       itemSelecionado?.produto.preco -
                       itemSelecionado?.produto.preco *
-                        itemSelecionado?.produto.desconto +
+                        (itemSelecionado?.produto.desconto / 100) +
                       itemSelecionado?.personalizacoes.reduce(
                         (acc, personalizacao) =>
                           acc + personalizacao.opcaoPersonalizacao.acrescimo,
@@ -162,7 +169,7 @@ const Carrinho = () => {
                     {(
                       (itemSelecionado?.produto.preco -
                         itemSelecionado?.produto.preco *
-                          itemSelecionado?.produto.desconto +
+                          (itemSelecionado?.produto.desconto / 100) +
                         itemSelecionado?.personalizacoes.reduce(
                           (acc, personalizacao) =>
                             acc + personalizacao.opcaoPersonalizacao.acrescimo,
@@ -301,7 +308,7 @@ const Carrinho = () => {
                 variant="solid"
                 className="bg-[#EB6D6D] text-white"
                 startContent={<BiTrash size={20} />}
-                onClick={() => console.log("Remover Item")}
+                onClick={() => handleRemoveItem(itemSelecionado)}
               >
                 Remover Item
               </Button>
@@ -323,66 +330,88 @@ const Carrinho = () => {
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
-              {carrinho.itens.map((item, index) => (
-                <Card key={index}>
-                  <CardBody className="flex flex-col overflow-hidden md:flex-row items-center gap-6">
-                    <div className="w-20 h-20 flex-shrink-0">
-                      <Image
-                        src={item.produto.urlProduto}
-                        alt={item.produto.nome}
-                        width="100%"
-                        height="100%"
-                        objectFit="cover"
-                        className="rounded-md"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-800">
-                        {item.produto.nome}
-                      </h4>
-                      <p className="text-sm text-gray-600">
-                        {item.produto.descricao}
-                      </p>
-                      <p className="text-sm text-gray-700 mt-2">
-                        Personalização:
-                        <span className="font-medium">
-                          {item.personalizacoes[0]?.descricaoPersonalizacao ||
-                            "Nenhuma"}
-                        </span>
-                      </p>
-                    </div>
+              {carrinho.itens.length === 0 ? (
+                <div>
+                  <p>
+                    Nenhum item encontrado no carrinho. Adicione produtos para
+                    continuar.
+                  </p>
+                </div>
+              ) : (
+                carrinho.itens.map((item, index) => (
+                  <Card key={index}>
+                    <CardBody className="flex flex-col overflow-hidden md:flex-row items-center gap-6">
+                      <div className="w-20 h-20 flex-shrink-0">
+                        <Image
+                          src={item.produto?.urlProduto}
+                          alt={item.produto?.nome}
+                          width="100%"
+                          height="100%"
+                          objectFit="cover"
+                          className="rounded-md"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold text-gray-800">
+                          {item.produto?.nome}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {item.produto?.descricao}
+                        </p>
+                        <p className="text-sm text-gray-700 mt-2">
+                          Personalização:
+                          <span className="font-medium">
+                            {item.personalizacoes[0]?.descricaoPersonalizacao ||
+                              "Nenhuma"}
+                          </span>
+                        </p>
+                      </div>
 
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-gray-800">
-                        R${" "}
-                        {item?.valorTotal ? item?.valorTotal.toFixed(2) : 0.0}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Quantidade:{" "}
-                        <span className="font-medium">{item.quantidade}</span>
-                      </p>
-                    </div>
-                  </CardBody>
-                  <CardFooter className="flex justify-end gap-4">
-                    <Button
-                      size="sm"
-                      color="primary"
-                      variant="flat"
-                      onClick={() => handleVisualizarItem(item)}
-                    >
-                      Visualizar Item
-                    </Button>
-                    <Button
-                      size="sm"
-                      color="danger"
-                      variant="shadow"
-                      onClick={() => handleRemoveItem(item)}
-                    >
-                      Remover Item
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-gray-800 flex-col flex">
+                          R${" "}
+                          {item?.valorTotal ? item?.valorTotal.toFixed(2) : 0.0}{" "}
+                          {item?.desconto > 0 && (
+                            <span>
+                              <span className="text-sm text-gray-600 line-through">
+                                R${" "}
+                                {(
+                                  item.produto?.preco * item.quantidade
+                                ).toFixed(2)}
+                              </span>
+                              <span className="text-sm text-green-600 ml-2">
+                                -{item.desconto}%
+                              </span>
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Quantidade:{" "}
+                          <span className="font-medium">{item.quantidade}</span>
+                        </p>
+                      </div>
+                    </CardBody>
+                    <CardFooter className="flex justify-end gap-4">
+                      <Button
+                        size="sm"
+                        color="primary"
+                        variant="flat"
+                        onClick={() => handleVisualizarItem(item)}
+                      >
+                        Visualizar Item
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="danger"
+                        variant="shadow"
+                        onClick={() => handleRemoveItem(item)}
+                      >
+                        Remover Item
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))
+              )}
             </CardBody>
           </Card>
         </div>
