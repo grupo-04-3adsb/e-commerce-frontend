@@ -3,11 +3,13 @@ import NotFound404 from "../../pages/NotFound404"
 import Produtos from "../../pages/Produtos/Produtos"
 import React, { Suspense } from "react";
 import UserInfo from "../../pages/UserInfo/UserInfo";
+import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
+import ProdutoDetalhes from "../../pages/ProdutoDetalhes/ProdutoDetalhes";
 
 export const APP_ROUTES = [
     {
-        path: "/informacoes",
-        component: () => <h1>Informações</h1>,
+        path: "/infos",
+        component: InfoUsuarios,
         meta: {
           breadcrumb: [{ parent: "Home", label: "Informações" }],
         }
@@ -34,10 +36,17 @@ export const APP_ROUTES = [
         }
     },
     {
-        path: "/user-info",
+        path: "/infos/edit",
         component: UserInfo,
         meta: {
           breadcrumb: [{ parent: "Informações", label: "Usuário" }],
         }
-      }
+      },
+      {
+        path: "/produtos/:nomeProduto",
+        component: ProdutoDetalhes,
+        meta: {
+          breadcrumb: [{ parent: "Produtos", label: "Produto" }],
+        }
+      }  
 ]

@@ -5,51 +5,97 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
 import  { transformarData }  from "../../assets/utils/globals.js";
+import ModalEnd from "../../components/Modal-endereco/ModalEnd.jsx";
+// import { handleSalvar } from "./useUserInfos.js";
 
 
 function UserInfo() {
 
   const { token } = useSelector((state) => state?.usuario.token)
-  const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
+  // const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
+  const [userInfos, setUserInfos] = useState();
 
-  const { carregarInfos, dataUser, atualizarInfos } = useUsuariosInfos();
+  const [nomeInput, setNomeInput] = useState("");
+  const [cpfInput, setCpffInput] = useState("");
+  const [dtNascInput, setDtNascInput] = useState("")
+  const [generoInput, setGeneroInput] = useState("");
+
+  const [telefoneInput, setTelefoneInput] = useState("");
+
+  const { carregarInfosEnderecos, dataUser, atualizarInfos, buscarUsuarioPorId, usuarioDataUser } = useUsuariosInfos();
   const [listaEndereco, setListaEndereco] = useState([])
   const [isEditing, setIsEditing] = useState(false)
-  const [nome, setNome] = useState(userInfos.nome || "")
 
   async function recuperaValoresEndereco() {
     try {
-      const response = await carregarInfos();
+      const response = await carregarInfosEnderecos();
     } catch (error) {
       console.error(error)
     }
   }
 
-  function handleSalvar(){
-    if(isEditing){
-      atualizarInfos(dto)
-      userInfos.dataNascimento = "01/01/2001";
-      console.log(userInfos);
-    }else{
-      setIsEditing(true)
-    }
-  }
+  const handleInputChange = (event, setStateFunction) => {
+    setStateFunction(event.target.value);
+    console.log(nomeInput);
+};
 
+  async function toggleEditing() {
+    if(isEditing){
+      const putDto = {
+        nome: nomeInput,
+        cpf: cpfInput,
+        dataNascimento: dtNascInput,
+        telefone: telefoneInput,
+        genero: generoInput
+      }
+
+
+      try {
+        const response = await atualizarInfos(putDto);
+        fetchUserById();
+      } catch (error) {
+        console.error(error)
+      }
+      
+    }
+    setIsEditing((prevState) => !prevState);
+};
 
   useEffect(() => {
     if (dataUser) {
       setListaEndereco(dataUser)
     }
+    setIsEditing(false);
   }, [dataUser])
 
   useEffect(() => {
-    recuperaValoresEndereco();
-  }, [])
+    const request = usuarioDataUser;
+    if (request) {
+      setNomeInput(userInfos.nome)
+      setCpffInput(userInfos.cpf)
+      setGeneroInput(userInfos.genero)
+      setDtNascInput(transformarData(userInfos.dataNascimento))
+      setTelefoneInput(userInfos.numeroTelefone)  
+      // setUserInfos(usuarioDataUser)
+    }
+  }, [userInfos])
+
+  const fetchUserById = async() => {
+    try {
+      const response = await buscarUsuarioPorId();
+      setUserInfos(response);
+    } catch (error) {
+      console.error("Error ", error)
+    }
+  }
 
   useEffect(() => {
-    console.log("TOKEN: " + token)
-
-  }, [token])
+    recuperaValoresEndereco();
+    fetchUserById()
+    
+    // console.log("DADOS USUARIO: ")
+    // console.log(dadosUsuario.nome)
+  }, [])
 
   return (
 
@@ -59,49 +105,38 @@ function UserInfo() {
         <form>
           <div className={styles.campo}>
             <label>Nome</label>
-            <input type="text" value={userInfos.nome} disabled={!isEditing} />
-          </div>
-
-          <div className={styles.campo}>
-            <label>Email</label>
-            <input type="email" value={userInfos.email} disabled={!isEditing} />
+            <input type="text" value={nomeInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setNomeInput)} />
           </div>
 
           <div className={styles.campo}>
             <label>CPF</label>
-            <input type="text" value={userInfos.cpf} disabled={!isEditing} />
+            <input type="text" value={cpfInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setCpffInput)}/>
+          </div>
+
+          <div className={styles.campo}>
+            <label>Telefone</label>
+            <input type="text" value={telefoneInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setTelefoneInput)}/>
           </div>
 
           <div className={styles.campo}>
             <label>Data de Nascimento</label>
-            <input type="date" value={transformarData(userInfos.dataNascimento)} disabled={!isEditing} />
+            <input type="date" value={dtNascInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setDtNascInput)}/>
           </div>
 
           <div className={styles.campo}>
             <label>Gênero</label>
-            <input type="text" value={userInfos.genero} disabled={!isEditing} />
+            <input type="text" value={generoInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setGeneroInput)}/>
           </div>
 
           <div className={styles.buttons}>
             <button type="button" className={styles.delete}>{isEditing ? "Cancelar" : "Encerrar Conta"}</button>
-            <button type="button" className={styles.update} onClick={handleSalvar()}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
+            <button type="button" className={styles.update} onClick={toggleEditing}>{isEditing ? "Salvar" : "Alterar Informações"}</button>
           </div>
         </form>
       </div>
 
       <div className={styles.addresses}>
         <h2>Endereços cadastrados</h2>
-        {/* <div className={styles.addressCard}>
-          <div className={styles.addressHeader}>
-            <span>Casa</span>
-            <span className={styles.default}>Padrão</span>
-          </div>
-          <p>Rua XPTO</p>
-          <p>Bairro XPTO</p>
-          <p>Cidade XPTO</p>
-          <p>CEP XPTO</p>
-          <button type="button" className={styles.edit}>Editar</button>
-        </div> */}
         {
           listaEndereco.map((endereco) => (
               <CardEndereco
@@ -112,10 +147,7 @@ function UserInfo() {
               />
           ))
         }
-
-        {/* Repita o bloco acima para outros endereços */}
-
-        <button type="button" className={styles.addAddress}>Cadastrar endereço</button>
+        <ModalEnd endereco={listaEndereco} textoBotao={"Cadastrar Endereço"} className={styles.cadastrar} isEditando={false}/>
       </div>
     </div>
   );

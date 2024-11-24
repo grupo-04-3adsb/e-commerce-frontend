@@ -66,6 +66,17 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  .cadastrar {
+    padding: 10px 20px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    color: #fff !important;
+    background-color: #D57878 !important;
+    cursor: pointer !important;
+    width: 50% !important;
+    width: 100% !important;
+  }
   
   .buttons .delete, .buttons .update {
     padding: 10px 20px;

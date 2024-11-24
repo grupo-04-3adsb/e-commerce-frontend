@@ -6,7 +6,7 @@ export const useUsuariosInfos = () => {
     const { token } = useSelector((state) => state?.usuario.token)
     const id = useSelector((state) => state?.usuario.usuario.usuario.idUsuario)
 
-    const mutationCarregarInfosUsuarioPorId = useMutation({
+    const mutationCarregarEnderecosUsuarioPorId = useMutation({
         mutationFn: async () => {
             const response = await axiosInstance.get(`/enderecos/usuario/${id}`,
                 {
@@ -15,7 +15,28 @@ export const useUsuariosInfos = () => {
                     }
                 }
             );
-            console.log("RESPOSTA: " + JSON.stringify(response.data))
+            return response.data;
+        },
+
+        onError: (error) => {
+            console.log(
+                "Erro ao cadastrar produtos:",
+                error.response?.data || error.message
+            )
+        }
+
+
+    })
+
+    const mutationCarregarInfosUsuarioPorId = useMutation({
+        mutationFn: async () => {
+            const response = await axiosInstance.get(`/usuarios/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             return response.data;
         },
 
@@ -33,20 +54,23 @@ export const useUsuariosInfos = () => {
         mutationFn: async (putDto) => {
             const response = await axiosInstance.put(
                 `/usuarios/${id}`,
+                
+                putDto,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
-                },
-                putDto
+                }
               );
               return response.data;
         }
     })
     return {
-        carregarInfos: mutationCarregarInfosUsuarioPorId.mutateAsync,
-        dataUser: mutationCarregarInfosUsuarioPorId.data,
-        atualizarInfos: atualizarInfosUsuario.mutateAsync
+        carregarInfosEnderecos: mutationCarregarEnderecosUsuarioPorId.mutateAsync,
+        dataUser: mutationCarregarEnderecosUsuarioPorId.data,
+        atualizarInfos: atualizarInfosUsuario.mutateAsync,
+        buscarUsuarioPorId: mutationCarregarInfosUsuarioPorId.mutateAsync,
+        usuarioDataUser: mutationCarregarInfosUsuarioPorId.data
     };
 
 }

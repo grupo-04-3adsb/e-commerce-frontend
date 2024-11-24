@@ -74,7 +74,7 @@ function InfoUsuarios() {
             <div className={styles.addressInfo}>
               <p>CEP: {endereco?.cep}</p>
             </div>
-            <ModalEnd endereco={endereco} className={styles.customButton} />
+            <ModalEnd endereco={endereco} textoBotao={"Editar Endereço"} className={styles.customButton} />
           </div>
         </div>
       </div>
