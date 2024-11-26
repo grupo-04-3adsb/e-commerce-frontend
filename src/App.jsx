@@ -24,12 +24,11 @@ function App() {
         <Header />
         <AppBreadcrumb/>
         <Routes>
-          <Route path="*" element={<NotFound404 />} />
           {APP_ROUTES.map((route, index) => (
             <Route
-              key={index}
-              path={route.path}
-              element={<route.component />}
+            key={index}
+            path={route.path}
+            element={<route.component />}
             />
           ))}
         </Routes>

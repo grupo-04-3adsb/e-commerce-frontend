@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-} from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -23,7 +16,6 @@ const FormComponent = ({
   onSubmit,
   error,
   apiMessage,
-  isSocialLogin = true,
   defaultValues = {},
 }) => {
   const [isVisible, setIsVisible] = useState(visible);
@@ -94,103 +86,105 @@ const FormComponent = ({
     }));
   };
 
-  const convertDateToInputFormat = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    const date = new Date(`${year}-${month}-${day}`);
-
-    const formattedDate = [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0"),
-    ].join("-");
-
-    return formattedDate;
-  };
-
   return (
     isVisible && (
-      <>
-        {(apiMessage.error || apiMessage.success) && (
-          <MessageGeneric
-            type={messageType}
-            message={apiMessage.error || apiMessage.success}
-            onClose={handleClose}
-            isVisible={messageVisible}
+      <div className={style.container}>
+        <div className={style.content}>
+          <Button
+            className={style.btnIcon}
+            size="sm"
+            color="white"
+            variant="bordered"
+            isIconOnly
+            endContent={<CgClose />}
+            onPress={() => {
+              setIsVisible(false);
+              onClose();
+            }}
           />
-        )}
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            marginTop: title ? "10%" : "0%",
-          }}
-        >
-          {title && <h1>{title}</h1>}
-          {fields.map((fieldRow, rowIndex) => (
-            <div key={rowIndex} className={style.row}>
-              {fieldRow.map((field, index) =>
-                field.type === "checkbox" ? (
-                  <Checkbox
-                    color="primary"
-                    radius="md"
-                    size="md"
-                    name={field.name}
-                    isSelected={
-                      formData[field.name] || defaultValues[field.name]
-                    }
-                    onChange={(e) => handleChange(field.name, e.target.checked)}
-                  >
-                    <h6 className="text-xs">{field?.label}</h6>
-                  </Checkbox>
-                ) : field.type === "select" ? (
-                  <Select
-                    key={index}
-                    size="lg"
-                    placeholder={field.label}
-                    fullWidth={field.fullWidth}
-                    variant="bordered"
-                    isRequired={field.isRequired}
-                    onChange={(e) => handleChange(field.name, e.target.value)}
-                    isInvalid={error && error[field.name]}
-                    errorMessage={
-                      error && error[field.name]
-                        ? error[field.name]._errors[0]
-                        : null
-                    }
-                    selectedKeys={[formData[field.name] || defaultValues[field.name] || ""]}
-                  >
-                    {field.options.map((option) => (
-                      <SelectItem key={option.key} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                ) : field.type === "textarea" ? (
-                  <Textarea
-                    key={index}
-                    size="sm"
-                    variant="bordered"
-                    label={field.label}
-                    name={field.name}
-                    value={formData[field.name] || defaultValues[field.name]}
-                    onChange={(e) => handleChange(field.name, e.target.value)}
-                    fullWidth={field.fullWidth}
-                    isRequired={field.isRequired}
-                    isInvalid={error && error[field.name]}
-                    errorMessage={
-                      error && error[field.name]
-                        ? error[field.name]._errors[0]
-                        : null
-                    }
-                    rows={field.rows || 20}
-                  />
-                ) : !field.mask ? (
-                  field.type === "password" ? (
-                    <div key={index} className={style.passwordContainer}>
+          {(apiMessage.error || apiMessage.success) && (
+            <MessageGeneric
+              type={messageType}
+              message={apiMessage.error || apiMessage.success}
+              onClose={handleClose}
+              isVisible={messageVisible}
+            />
+          )}
+          <form onSubmit={handleSubmit}>
+            <h1>{title}</h1>
+            {fields.map((fieldRow, rowIndex) => (
+              <div key={rowIndex + fieldRow} className={style.row}>
+                {fieldRow.map((field, index) =>
+                  field.type === "select" ? (
+                    <Select
+                      key={index}
+                      size="lg"
+                      placeholder={field.label}
+                      fullWidth={field.fullWidth}
+                      variant="bordered"
+                      isRequired={field.isRequired}
+                      onChange={(e) => handleChange(field.name, e.target.value)}
+                      isInvalid={error && error[field.name]}
+                      errorMessage={
+                        error && error[field.name]
+                          ? error[field.name]._errors[0]
+                          : null
+                      }
+                    >
+                      {field.options.map((option) => (
+                        <SelectItem key={option.key} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  ) : !field.mask ? (
+                    field.type === "password" ? (
                       <Input
                         size="sm"
                         type={
                           passwordVisibility[field.name] ? "text" : "password"
                         }
+                        style={{
+                          width: "100%",
+                        }}
+                        fullWidth={true}
+                        variant="bordered"
+                        label={field.label}
+                        name={field.name}
+                        value={
+                          formData[field.name] || defaultValues[field.name]
+                        }
+                        onChange={(e) =>
+                          handleChange(field.name, e.target.value)
+                        }
+                        isRequired={field.isRequired}
+                        isInvalid={error && error[field.name]}
+                        description={field.infoMessage}
+                        errorMessage={
+                          error && error[field.name]
+                            ? error[field.name]._errors[0]
+                            : null
+                        }
+                        endContent={
+                          <button
+                            className={style.eyeBtn}
+                            type="button"
+                            onClick={() => togglePasswordVisibility(field.name)}
+                            aria-label="toggle password visibility"
+                          >
+                            {passwordVisibility[field.name] ? (
+                              <FaEyeSlash className="text-1xl text-default-400" />
+                            ) : (
+                              <FaEye className="text-1xl text-default-400" />
+                            )}
+                          </button>
+                        }
+                      />
+                    ) : (
+                      <Input
+                        key={index}
+                        size="sm"
+                        type={field.type}
                         variant="bordered"
                         label={field.label}
                         name={field.name}
@@ -209,43 +203,25 @@ const FormComponent = ({
                             ? error[field.name]._errors[0]
                             : null
                         }
-                        className="max-w-xs"
-                        endContent={
-                          <button
-                            className={style.eyeBtn}
-                            type="button"
-                            onClick={() => togglePasswordVisibility(field.name)}
-                            aria-label="toggle password visibility"
-                          >
-                            {passwordVisibility[field.name] ? (
-                              <FaEyeSlash className="text-1xl text-default-400" />
-                            ) : (
-                              <FaEye className="text-1xl text-default-400" />
-                            )}
-                          </button>
-                        }
                       />
-                    </div>
+                    )
                   ) : (
-                    <Input
+                    <PatternFormat
                       key={index}
+                      format={field.mask}
+                      placeholder={field.mask.replaceAll("#", "0")}
+                      value={formData[field.name] || defaultValues[field.name]}
+                      onValueChange={({ value }) =>
+                        handleChange(field.name, value)
+                      }
+                      customInput={Input}
                       size="sm"
                       type={field.type}
                       variant="bordered"
                       label={field.label}
-                      name={field.name}
-                      value={
-                        field.type === "date"
-                          ? convertDateToInputFormat(
-                              formData[field.name] || defaultValues[field.name]
-                            )
-                          : formData[field.name] || defaultValues[field.name]
-                      }
-                      onChange={(e) => handleChange(field.name, e.target.value)}
                       fullWidth={field.fullWidth}
                       isRequired={field.isRequired}
                       isInvalid={error && error[field.name]}
-                      description={field.infoMessage}
                       errorMessage={
                         error && error[field.name]
                           ? error[field.name]._errors[0]
@@ -253,34 +229,9 @@ const FormComponent = ({
                       }
                     />
                   )
-                ) : (
-                  <PatternFormat
-                    key={index}
-                    format={field.mask}
-                    placeholder={field.mask.replaceAll("#", "0")}
-                    value={formData[field.name] || defaultValues[field.name]}
-                    onValueChange={({ value }) =>
-                      handleChange(field.name, value)
-                    }
-                    customInput={Input}
-                    size="sm"
-                    type={field.type}
-                    variant="bordered"
-                    label={field.label}
-                    fullWidth={field.fullWidth}
-                    isRequired={field.isRequired}
-                    isInvalid={error && error[field.name]}
-                    errorMessage={
-                      error && error[field.name]
-                        ? error[field.name]._errors[0]
-                        : null
-                    }
-                  />
-                )
-              )}
-            </div>
-          ))}
-          {submitLabel && (
+                )}
+              </div>
+            ))}
             <Button
               fullWidth
               variant="flat"
@@ -289,10 +240,10 @@ const FormComponent = ({
             >
               {submitLabel}
             </Button>
-          )}
-          {isSocialLogin && <div id="buttonDiv"></div>}
-        </form>
-      </>
+            <div id="buttonDiv"></div>
+          </form>
+        </div>
+      </div>
     )
   );
 };
