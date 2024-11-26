@@ -10,7 +10,6 @@ import NotFound404 from "./pages/NotFound404";
 import { APP_ROUTES } from "./data/models/appRoute";
 import AppBreadcrumb from "./components/CustomBreadCrumbs/BreadCrumbs";
 
-
 function App() {
   const dispatch = useDispatch();
 

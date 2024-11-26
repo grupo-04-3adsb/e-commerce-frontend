@@ -10,9 +10,10 @@ const useHeader = () => {
   const [offset, setOffset] = useState(0);
   const [limit] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
-	
+
   const loadMore = async () => {
     try {
+      console.log(pesquisa);
       setIsLoading(true);
       const res = await pesquisarProdutoSkuNome({
         pesquisa,
@@ -20,6 +21,7 @@ const useHeader = () => {
         size: limit,
       });
 
+      console.log("RES: ", res);
       setItems((prevItems) => [...prevItems, ...(res?.content || [])]);
       setHasMore(res?.next !== null);
     } catch (error) {

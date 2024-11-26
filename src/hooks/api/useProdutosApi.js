@@ -7,7 +7,6 @@ const useProdutosApi = () => {
       const response = await axiosInstance.get(
         `/produtos/pesquisar/nome-sku?pesquisa=${pesquisa}&page=${page}&size=${size}`
       );
-
       return response.data;
     },
   });
