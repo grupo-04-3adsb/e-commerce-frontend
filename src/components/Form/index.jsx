@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from "@nextui-org/react";
 import style from "./Form.module.css";
 import { CgClose } from "react-icons/cg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -16,6 +23,7 @@ const FormComponent = ({
   onSubmit,
   error,
   apiMessage,
+  isSocialLogin = true,
   defaultValues = {},
 }) => {
   const [isVisible, setIsVisible] = useState(visible);
@@ -84,6 +92,19 @@ const FormComponent = ({
       ...prevState,
       [fieldName]: !prevState[fieldName],
     }));
+  };
+
+  const convertDateToInputFormat = (dateString) => {
+    const [day, month, year] = dateString.split("/");
+    const date = new Date(`${year}-${month}-${day}`);
+
+    const formattedDate = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    return formattedDate;
   };
 
   return (
@@ -240,10 +261,10 @@ const FormComponent = ({
             >
               {submitLabel}
             </Button>
-            <div id="buttonDiv"></div>
-          </form>
-        </div>
-      </div>
+          )}
+          {isSocialLogin && <div id="buttonDiv"></div>}
+        </form>
+      </>
     )
   );
 };
