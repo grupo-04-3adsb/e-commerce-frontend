@@ -21,7 +21,6 @@ const useHeader = () => {
         size: limit,
       });
 
-      console.log("RES: ", res);
       setItems((prevItems) => [...prevItems, ...(res?.content || [])]);
       setHasMore(res?.next !== null);
     } catch (error) {

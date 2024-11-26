@@ -263,6 +263,7 @@ const Header = () => {
           placeholder="Pesquisar produto"
           scrollRef={scrollerRef}
           fullWidth={true}
+          items={items}
           selectionMode="single"
           className={style["custom-autocomplete"]}
           onOpenChange={(open) => {
