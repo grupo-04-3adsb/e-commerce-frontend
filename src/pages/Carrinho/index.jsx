@@ -10,8 +10,9 @@ import {
   CardFooter,
   Input,
 } from "@nextui-org/react";
-import ModalGeneric from "../../components/Modal";
 import useCarrinho from "../../hooks/useCarrinho";
+import ItemCarrinhoModal from "../Modais/ItemCarrinhoModal";
+import { FaEye } from "react-icons/fa6";
 
 const Carrinho = () => {
   const { carrinho, removeItem } = useCarrinho();
@@ -74,249 +75,19 @@ const Carrinho = () => {
 
   return (
     <div className="w-full flex flex-col gap-8 p-8">
-      <ModalGeneric
-        isVisible={isModalVisualizarItem}
-        onClose={handleCloseModalVisualizarItem}
-        size="3xl"
-        posicao={"top"}
-        title={`Detalhes do Produto: ${itemSelecionado?.produto.nome}`}
-        body={
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="flex-shrink-0 w-full md:w-64 h-full overflow-hidden">
-                <Image
-                  src={
-                    imagensCarrossel[imagemAtual]?.url ||
-                    itemSelecionado?.produto.urlProduto
-                  }
-                  alt={`Imagem ${imagemAtual + 1}`}
-                  width={256}
-                  height={256}
-                  objectFit="cover"
-                  className="rounded-lg"
-                  onClick={() => avancarImagem()}
-                />
-                <div className="flex justify-center mt-2 gap-2">
-                  {imagensCarrossel.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setImagemAtual(idx)}
-                      className={`w-3 h-3 rounded-full ${
-                        imagemAtual === idx ? "bg-blue-500" : "bg-gray-300"
-                      }`}
-                    ></button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <h5 className="text-lg font-semibold text-gray-800 mb-4">
-                  Informações do Produto
-                </h5>
-                <div className="mb-6">
-                  <h4 className="text-xl font-bold text-gray-800 mb-2">
-                    {itemSelecionado?.produto.nome}
-                  </h4>
-                  <p className="text-gray-600">
-                    {itemSelecionado?.produto.descricao}
-                  </p>
-                </div>
-                <ul className="space-y-2 text-gray-700">
-                  <li>
-                    <strong>SKU:</strong> {itemSelecionado?.produto.sku}
-                  </li>
-                  <li>
-                    <strong>Dimensões:</strong>{" "}
-                    {itemSelecionado?.produto.dimensao}
-                  </li>
-                  <li>
-                    <strong>Peso:</strong> {itemSelecionado?.produto.peso} kg
-                  </li>
-                  <li>
-                    <strong>Preço Unitário:</strong> R${" "}
-                    {itemSelecionado?.produto.preco.toFixed(2)}
-                  </li>
-                  <li>
-                    <strong>Desconto:</strong>{" "}
-                    {itemSelecionado?.produto.desconto * 100}% | R$
-                    {itemSelecionado?.produto.preco *
-                      itemSelecionado?.produto.desconto}
-                  </li>
-                  <li>
-                    <strong>Valor das personalizações:</strong> R$
-                    {itemSelecionado?.personalizacoes
-                      .reduce(
-                        (acc, personalizacao) =>
-                          acc + personalizacao.opcaoPersonalizacao.acrescimo,
-                        0
-                      )
-                      .toFixed(2)}
-                  </li>
-                  <li>
-                    <strong>Preço Final:</strong> R${" "}
-                    {(
-                      itemSelecionado?.produto.preco -
-                      itemSelecionado?.produto.preco *
-                        (itemSelecionado?.produto.desconto / 100) +
-                      itemSelecionado?.personalizacoes.reduce(
-                        (acc, personalizacao) =>
-                          acc + personalizacao.opcaoPersonalizacao.acrescimo,
-                        0
-                      )
-                    ).toFixed(2)}
-                  </li>
-                  <li>
-                    <strong>Preço Total:</strong> R$
-                    {(
-                      (itemSelecionado?.produto.preco -
-                        itemSelecionado?.produto.preco *
-                          (itemSelecionado?.produto.desconto / 100) +
-                        itemSelecionado?.personalizacoes.reduce(
-                          (acc, personalizacao) =>
-                            acc + personalizacao.opcaoPersonalizacao.acrescimo,
-                          0
-                        )) *
-                      quantidade
-                    ).toFixed(2)}
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <Divider />
-            <div>
-              <h5 className="text-lg font-semibold text-gray-800 mb-4">
-                Personalizações Escolhidas
-              </h5>
-              {itemSelecionado?.personalizacoes.length > 0 ? (
-                <ul className="space-y-4">
-                  {itemSelecionado?.personalizacoes.map(
-                    (personalizacao, index) => (
-                      <>
-                        <div className="flex flex-row justify-between items-end">
-                          <li key={index} className="p-4 rounded-lg border">
-                            <h6 className="font-semibold text-gray-700 mb-2">
-                              {
-                                personalizacao.personalizacao
-                                  ?.nomePersonalizacao
-                              }
-                            </h6>
-                            <p className="text-sm text-gray-600">
-                              <strong>Detalhes:</strong>
-                              <br />
-                              Opção escolhida:{" "}
-                              {personalizacao.opcaoPersonalizacao?.nomeOpcao}
-                            </p>
-                            {personalizacao.personalizacao
-                              ?.tipoPersonalizacao === "Texto" && (
-                              <p>
-                                Texto Personalizado:{" "}
-                                <span className="font-medium">
-                                  {personalizacao.descricaoPersonalizacao}
-                                </span>
-                              </p>
-                            )}
-                            {personalizacao.personalizacao
-                              ?.tipoPersonalizacao === "Imagem" && (
-                              <div>
-                                <p>Imagem Personalizada:</p>
-                                <Image
-                                  src={personalizacao.descricaoPersonalizacao}
-                                  alt="Imagem Personalizada"
-                                  width={128}
-                                  height={128}
-                                  objectFit="cover"
-                                  className="rounded-lg"
-                                />
-                              </div>
-                            )}
-                            {personalizacao.personalizacao
-                              ?.tipoPersonalizacao === "Seleção" && (
-                              <div>
-                                <p>Opção Escolhida:</p>
-                                <p className="font-medium">
-                                  {personalizacao.descricaoPersonalizacao}
-                                </p>
-                              </div>
-                            )}
-                            <p className="text-sm text-gray-600">
-                              <strong>Custo Adicional:</strong> R${" "}
-                              {parseFloat(
-                                personalizacao.opcaoPersonalizacao?.acrescimo
-                              ).toFixed(2) || "0.00"}
-                            </p>
-                          </li>
-                          <li>
-                            <Image
-                              src={
-                                personalizacao.opcaoPersonalizacao
-                                  ?.urlImagemOpcao
-                              }
-                              alt={
-                                personalizacao.opcaoPersonalizacao?.nomeOpcao
-                              }
-                              width={128}
-                              height={128}
-                              objectFit="cover"
-                              className="rounded-lg mb-5"
-                            />
-                          </li>
-                        </div>
-                        <Divider />
-                      </>
-                    )
-                  )}
-                </ul>
-              ) : (
-                <p className="text-gray-600">
-                  Nenhuma personalização foi selecionada.
-                </p>
-              )}
-            </div>
-            <div className="flex  flex-col">
-              <h5 className="text-lg font-semibold text-gray-800 mb-4">
-                Quantidade
-              </h5>
-              <div className="flex items-center gap-2">
-                <button
-                  className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all shadow-md"
-                  onClick={() => alterarQuantidade("decrementar")}
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 bg-white border rounded-lg shadow-md text-gray-800">
-                  {quantidade}
-                </span>
-                <button
-                  className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all shadow-md"
-                  onClick={() => alterarQuantidade("incrementar")}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="flex justify-end gap-4 mt-4">
-              <Button
-                size="sm"
-                color="primary"
-                variant="bordered"
-                startContent={<BiPencil size={20} />}
-                onClick={() => console.log("Editar Personalização")}
-              >
-                Editar Personalização
-              </Button>
-              <Button
-                size="sm"
-                variant="solid"
-                className="bg-[#EB6D6D] text-white"
-                startContent={<BiTrash size={20} />}
-                onClick={() => handleRemoveItem(itemSelecionado)}
-              >
-                Remover Item
-              </Button>
-            </div>
-          </div>
-        }
+      <ItemCarrinhoModal
+        alterarQuantidade={alterarQuantidade}
+        avancarImagem={avancarImagem}
+        handleCloseModalVisualizarItem={handleCloseModalVisualizarItem}
+        handleRemoveItem={handleRemoveItem}
+        imagemAtual={imagemAtual}
+        imagensCarrossel={imagensCarrossel}
+        isModalVisualizarItem={isModalVisualizarItem}
+        itemSelecionado={itemSelecionado}
+        quantidade={quantidade}
+        setImagemAtual={setImagemAtual}
+        setQuantidade={setQuantidade}
       />
-
       <h1 className="flex items-center gap-3 text-gray-800">
         <BiCart size={32} />
         Carrinho de Compras
@@ -331,82 +102,130 @@ const Carrinho = () => {
             <Divider />
             <CardBody className="flex flex-col gap-4">
               {carrinho.itens.length === 0 ? (
-                <div>
-                  <p>
-                    Nenhum item encontrado no carrinho. Adicione produtos para
-                    continuar.
-                  </p>
-                </div>
+                <CardBody className="flex flex-col items-center justify-center gap-6">
+                  <div className="text-center items-center justify-center flex flex-col">
+                    <BiCart size={64} className="text-gray-400" />
+                    <h3 className="text-xl font-semibold text-gray-700 mt-4">
+                      Seu carrinho está vazio!
+                    </h3>
+                    <p className="text-gray-600">
+                      Adicione itens ao carrinho para visualizar aqui.
+                    </p>
+                  </div>
+                  <Button
+                    size="lg"
+                    color="primary"
+                    variant="solid"
+                    className="bg-blue-500 text-white"
+                    onClick={() => {
+                      window.location.href = "/produtos";
+                    }}
+                  >
+                    Ir para Produtos
+                  </Button>
+                </CardBody>
               ) : (
                 carrinho.itens.map((item, index) => (
-                  <Card key={index}>
-                    <CardBody className="flex flex-col overflow-hidden md:flex-row items-center gap-6">
-                      <div className="w-20 h-20 flex-shrink-0">
+                  <Card
+                    key={index}
+                    className="shadow-md border rounded-xl p-6 transition-transform transform hover:scale-[1.02] bg-white"
+                  >
+                    <CardBody className="flex flex-col md:flex-row items-center gap-6">
+                      <div className="w-28 h-28 flex-shrink-0">
                         <Image
                           src={item.produto?.urlProduto}
                           alt={item.produto?.nome}
-                          width="100%"
-                          height="100%"
+                          width={112}
+                          height={112}
                           objectFit="cover"
-                          className="rounded-md"
+                          className="rounded-lg border"
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-gray-800">
+                        <h4 className="text-lg md:text-xl font-bold text-gray-900">
                           {item.produto?.nome}
                         </h4>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 mt-1">
                           {item.produto?.descricao}
                         </p>
-                        <p className="text-sm text-gray-700 mt-2">
-                          Personalização:
+                        <p className="text-sm text-gray-700 mt-3">
+                          <strong>Personalizações:</strong>{" "}
                           <span className="font-medium">
-                            {item.personalizacoes[0]?.descricaoPersonalizacao ||
-                              "Nenhuma"}
+                            {item.personalizacoes.length || "Nenhuma"}
                           </span>
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-gray-800 flex-col flex">
-                          R${" "}
-                          {item?.valorTotal ? item?.valorTotal.toFixed(2) : 0.0}{" "}
-                          {item?.desconto > 0 && (
-                            <span>
-                              <span className="text-sm text-gray-600 line-through">
-                                R${" "}
-                                {(
-                                  item.produto?.preco * item.quantidade
-                                ).toFixed(2)}
-                              </span>
-                              <span className="text-sm text-green-600 ml-2">
-                                -{item.desconto}%
-                              </span>
+                          {item.personalizacoes.length > 0 && (
+                            <span className="ml-2 text-sm text-gray-600">
+                              +R$
+                              {(
+                                item.personalizacoes.reduce(
+                                  (acc, p) =>
+                                    acc + p?.opcaoPersonalizacao?.acrescimo,
+                                  0
+                                ) * item.quantidade
+                              ).toFixed(2)}
                             </span>
                           )}
                         </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-gray-800">
+                          R${" "}
+                          {item?.valorTotal
+                            ? item?.valorTotal.toFixed(2)
+                            : "0.00"}
+                        </p>
+                        {item?.desconto > 0 && (
+                          <p className="text-sm text-green-500 text-right mt-1">
+                            <span className="line-through text-gray-500">
+                              R$
+                              {(item.produto?.preco * item.quantidade).toFixed(
+                                2
+                              )}
+                            </span>
+                            <span className="ml-2">-{item.desconto}%</span>
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600 mt-2">
+                          <strong>Final com personalizações:</strong>{" "}
+                          <span className="font-medium text-gray-900">
+                            R${" "}
+                            {(
+                              item.valorTotal +
+                              item.personalizacoes.reduce(
+                                (acc, p) =>
+                                  acc + p?.opcaoPersonalizacao?.acrescimo,
+                                0
+                              ) *
+                                item.quantidade
+                            ).toFixed(2)}
+                          </span>
+                        </p>
                         <p className="text-sm text-gray-600 mt-1">
-                          Quantidade:{" "}
+                          <strong>Quantidade:</strong>{" "}
                           <span className="font-medium">{item.quantidade}</span>
                         </p>
                       </div>
                     </CardBody>
-                    <CardFooter className="flex justify-end gap-4">
+                    <CardFooter className="flex justify-between items-center mt-4 border-t pt-4">
                       <Button
                         size="sm"
                         color="primary"
-                        variant="flat"
+                        variant="ghost"
                         onClick={() => handleVisualizarItem(item)}
+                        className="flex items-center gap-2 hover:text-blue-600"
                       >
-                        Visualizar Item
+                        <FaEye className="text-lg" />
+                        Visualizar
                       </Button>
                       <Button
                         size="sm"
                         color="danger"
-                        variant="shadow"
+                        variant="solid"
                         onClick={() => handleRemoveItem(item)}
+                        className="flex items-center gap-2 hover:bg-red-500"
                       >
-                        Remover Item
+                        <BiTrash className="text-lg" />
+                        Remover
                       </Button>
                     </CardFooter>
                   </Card>

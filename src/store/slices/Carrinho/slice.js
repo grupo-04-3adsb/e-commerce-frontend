@@ -22,7 +22,8 @@ const cartSlice = createSlice({
     },
     removeItemFromCart: (state, action) => {
       console.log("Removendo item do carrinho:", action);
-      state.itens = state.itens.filter((item) => item.produto.nome !== action.payload.produto.nome);
+      state.itens = state.itens.filter((item) => item.produto.nome !== action.payload.produto.nome &&
+       item.produto.id !== action.payload.produto.id);
       localStorage.setItem("carrinho", JSON.stringify(state.itens)); 
     },
   },

@@ -104,6 +104,10 @@
     line-height: 5px;
 }
 
+.custom-autocomplete input::placeholder {
+    color: #ffffffa1 !important;
+}
+
 .navbarMenu a{
     font-size: 13px !important;
 }

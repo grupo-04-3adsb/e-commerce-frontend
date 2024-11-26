@@ -9,6 +9,7 @@ export default function CategoriasComponent({ produtoId }) {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCategoriaESubcategoriaPorProduto(produtoId);
+      console.log(data);
       if (data) {
         setCategoria(data.categoria.nomeCategoria);
         setSubcategoria(data.subcategoria.nomeSubcategoria);
@@ -20,8 +21,8 @@ export default function CategoriasComponent({ produtoId }) {
 
   return (
     <div className="flex gap-4">
-      {categoria && <Chip style={{ backgroundColor: '#D57878', color: 'white' }}>{categoria}</Chip>}
-      {subcategoria && <Chip style={{ backgroundColor: '#D57878', color: 'white' }}>{categoria}</Chip>}
+      {categoria && <Chip style={{ backgroundColor: categoria.codigoCor, color: 'white' }}>{categoria}</Chip>}
+      {subcategoria && <Chip style={{ backgroundColor: subcategoria.codigoCor, color: 'white' }}>{subcategoria}</Chip>}
     </div>
   );
 }

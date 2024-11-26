@@ -15,7 +15,11 @@ const useCarrinho = () => {
   const carrinho = useSelector((state) => state.carrinho);
 
   const addItem = (item) => {
-    console.log("Adicionando item ao carrinho:", item);
+    if (verificarUnicidade(item, carrinho)) {
+      throw new Error(
+        "Produto já adicionado ao carrinho com as mesmas personalizações."
+      );
+    }
     dispatch(addItemToCart(construirObjItemPedido(item)));
   };
 
@@ -82,7 +86,7 @@ const useCarrinho = () => {
 
   const construirObjItemPedido = (item) => {
     return {
-      id: null,
+      id: item.id || new Date().getTime() + "_" + item.produto.nome,
       quantidade: item?.quantidade || 1,
       valor: item.preco,
       valorTotal:
@@ -94,7 +98,7 @@ const useCarrinho = () => {
       custoProducao: null,
       feito: null,
       produto: item,
-      personalizacoes: [],
+      personalizacoes: item.personalizacoes,
     };
   };
 
@@ -113,6 +117,42 @@ const useCarrinho = () => {
       fkPedido: item.fkPedido || null,
       personalizacoes: item.personalizacoes || [],
     };
+  };
+
+  const verificarUnicidade = (item, carrinho) => {
+    const itens = Array.isArray(carrinho) ? carrinho : carrinho.itens || [];
+
+    const itemEncontrado = itens.find((i) => i.produto.id === item.produto.id);
+
+    if (itemEncontrado) {
+      if (
+        itemEncontrado.personalizacoes.length === item.personalizacoes.length
+      ) {
+        // Ordena personalizações por ID para evitar inconsistências
+        const personalizacoesItem = [...item.personalizacoes].sort(
+          (a, b) => a.id - b.id
+        );
+        const personalizacoesEncontrado = [
+          ...itemEncontrado.personalizacoes,
+        ].sort((a, b) => a.id - b.id);
+
+        const personalizacoesIguais = personalizacoesItem.every(
+          (personalizacao, index) => {
+            const personalizacaoComparada = personalizacoesEncontrado[index];
+            return (
+              personalizacao.id === personalizacaoComparada.id &&
+              personalizacao.opcao === personalizacaoComparada.opcao &&
+              personalizacao.descricaoPersonalizacao ===
+                personalizacaoComparada.descricaoPersonalizacao
+            );
+          }
+        );
+
+        return personalizacoesIguais;
+      }
+    }
+
+    return false;
   };
 
   return {
