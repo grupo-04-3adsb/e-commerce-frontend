@@ -122,13 +122,12 @@ const useCarrinho = () => {
   const verificarUnicidade = (item, carrinho) => {
     const itens = Array.isArray(carrinho) ? carrinho : carrinho.itens || [];
 
-    const itemEncontrado = itens.find((i) => i.produto.id === item.produto.id);
+    const itemEncontrado = itens.find((i) => i?.produto?.id === item?.produto?.id);
 
     if (itemEncontrado) {
       if (
         itemEncontrado.personalizacoes.length === item.personalizacoes.length
       ) {
-        // Ordena personalizações por ID para evitar inconsistências
         const personalizacoesItem = [...item.personalizacoes].sort(
           (a, b) => a.id - b.id
         );
