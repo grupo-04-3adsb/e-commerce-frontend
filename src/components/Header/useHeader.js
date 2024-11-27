@@ -40,7 +40,7 @@ const useHeader = () => {
   }, [pesquisa]);
 
   const onLoadMore = () => {
-    const newOffset = offset + limit;
+    const newOffset = offset + 1;
     setOffset(newOffset);
   };
 

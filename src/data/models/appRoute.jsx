@@ -5,6 +5,7 @@ import UserInfo from "../../pages/UserInfo/UserInfo";
 import Carrinho from "../../pages/Carrinho";
 import ProdutoDetalhes from "../../pages/ProdutoDetalhes/ProdutoDetalhes";
 import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
+import ConcluirPagamento from "../../pages/ConcluirPagamento";
 
 export const APP_ROUTES = [
   {
@@ -62,4 +63,12 @@ export const APP_ROUTES = [
     },
     isVisible: true,
   },
+  {
+    path: "/produtos/pedido/concluir-pagamento/:paymentId",
+    component: ConcluirPagamento,
+    meta: {
+      breadcrumb: [{parent: "Carrinho", label: "Concluir pedido"}],
+    },
+    isVisible: true
+  }
 ];
