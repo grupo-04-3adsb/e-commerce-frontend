@@ -28,7 +28,31 @@ export const useEnderecosInfo = () => {
     }
 })
 
+const mutationEditaEnderecoUsuario = useMutation({
+    mutationFn: async ({putDto, idEndereco}) => {
+        console.log("ID endereco: ", idEndereco)
+        console.log("PutDTO: ", putDto)
+        const response = await axiosInstance.put(`/enderecos/${idEndereco}`,
+          putDto,  
+          {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+        return response.data;
+    },
+
+    onError: (error) => {
+        console.log(
+            "Erro ao cadastrar produtos:",
+            error.response?.data || error.message
+        )
+    }
+})
+
 return{
-  cadastrarEndereco: mutationCadastrarEnderecoUsuario.mutateAsync
+  cadastrarEndereco: mutationCadastrarEnderecoUsuario.mutateAsync,
+  editarEndereco: mutationEditaEnderecoUsuario.mutateAsync
 }
 }

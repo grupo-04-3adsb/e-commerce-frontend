@@ -7,7 +7,7 @@ export default function ModalEnd({ endereco, textoBotao, className, isEditando }
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [formData, setFormData] = useState({ ...endereco });
 
-  const { cadastrarEndereco } = useEnderecosInfo();
+  const { cadastrarEndereco, editarEndereco } = useEnderecosInfo();
 
   useEffect(() => {
     if(!isEditando){
@@ -23,6 +23,20 @@ export default function ModalEnd({ endereco, textoBotao, className, isEditando }
         complemento: "",
         instrucaoEntrega: "",
         enderecoPadrao: false
+      })
+    }else{
+      setFormData({
+        cep: endereco.cep,
+        rua: endereco.rua,
+        bairro: endereco.bairro,
+        cidade: endereco.cidade,
+        logradouro: endereco.logradouro,
+        estado: endereco.estado,
+        numero: endereco.numero,
+        pais: endereco.pais,
+        complemento: endereco.complemento,
+        instrucaoEntrega: endereco.instrucaoEntrega,
+        enderecoPadrao: endereco.enderecoPadrao
       })
     }
   }, [])
@@ -45,7 +59,12 @@ export default function ModalEnd({ endereco, textoBotao, className, isEditando }
     if(isEditando){
       try {
         console.log("Submitting data:", formData);
-        await updateEndereco(endereco.id, formData);
+        const IdEndereco = endereco.id
+        console.log("IdEndereco: ", IdEndereco)
+        await editarEndereco({
+          putDto: formData,
+          idEndereco: IdEndereco
+        });
         alert("Endereço atualizado com sucesso!");
       } catch (error) {
         console.error("Erro ao atualizar endereço:", error);

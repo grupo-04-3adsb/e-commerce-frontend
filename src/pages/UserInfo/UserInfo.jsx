@@ -140,10 +140,7 @@ function UserInfo() {
         {
           listaEndereco.map((endereco) => (
               <CardEndereco
-                rua={endereco.rua}
-                bairro={endereco.bairro}
-                cidade={endereco.cidade}
-                cep={endereco.cep}
+                endereco={endereco}
               />
           ))
         }

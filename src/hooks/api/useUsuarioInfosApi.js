@@ -15,6 +15,8 @@ export const useUsuariosInfos = () => {
                     }
                 }
             );
+            console.log("ENDEREÇOS: ")
+            console.log(response)
             return response.data;
         },
 
