@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import style from './Card-produto.module.css'; 
-import star from '../../assets/images/star.png';
-import like from '../../assets/images/heart.png';
+import style from './Card-produto.module.css';
+import ProductRating from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
 
-const CardProduto = ({ nome, preco, desconto, urlProduto, status, avaliacao }) => {
+const CardProduto = ({ id, nome, preco, desconto, urlProduto, status }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -14,36 +13,37 @@ const CardProduto = ({ nome, preco, desconto, urlProduto, status, avaliacao }) =
 
   return (
     <div className={style.produto} onClick={handleClick} style={{ cursor: 'pointer' }}>
+
       <div className={style.imagemProduto}>
         <img src={urlProduto} alt={nome} />
-        <div className={style.novo}>
-          <p>{status}</p>
-        </div>
+        {status && (
+          <div className={style.novo}>
+            <p>{status}</p>
+          </div>
+        )}
       </div>
+
       <div className={style.informacoes}>
         <h2>{nome}</h2>
         <div className={style.preco}>
-          <span>R${preco}</span>
-          <span className={style.desconto}>R${(preco - desconto).toFixed(2)}</span>
+          <span>R${(preco - preco * (desconto / 100)).toFixed(2)}</span>
+          <span className={style.desconto}>R${preco.toFixed(2)}</span>
         </div>
+
         <div className={style.feedback}>
           <div className={style.avaliacao}>
-            <div className={style.estrelas}>
-              {Array(5).fill().map((_, index) => (
-                <img key={index} src={star} alt="Star" />
-              ))}
-            </div>
-            <div className={style.qtdAvaliacao}>
-              <span>{avaliacao}</span>
-            </div>
-          </div>
-          <div className={style.acoes}>
-            <img src={like} alt="Like" />
+            {id ? (
+              <>
+                <ProductRating productId={id} />
+              </>
+            ) : (
+              <p className={style.error}>Avaliação indisponível</p>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default CardProduto;

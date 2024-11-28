@@ -48,6 +48,7 @@ function Produtos() {
               produtosFiltrados.map((produto) => (
                 <CardProduto
                   key={produto.id}
+                  id={produto.id}
                   nome={produto.nome}
                   preco={produto.preco}
                   desconto={produto.desconto}
