@@ -13,7 +13,6 @@ import {
 import useCarrinho from "../../hooks/useCarrinho";
 import ItemCarrinhoModal from "../Modais/ItemCarrinhoModal";
 import { FaEye } from "react-icons/fa6";
-import CheckoutComponent from "../../components/CheckoutComponent";
 
 const Carrinho = () => {
   const { carrinho, removeItem } = useCarrinho();

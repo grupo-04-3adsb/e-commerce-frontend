@@ -20,7 +20,7 @@ const ConcluirPagamento = () => {
   };
 
   return (
-    <div className="h-[700px] mb-10 flex items-center justify-center text-gray-500">
+    <div className="h-auto mb-10 flex items-center justify-center text-gray-500">
       <div id="statusScreen_container"></div>
       {paymentId ? (
         <StatusScreen
@@ -29,6 +29,15 @@ const ConcluirPagamento = () => {
           }}
           onReady={onReady}
           onError={onError}
+          locale="pt-BR"
+          customization={{
+            visual: {
+              style: {
+                theme: "bootstrap"
+              }
+            }
+          }}
+          
         />
       ) : (
         <p>Carregando...</p>

@@ -22,7 +22,7 @@ const CardImagemComponent = ({ imagens, nome }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-5 p-5 w-full max-w-[1200px] mx-auto justify-center">
+    <div className="flex flex-wrap gap-5 p-5 w-full max-w-[1200px] mx-auto">
       <div className="flex flex-col gap-3 mr-3">
         {imagens.slice(1).map((url, index) => (
           <div
@@ -38,7 +38,7 @@ const CardImagemComponent = ({ imagens, nome }) => {
           </div>
         ))}
       </div>
-      <div className="flex flex-1 w-[800px] h-auto overflow-hidden rounded-xl">
+      <div className="flex flex-1 w-[800px] h-[700px] overflow-hidden rounded-xl">
         <img
           src={imagemPrincipal}
           alt={nome}

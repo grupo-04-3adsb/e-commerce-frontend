@@ -5,7 +5,6 @@ import {
   setCart,
   removeItemFromCart,
 } from "../store/slices/Carrinho/slice";
-import { useEffect } from "react";
 import useCarrinhoApi from "./api/useCarrinhoApi";
 
 const useCarrinho = () => {
@@ -13,14 +12,28 @@ const useCarrinho = () => {
     useCarrinhoApi();
   const dispatch = useDispatch();
   const carrinho = useSelector((state) => state.carrinho);
+  const isUsuarioLogado = useSelector((state) => state.usuario);
+  const usuario = useSelector((state) => state.usuario?.usuario?.usuario)
 
   const addItem = (item) => {
-    if (verificarUnicidade(item, carrinho)) {
+    console.log("Preparando item pedido:", item)
+    let objItem = construirObjItemPedido(item)
+    if (verificarUnicidade(objItem, carrinho)) {
+      alert("Produto já adicionado ao carrinho com as mesmas personalizações.");
       throw new Error(
         "Produto já adicionado ao carrinho com as mesmas personalizações."
       );
     }
-    dispatch(addItemToCart(construirObjItemPedido(item)));
+    dispatch(addItemToCart(objItem));
+    if (isUsuarioLogado) {
+      objItem = construirItemPedidoRequestDto(item);
+      console.log(objItem)
+      const response = adicionarItemCarrinho({
+        itemPedido: objItem,
+        idUsuario: usuario.idUsuario
+      });
+      console.log("Response: ", response)
+    }
   };
 
   const setCarrinho = (items) => {
@@ -50,7 +63,7 @@ const useCarrinho = () => {
 
       for (const item of carrinhoConsolidado) {
         await adicionarItemCarrinho({
-          itemPedido: construirItemPedidoRequestDto(item),
+          itemPedido: construirObjItemPedido(item),
           idUsuario,
         });
       }
@@ -77,7 +90,7 @@ const useCarrinho = () => {
           quantidade: itemExistente.quantidade + item.quantidade,
         });
       } else {
-        itensMap.set(item.produto.id, { ...item });
+        itensMap.set(construirObjItemPedido(item));
       }
     });
 
@@ -113,45 +126,59 @@ const useCarrinho = () => {
       valorFrete: item.valorFrete || null,
       custoProducao: item.custoProducao || null,
       feito: item.feito || null,
-      fkProduto: item.produto.id,
+      fkProduto: item.id,
       fkPedido: item.fkPedido || null,
-      personalizacoes: item.personalizacoes || [],
+      personalizacoes: item?.personalizacao ? item.personalizacoes.map((personalizacao) => {
+        return {
+          descricaoPersonalizacao: personalizacao.descricaoPersonalizacao,
+          fkPersonalizacao: personalizacao.personalizacao.idPersonalizacao,
+          fkOpcaoPersonalizacao: personalizacao.opcaoPersonalizacao.idOpcao
+        }
+      }) : [],
     };
   };
 
-  const verificarUnicidade = (item, carrinho) => {
+  const verificarUnicidade = (novoItem, carrinho) => {
     const itens = Array.isArray(carrinho) ? carrinho : carrinho.itens || [];
 
-    const itemEncontrado = itens.find((i) => i?.produto?.id === item?.produto?.id);
+    for (const item of itens) {
+      if (item?.produto?.id === novoItem?.produto?.id) {
+        const personalizacoesExistentes = item.personalizacoes || [];
+        const personalizacoesNovas = novoItem.personalizacoes || [];
 
-    if (itemEncontrado) {
-      if (
-        itemEncontrado.personalizacoes.length === item.personalizacoes.length
-      ) {
-        const personalizacoesItem = [...item.personalizacoes].sort(
-          (a, b) => a.id - b.id
-        );
-        const personalizacoesEncontrado = [
-          ...itemEncontrado.personalizacoes,
-        ].sort((a, b) => a.id - b.id);
-
-        const personalizacoesIguais = personalizacoesItem.every(
-          (personalizacao, index) => {
-            const personalizacaoComparada = personalizacoesEncontrado[index];
-            return (
-              personalizacao.id === personalizacaoComparada.id &&
-              personalizacao.opcao === personalizacaoComparada.opcao &&
-              personalizacao.descricaoPersonalizacao ===
-                personalizacaoComparada.descricaoPersonalizacao
+        if (personalizacoesExistentes.length === personalizacoesNovas.length) {
+          const listasIguais =
+            personalizacoesExistentes.every((pe) =>
+              personalizacoesNovas.some((pn) => personalizacoesIguais(pe, pn))
+            ) &&
+            personalizacoesNovas.every((pn) =>
+              personalizacoesExistentes.some((pe) =>
+                personalizacoesIguais(pe, pn)
+              )
             );
-          }
-        );
 
-        return personalizacoesIguais;
+          if (listasIguais) {
+            return true;
+          }
+        }
       }
     }
 
     return false;
+  };
+
+  const personalizacoesIguais = (p1, p2) => {
+    if (!p1 || !p2) return false;
+
+    const mesmaPersonalizacao =
+      p1.idPersonalizacao === p2.idPersonalizacao &&
+      p1.idOpcaoPersonalizacao === p2.idOpcaoPersonalizacao;
+
+    const mesmaDescricao =
+      (p1.descricaoPersonalizacao || "").toLowerCase() ===
+      (p2.descricaoPersonalizacao || "").toLowerCase();
+
+    return mesmaPersonalizacao && mesmaDescricao;
   };
 
   return {

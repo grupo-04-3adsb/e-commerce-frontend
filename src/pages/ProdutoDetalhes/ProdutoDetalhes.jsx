@@ -203,7 +203,7 @@ const ProdutoDetalhes = () => {
           <AvaliacaoComponent produtoId={produto.id} />
         </div>
       </div>
-      <div className="flex-1 flex flex-col justify-center p-2">
+      <div className="flex-1 flex flex-col p-2">
         <h1 className="text-4xl mb-2">{produto.nome}</h1>
         <MockedProduct productId={produto.id} />
         <div className="mb-5 flex flex-col gap-2">

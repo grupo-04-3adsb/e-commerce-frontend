@@ -21,11 +21,6 @@ const useLogin = () => {
       if (usuarioId) {
         await sincronizarCarrinho(usuarioId);
       }
-
-      setTimeout(() => {
-        
-        window.location.href = "/";
-      }, 1500);
     } catch (err) {
       console.error("Erro ao fazer login:", err);
     } finally {
