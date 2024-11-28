@@ -1,11 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Modalend.module.css";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Input } from "@nextui-org/react";
-import { updateEndereco } from "../../hooks/api/enderecosApi";
+import  { useEnderecosInfo } from "../../hooks/api/enderecosApi"
 
-export default function ModalEnd({ endereco }) {
+export default function ModalEnd({ endereco, textoBotao, className, isEditando }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [formData, setFormData] = useState({ ...endereco });
+
+  const { cadastrarEndereco, editarEndereco } = useEnderecosInfo();
+
+  useEffect(() => {
+    if(!isEditando){
+      setFormData({
+        cep: "",
+        rua: "",
+        bairro: "",
+        cidade: "",
+        logradouro: "",
+        estado: "",
+        numero: "",
+        pais: "",
+        complemento: "",
+        instrucaoEntrega: "",
+        enderecoPadrao: false
+      })
+    }else{
+      setFormData({
+        cep: endereco.cep,
+        rua: endereco.rua,
+        bairro: endereco.bairro,
+        cidade: endereco.cidade,
+        logradouro: endereco.logradouro,
+        estado: endereco.estado,
+        numero: endereco.numero,
+        pais: endereco.pais,
+        complemento: endereco.complemento,
+        instrucaoEntrega: endereco.instrucaoEntrega,
+        enderecoPadrao: endereco.enderecoPadrao
+      })
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -15,22 +49,44 @@ export default function ModalEnd({ endereco }) {
     });
   };
 
+  const carregarValores = (e) => {
+    if(formData.length != 0){
+       return e;
+    }
+  }
+
   const handleSubmit = async () => {
-    try {
-      console.log("Submitting data:", formData);
-      await updateEndereco(endereco.id, formData);
-      alert("Endereço atualizado com sucesso!");
-    } catch (error) {
-      console.error("Erro ao atualizar endereço:", error);
-      alert("Erro ao atualizar endereço.");
+    if(isEditando){
+      try {
+        console.log("Submitting data:", formData);
+        const IdEndereco = endereco.id
+        console.log("IdEndereco: ", IdEndereco)
+        await editarEndereco({
+          putDto: formData,
+          idEndereco: IdEndereco
+        });
+        alert("Endereço atualizado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar endereço:", error);
+        alert("Erro ao atualizar endereço.");
+      }
+    }else{
+      try {
+        console.log("Submitting data:", formData);
+        await cadastrarEndereco(formData);
+        alert("Endereço atualizado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar endereço:", error);
+        alert("Erro ao atualizar endereço.");
+      }
     }
     onOpenChange(false);
   };
 
   return (
     <>
-      <Button className={styles.customButton} onPress={onOpen}>
-        Editar endereços
+      <Button className={className} onPress={onOpen}>
+          {textoBotao}
       </Button>
       <Modal
         isOpen={isOpen}
@@ -45,23 +101,26 @@ export default function ModalEnd({ endereco }) {
               <ModalBody style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                 <div style={{ flex: '1 1 48%', display: 'flex', flexDirection: 'column', padding: '3px' }}>
                   <div style={{display: 'flex', gap: '15px'}}>
-                    <Input label="CEP" name="cep" value={formData.cep} onChange={handleChange} variant="underlined" fullWidth />
-                    <Input label="Rua" name="rua" value={formData.rua} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="CEP" name="cep" value={carregarValores(formData.cep)} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Rua" name="rua" value={carregarValores(formData.rua)} onChange={handleChange} variant="underlined" fullWidth />
                   </div>
                   <div style={{display: 'flex', gap: '15px'}}>
-                    <Input label="Bairro" name="bairro" value={formData.bairro} onChange={handleChange} variant="underlined" fullWidth />
-                    <Input label="Cidade" name="cidade" value={formData.cidade} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Bairro" name="bairro" value={carregarValores(formData.bairro)} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Cidade" name="cidade" value={carregarValores(formData.cidade)} onChange={handleChange} variant="underlined" fullWidth />
                   </div>
                   <div style={{display: 'flex', gap: '15px'}}>
-                    <Input label="Logradouro" name="logradouro" value={formData.logradouro} onChange={handleChange} variant="underlined" fullWidth />
-                    <Input label="Estado" name="estado" value={formData.estado} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Logradouro" name="logradouro" value={carregarValores(formData.logradouro)} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Estado" name="estado" value={carregarValores(formData.estado)} onChange={handleChange} variant="underlined" fullWidth />
                   </div>
                   <div style={{display: 'flex', gap: '15px'}}>
-                    <Input label="Número" name="numero" value={formData.numero} onChange={handleChange} variant="underlined" fullWidth />
-                    <Input label="Complemento" name="complemento" value={formData.complemento} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Número" name="numero" value={carregarValores(formData.numero)} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="País" name="pais" value={carregarValores(formData.pais)} onChange={handleChange} variant="underlined" fullWidth />
                   </div>
                   <div>
-                    <Input label="Instruções de entrega" name="instrucaoEntrega" value={formData.instrucaoEntrega} onChange={handleChange} variant="underlined" fullWidth />
+                    <Input label="Complemento" name="complemento" value={carregarValores(formData.complemento)} onChange={handleChange} variant="underlined" fullWidth />
+                  </div>
+                  <div>
+                    <Input label="Instruções de entrega" name="instrucaoEntrega" value={carregarValores(formData.instrucaoEntrega)} onChange={handleChange} variant="underlined" fullWidth />
                     <Checkbox name="enderecoPadrao" isSelected={formData.enderecoPadrao} onChange={handleChange} color="danger" className={styles.customCheckbox} style={{padding: '15px'}}>Endereço Padrão</Checkbox>
                   </div>
                 </div>
@@ -71,7 +130,7 @@ export default function ModalEnd({ endereco }) {
                   Fechar
                 </Button>
                 <Button className={styles.customButtonTwo} color="primary" onPress={handleSubmit}>
-                  Editar
+                  Confirmar
                 </Button>
               </ModalFooter>
             </>

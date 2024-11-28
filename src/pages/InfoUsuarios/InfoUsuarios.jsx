@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./InfoUsuarios.module.css";
 import { FaRegEdit } from "react-icons/fa";
@@ -54,6 +55,11 @@ function InfoUsuarios() {
             </h2>
             <p>{usuario?.usuario?.email}</p>
             <Button className={styles.customButton}>Editar perfil</Button>
+            <Link to="/infos/edit">
+              <Button className={styles.customButton}>
+                Editar perfil
+              </Button>
+            </Link>
           </div>
           <div className={styles.divider}></div>
           <div className={styles.addressSection}>
@@ -61,7 +67,7 @@ function InfoUsuarios() {
             <div className={styles.addressInfo}>
               <p>CEP: {endereco?.cep}</p>
             </div>
-            <ModalEnd endereco={endereco} className={styles.customButton} />
+            <ModalEnd endereco={endereco} textoBotao={"Editar Endereço"} className={styles.customButton} />
           </div>
         </div>
       </div>

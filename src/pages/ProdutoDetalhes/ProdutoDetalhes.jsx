@@ -26,7 +26,8 @@ import { MdArrowForwardIos } from "react-icons/md";
 import CompraSeguraModal from "../Modais/CompraSeguraModal";
 
 const ProdutoDetalhes = () => {
-  const { productName } = useParams();
+  const { nomeProduto }  = useParams();
+  // const  productName  = "Camisa%20Pokemon";
   const [produto, setProduto] = useState(null);
   const [uploadedImages, setUploadedImages] = useState({});
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,7 @@ const ProdutoDetalhes = () => {
 
   useEffect(() => {
     const fetchProduto = async () => {
+      console.log("Valor do product name: " + nomeProduto)
       try {
         const data = await getProdutoByName(productName);
         setProduto(data);
@@ -54,7 +56,7 @@ const ProdutoDetalhes = () => {
     };
 
     fetchProduto();
-  }, [productName]);
+  }, [nomeProduto]);
 
   if (loading) {
     return (
