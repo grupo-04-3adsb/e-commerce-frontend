@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import style from './Card-produto.module.css';
 import ProductRating from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
 
-const CardProduto = ({ id, nome, preco, desconto, urlProduto, status }) => {
+const CardProduto = ({ produto }) => {
+  const { id, nome, preco, desconto, urlProduto, status } = produto;
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -13,7 +14,6 @@ const CardProduto = ({ id, nome, preco, desconto, urlProduto, status }) => {
 
   return (
     <div className={style.produto} onClick={handleClick} style={{ cursor: 'pointer' }}>
-
       <div className={style.imagemProduto}>
         <img src={urlProduto} alt={nome} />
         {status && (
@@ -33,9 +33,7 @@ const CardProduto = ({ id, nome, preco, desconto, urlProduto, status }) => {
         <div className={style.feedback}>
           <div className={style.avaliacao}>
             {id ? (
-              <>
-                <ProductRating productId={id} />
-              </>
+              <ProductRating productId={id} />
             ) : (
               <p className={style.error}>Avaliação indisponível</p>
             )}
