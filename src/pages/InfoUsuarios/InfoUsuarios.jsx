@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./InfoUsuarios.module.css";
 import { FaRegEdit } from "react-icons/fa";
@@ -64,9 +65,11 @@ function InfoUsuarios() {
           <div className={styles.profileSection}>
             <h2 className={styles.boldText}>Bem-vindo, {usuario?.usuario?.nome}</h2>
             <p>{usuario?.usuario?.email}</p>
-            <Button className={styles.customButton}>
-              Editar perfil
-            </Button>
+            <Link to="/infos/edit">
+              <Button className={styles.customButton}>
+                Editar perfil
+              </Button>
+            </Link>
           </div>
           <div className={styles.divider}></div>
           <div className={styles.addressSection}>

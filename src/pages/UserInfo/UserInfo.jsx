@@ -102,7 +102,7 @@ function UserInfo() {
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <h2>Informações do usuário</h2>
-        <form>
+        <form className={styles.form}>
           <div className={styles.campo}>
             <label>Nome</label>
             <input type="text" value={nomeInput} disabled={!isEditing} onChange={(e) => handleInputChange(e, setNomeInput)} />

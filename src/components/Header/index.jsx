@@ -118,7 +118,7 @@ const Header = () => {
         <div className={style.navActions}>
           {isUsuarioLogado ? (
             <>
-             <Link to="/info-usuarios">
+             <Link to="/infos">
                 <Button
                   size="sm"
                   color="white"
