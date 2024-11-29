@@ -6,6 +6,7 @@ import Carrinho from "../../pages/Carrinho";
 import ProdutoDetalhes from "../../pages/ProdutoDetalhes/ProdutoDetalhes";
 import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
 import ConcluirPagamento from "../../pages/ConcluirPagamento";
+import ResumoPedido from "../../pages/ResumoPedido/CheckoutPedido";
 
 export const APP_ROUTES = [
   {
@@ -68,6 +69,14 @@ export const APP_ROUTES = [
     component: ConcluirPagamento,
     meta: {
       breadcrumb: [{parent: "Carrinho", label: "Concluir pedido"}],
+    },
+    isVisible: true
+  },
+  {
+    path: "/carrinho/checkout",
+    component: ResumoPedido,
+    meta: {
+      breadcrumb: [{parent: "Carrinho", label: "Checkout"}],
     },
     isVisible: true
   }
