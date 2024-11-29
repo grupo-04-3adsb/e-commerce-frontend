@@ -17,7 +17,7 @@
   padding: 20px;
 }
 
-.produtos-mais-vendidos{
+.produtos-mais-vendidos {
   width: 150px;
   display: flex;
   align-items: center;
@@ -38,6 +38,7 @@
   flex-wrap: wrap;
 }
 
+/* Estilização do slider */
 .slick-slider {
   width: 100%;
   display: flex;
@@ -62,6 +63,7 @@
   opacity: 1;
 }
 
+/* Responsividade */
 @media (max-width: 1024px) {
   .bannerNovidade {
     height: auto;
@@ -77,6 +79,7 @@
     align-items: center;
     padding: 10px;
   }
+
   .today p {
     font-size: 16px;
   }
@@ -97,6 +100,7 @@
     align-items: center;
     padding: 10px;
   }
+
   .today p {
     font-size: 16px;
   }
