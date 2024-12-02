@@ -10,6 +10,11 @@ import { getProdutos } from "../../hooks/api/produtosApi";
 function Produtos() {
   const [produtosFiltrados, setFilteredProducts] = useState([]);
 
+  // Aqui poderia ter algum efeito para buscar os produtos;
+  // useEffect(() => {
+  //   getProdutos().then(setFilteredProducts);
+  // }, []);
+
   return (
     <div className={styles.produtosPage}>
       <div className={styles.banner}>
@@ -42,20 +47,11 @@ function Produtos() {
       <div className={styles.produtosContainer}>
         <FilterComponent setFilteredProducts={setFilteredProducts} />
         <section className={styles.produtos}>
-        <h2 className={styles.tituloProdutos}>Produtos</h2>
+          <h2 className={styles.tituloProdutos}>Produtos</h2>
           <div className={styles.produtoGrid}>
             {produtosFiltrados.length > 0 ? (
               produtosFiltrados.map((produto) => (
-                <CardProduto
-                  key={produto.id}
-                  nome={produto.nome}
-                  preco={produto.preco}
-                  desconto={produto.desconto}
-                  urlProduto={produto.urlProduto}
-                  status={produto.status || "NOVO"}
-                  avaliacao={produto.avaliacao || "(0)"}
-                  imagensAdicionais={produto.imagensAdicionais}
-                />
+                <CardProduto key={produto.id} produto={produto}></CardProduto>
               ))
             ) : (
               <p>Nenhum produto encontrado</p>
