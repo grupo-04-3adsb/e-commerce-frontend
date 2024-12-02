@@ -24,10 +24,11 @@ import {
 } from "@nextui-org/react";
 import { MdArrowForwardIos } from "react-icons/md";
 import CompraSeguraModal from "../Modais/CompraSeguraModal";
+import { useToast } from "../../context/ToastContext";
+import { useSelector } from "react-redux";
 
 const ProdutoDetalhes = () => {
-  const { nomeProduto }  = useParams();
-  // const  productName  = "Camisa%20Pokemon";
+  const { productName } = useParams();
   const [produto, setProduto] = useState(null);
   const [uploadedImages, setUploadedImages] = useState({});
   const [loading, setLoading] = useState(true);
@@ -37,12 +38,15 @@ const ProdutoDetalhes = () => {
     useState({});
   const [isModalCompraSeguraVisible, setIsModalCompraSeguraVisible] =
     useState(false);
+  const usuario = useSelector((state) => state.usuario?.usuario?.usuario);
+
+  const toast = useToast();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduto = async () => {
-      console.log("Valor do product name: " + nomeProduto)
+      console.log("Valor do product name: " + productName);
       try {
         const data = await getProdutoByName(productName);
         setProduto(data);
@@ -56,7 +60,7 @@ const ProdutoDetalhes = () => {
     };
 
     fetchProduto();
-  }, [nomeProduto]);
+  }, [productName]);
 
   if (loading) {
     return (
@@ -76,38 +80,42 @@ const ProdutoDetalhes = () => {
         Object.keys(personalizacoesSelecionadas).length > 0;
 
       if (!personalizacoesFeitas) {
-        alert(
+        toast.error(
           "Este produto requer personalização. Por favor, escolha ao menos uma personalização."
         );
         return;
       }
 
       const personalizacoes = Object.values(personalizacoesSelecionadas);
-      const obj = { ...produto, quantidade, personalizacoes };
-      console.log(obj);
-      addItem({ ...produto, quantidade, personalizacoes });
+      addItem({
+        ...produto,
+        quantidade,
+        personalizacoesCliente: personalizacoes,
+      });
     } else {
       addItem({ ...produto, quantidade });
     }
   };
 
-  const handleComprarAgora = () => {
+  const handleComprarAgora = async () => {
     const personalizacoesFeitas =
       Object.keys(personalizacoesSelecionadas).length > 0;
     const personalizacoes = Object.values(personalizacoesSelecionadas);
 
-    if (produto?.isPersonalizacaoObrigatoria) {
-      if (!personalizacoesFeitas) {
-        alert(
-          "Este produto requer personalização. Por favor, escolha ao menos uma personalização."
-        );
-        return;
-      }
+    if (produto?.isPersonalizacaoObrigatoria && !personalizacoesFeitas) {
+      toast.error(
+        "Este produto requer personalização. Por favor, escolha ao menos uma personalização."
+      );
+      return;
+    }
 
-      addItem({ ...produto, quantidade, personalizacoes });
-      navigate("/carrinho");
-    } else {
-      addItem({ ...produto, quantidade, personalizacoes });
+    const sucesso = await addItem({
+      ...produto,
+      quantidade,
+      personalizacoesCliente: personalizacoes,
+    });
+
+    if (sucesso) {
       navigate("/carrinho");
     }
   };
@@ -412,7 +420,13 @@ const ProdutoDetalhes = () => {
                     </Tooltip>
                   ))}
                 {personalizacao.tipoPersonalizacao === "Imagem" && (
-                  <div className="flex flex-col gap-6 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                  <div
+                    className={`flex flex-col gap-6 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm
+                    ${!usuario
+                      ? "opacity-45" : ""
+                    }
+                  `}
+                  >
                     <h4 className="text-gray-800 font-medium">
                       Envie suas imagens:
                     </h4>
@@ -444,7 +458,10 @@ const ProdutoDetalhes = () => {
                         >
                           <label
                             htmlFor={`upload-${opcao.idOpcao}`}
-                            className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition"
+                            className={
+                              `flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition
+                              ${!usuario ? "cursor-default" : "cursor-pointer"}
+                              `}
                           >
                             <span className="text-gray-600 text-sm mb-2">
                               {opcao.nomeOpcao}{" "}
@@ -455,6 +472,7 @@ const ProdutoDetalhes = () => {
                               )}
                             </span>
                             <input
+                              disabled={!usuario}
                               id={`upload-${opcao.idOpcao}`}
                               type="file"
                               accept="image/png, image/jpeg"
@@ -476,6 +494,13 @@ const ProdutoDetalhes = () => {
                                 }
                               }}
                             />
+                            {
+                              !usuario && (
+                                <span className="text-lg font-extrabold text-gray-950">
+                                  Faça login para enviar imagens
+                                </span>
+                              )
+                            }
                           </label>
                         </Tooltip>
                         {uploadedImages[opcao.idOpcao] && (
@@ -509,27 +534,6 @@ const ProdutoDetalhes = () => {
             </ul>
           </div>
         )}
-
-        <div className="mt-5 p-5 border rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Simule o Frete
-          </h3>
-          <div className="flex items-center gap-3">
-            <Input
-              placeholder="Digite seu CEP"
-              type="text"
-              maxLength={8}
-              variant="bordered"
-              color="primary"
-            />
-            <Button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-              Calcular
-            </Button>
-          </div>
-          <p className="mt-2 text-sm text-gray-600">
-            Informe o CEP para calcular o prazo e custo do envio.
-          </p>
-        </div>
 
         <div className="mt-2 p-5 border rounded-lg shadow-sm">
           <h2 className="text-lg font-bold mb-3 text-slate-600">

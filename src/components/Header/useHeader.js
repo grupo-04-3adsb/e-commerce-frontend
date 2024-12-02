@@ -13,7 +13,6 @@ const useHeader = () => {
 
   const loadMore = async () => {
     try {
-      console.log(pesquisa);
       setIsLoading(true);
       const res = await pesquisarProdutoSkuNome({
         pesquisa,

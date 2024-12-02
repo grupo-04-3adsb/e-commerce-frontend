@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import NotFound404 from "./pages/NotFound404";
 import { APP_ROUTES } from "./data/models/appRoute";
 import AppBreadcrumb from "./components/CustomBreadCrumbs/BreadCrumbs";
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,18 +21,20 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Loading />
-        <Header />
-        <AppBreadcrumb/>
-        <Routes>
-          {APP_ROUTES.map((route, index) => (
-            <Route
-            key={index}
-            path={route.path}
-            element={<route.component />}
-            />
-          ))}
-        </Routes>
+        <ToastProvider>
+          <Loading />
+          <Header />
+          <AppBreadcrumb />
+          <Routes>
+            {APP_ROUTES.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+          </Routes>
+        </ToastProvider>
       </Router>
       <Footer />
     </div>

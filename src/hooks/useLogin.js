@@ -15,12 +15,14 @@ const useLogin = () => {
       const response = await mutateAsync(formData); 
       await dispatch(login(response));
 
-      console.log(response);
       const usuarioId = response?.usuario?.idUsuario;
 
       if (usuarioId) {
         await sincronizarCarrinho(usuarioId);
       }
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 1000);
     } catch (err) {
       console.error("Erro ao fazer login:", err);
     } finally {

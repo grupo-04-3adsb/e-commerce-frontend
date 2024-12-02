@@ -9,7 +9,6 @@ export default function CategoriasComponent({ produtoId }) {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCategoriaESubcategoriaPorProduto(produtoId);
-      console.log(data);
       if (data) {
         setCategoria(data.categoria.nomeCategoria);
         setSubcategoria(data.subcategoria.nomeSubcategoria);

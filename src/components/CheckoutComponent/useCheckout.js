@@ -16,7 +16,6 @@ const useCheckout = ({ idPedido }) => {
 			setIsLoading(true);
       try {
         const response = await checkOut(idPedido);
-				console.log("response", response);
 
         if (response.status === 200) {
           setPreferenceIdBrick(response.data);
@@ -41,7 +40,6 @@ const useCheckout = ({ idPedido }) => {
 
       if (response.status === 200) {
         const paymentId = response.data;
-        console.log("Pagamento processado com sucesso:", paymentId);
         window.location.href = `/produtos/pedido/concluir-pagamento/${paymentId}`;
       } else {
         console.error(
@@ -53,10 +51,6 @@ const useCheckout = ({ idPedido }) => {
       console.error("Erro ao processar o pagamento:", error);
     }
   };
-
-	const onReady = () => {
-		console.log("Status Screen está pronto.");
-	};
 
 	const onError = (error) => {
 		console.error("Erro ao fazer pedido");

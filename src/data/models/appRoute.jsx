@@ -8,39 +8,66 @@ import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
 import ConcluirPagamento from "../../pages/ConcluirPagamento";
 
 export const APP_ROUTES = [
-    {
-        path: "/informacoes",
-        component: () => <h1>Informações</h1>,
-        meta: {
-          breadcrumb: [{ parent: "Home", label: "Informações" }],
-        }
+  {
+    path: "/informacoes",
+    component: InfoUsuarios,
+    meta: {
+      breadcrumb: [{ parent: "Home", label: "Informações" }],
     },
-    {
-        path: "/",
-        component: Home,
-        meta: {
-          breadcrumb: [{ parent: "", label: "Home" }],
-        }
+  },
+  {
+    path: "/",
+    component: Home,
+    meta: {
+      breadcrumb: [{ parent: "", label: "Home" }],
     },
-    {
-        path: "/produtos",
-        component: Produtos,
-        meta: {
-          breadcrumb: [{ parent: "Home", label: "Produtos" }],
-        }
+    isVisible: false,
+  },
+  {
+    path: "/produtos",
+    component: Produtos,
+    meta: {
+      breadcrumb: [{ parent: "Home", label: "Produtos" }],
     },
-    {
-        path: "*",
-        component: NotFound404,
-        meta: {
-          breadcrumb: [{ parent: "", label: "NotFound" }],
-        }
+    isVisible: false,
+  },
+  {
+    path: "*",
+    component: NotFound404,
+    meta: {
+      breadcrumb: [{ parent: "", label: "NotFound" }],
     },
-    {
-        path: "/user-info",
-        component: UserInfo,
-        meta: {
-          breadcrumb: [{ parent: "Informações", label: "Usuário" }],
-        }
-      }
-]
+    isVisible: true,
+  },
+  {
+    path: "/carrinho",
+    component: Carrinho,
+    meta: {
+      breadcrumb: [{ parent: "Produtos", label: "Carrinho" }],
+    },
+    isVisible: true,
+  },
+  {
+    path: "/produtos/:productName",
+    component: ProdutoDetalhes,
+    meta: {
+      breadcrumb: [{ parent: "Produtos", label: "Detalhes do Produto" }],
+    },
+    isVisible: true,
+  },
+  {
+    path: "/produtos/pedido/concluir-pagamento/:paymentId",
+    component: ConcluirPagamento,
+    meta: {
+      breadcrumb: [{parent: "Carrinho", label: "Concluir pedido"}],
+    },
+    isVisible: true
+  },
+  {
+    path: "/infos/edit",
+    component: UserInfo,
+    meta: {
+      breadcrumb: [{ parent: "Informações", label: "Usuário" }],
+    }
+  },
+];

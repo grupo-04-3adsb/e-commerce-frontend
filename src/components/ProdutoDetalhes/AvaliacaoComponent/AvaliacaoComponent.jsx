@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Divider, Image } from "@nextui-org/react";
 import StarRating from "./StarComponent";
 import { getAvaliacoesPorProduto } from "../../../hooks/api/avaliacaoApi";
+import { formatarISOParaDataHora } from "../../../utils/DateFormat";
 
 export default function AvaliacaoComponent({ produtoId }) {
   const [avaliacoes, setAvaliacoes] = useState([]);
@@ -11,6 +12,7 @@ export default function AvaliacaoComponent({ produtoId }) {
       try {
         const dados = await getAvaliacoesPorProduto(produtoId);
         setAvaliacoes(dados);
+        console.log("Avaliação: ", dados)
       } catch (error) {
         console.error("Erro ao buscar avaliações:", error);
       }
@@ -36,7 +38,7 @@ export default function AvaliacaoComponent({ produtoId }) {
                   alt="Avatar do usuário"
                   height={40}
                   radius="sm"
-                  src={avaliacao.avatarUrl || "https://via.placeholder.com/150"}
+                  src={avaliacao?.usuario?.imgUrl || "https://via.placeholder.com/150"}
                   width={40}
                 />
                 <div>
@@ -44,7 +46,7 @@ export default function AvaliacaoComponent({ produtoId }) {
                     {avaliacao.nomeUsuario || "Usuário Anônimo"}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {avaliacao.data || "Data não informada"}
+                    {formatarISOParaDataHora(avaliacao.dataAvaliacao) || "Data não informada"}
                   </p>
                 </div>
               </CardHeader>

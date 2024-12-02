@@ -13,7 +13,6 @@ const ProdutosNovidade = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        console.log("Carregando produtos mais recentes...");
         const produtosDataRes = await getProdutos({
           filter: {},
           page: 0,

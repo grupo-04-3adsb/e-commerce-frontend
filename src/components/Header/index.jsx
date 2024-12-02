@@ -184,15 +184,16 @@ const Header = () => {
 
           <Button
             className={style.btnIcon}
-            size="lg"
-            color="white"
-            variant="flat"
+            size="sm"
+            color="default"
+            variant="bordered"
             isIconOnly
-            endContent={<BiCart />}
             onClick={() => {
               window.location.href = "/carrinho";
             }}
-          />
+          >
+            <BiCart color="#fff" />
+          </Button>
         </div>
       </div>
       <Navbar

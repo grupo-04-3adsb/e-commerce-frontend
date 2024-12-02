@@ -21,7 +21,14 @@ const FormComponent = ({
   const [isVisible, setIsVisible] = useState(visible);
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
-  const [formData, setFormData] = useState(defaultValues);
+  const [formData, setFormData] = useState(() => {
+    return fields.reduce((acc, row) => {
+      row.forEach((field) => {
+        acc[field.name] = defaultValues[field.name] || "";
+      });
+      return acc;
+    }, {});
+  });
   const [passwordVisibility, setPasswordVisibility] = useState({});
   const { googleError, googleData } = useGoogle();
 
@@ -46,17 +53,16 @@ const FormComponent = ({
       return () => clearInterval(intervalId);
     }
   }, [visible]);
-
+  
   useEffect(() => {
-    const isFormDataDifferent = Object.keys(defaultValues).some(
-      (key) => formData[key] !== defaultValues[key]
-    );
-
-    if (isFormDataDifferent) {
-      setFormData(defaultValues);
-    }
+    setFormData((prevState) => {
+      const isDifferent = Object.keys(defaultValues).some(
+        (key) => prevState[key] !== defaultValues[key]
+      );
+      return isDifferent ? { ...prevState, ...defaultValues } : prevState;
+    });
   }, [defaultValues]);
-
+  
   useEffect(() => {
     if (apiMessage?.error || apiMessage?.success) {
       setMessageVisible(true);
@@ -188,9 +194,7 @@ const FormComponent = ({
                         variant="bordered"
                         label={field.label}
                         name={field.name}
-                        value={
-                          formData[field.name] || defaultValues[field.name]
-                        }
+                        value={formData[field.name] ?? ""}
                         onChange={(e) =>
                           handleChange(field.name, e.target.value)
                         }

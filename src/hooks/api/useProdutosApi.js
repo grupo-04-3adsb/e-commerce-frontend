@@ -11,8 +11,35 @@ const useProdutosApi = () => {
     },
   });
 
+  const sugerirProdutos = useMutation({
+    mutationFn: async ({ carrinho, size = 10 }) => {
+      const payload ={
+        idPedido: null,
+        statusPedido: "CARRINHO",
+        concluido: false,
+        idsResponsaveis: [],
+        dataPedido: null,
+        cliente: null,
+        valorFrete: null,
+        itens: carrinho 
+      }
+      const response = await axiosInstance.post(
+        `/produtos/sugerir-produtos?limite=${size}`,
+        payload
+      );
+      return response.data;
+    },
+    onError: (error) => {
+      console.log(
+        "Erro ao sugerir produtos:",
+        error.response?.data || error.message
+      );
+    },
+  });
+
   return {
     pesquisarProdutoSkuNome: pesquisarProdutoSkuNome.mutateAsync,
+    sugerirProdutos: sugerirProdutos.mutateAsync,
   };
 };
 

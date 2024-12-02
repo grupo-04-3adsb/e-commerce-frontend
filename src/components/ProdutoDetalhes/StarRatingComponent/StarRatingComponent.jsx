@@ -28,7 +28,6 @@ const ProductRating = ({ productId }) => {
     const fetchRating = async () => {
       try {
         const media = await getMediaAvaliacaoPorProduto(productId);
-        console.log('Resposta da API:', media);
 
         const ratingValue = Number(media);
         

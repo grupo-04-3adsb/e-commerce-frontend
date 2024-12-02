@@ -54,7 +54,6 @@ function InfoUsuarios() {
               Bem-vindo, {usuario?.usuario?.nome}
             </h2>
             <p>{usuario?.usuario?.email}</p>
-            <Button className={styles.customButton}>Editar perfil</Button>
             <Link to="/infos/edit">
               <Button className={styles.customButton}>
                 Editar perfil

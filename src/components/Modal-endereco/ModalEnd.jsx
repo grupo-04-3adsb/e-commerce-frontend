@@ -58,9 +58,7 @@ export default function ModalEnd({ endereco, textoBotao, className, isEditando }
   const handleSubmit = async () => {
     if(isEditando){
       try {
-        console.log("Submitting data:", formData);
         const IdEndereco = endereco.id
-        console.log("IdEndereco: ", IdEndereco)
         await editarEndereco({
           putDto: formData,
           idEndereco: IdEndereco
@@ -72,7 +70,6 @@ export default function ModalEnd({ endereco, textoBotao, className, isEditando }
       }
     }else{
       try {
-        console.log("Submitting data:", formData);
         await cadastrarEndereco(formData);
         alert("Endereço atualizado com sucesso!");
       } catch (error) {

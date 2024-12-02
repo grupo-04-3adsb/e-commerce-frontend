@@ -19,7 +19,7 @@ const usuarioSlice = createSlice({
     logout: (state) => {
       state.usuario = null;
       state.isUsuarioLogado = false;   
-      state.token = null 
+      state.token = "" 
     },
   },
 });

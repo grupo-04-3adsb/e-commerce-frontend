@@ -11,7 +11,6 @@ const ItemCarrinhoModal = ({
   imagemAtual,
   setImagemAtual,
   avancarImagem,
-  quantidade,
   alterarQuantidade,
   handleRemoveItem,
   setQuantidade,
@@ -20,7 +19,7 @@ const ItemCarrinhoModal = ({
     if (itemSelecionado) {
       setQuantidade(itemSelecionado.quantidade);
     }
-  });
+  }, [itemSelecionado, setQuantidade]);
 
   return (
     <ModalGeneric
@@ -57,6 +56,7 @@ const ItemCarrinhoModal = ({
                 ))}
               </div>
             </div>
+
             <div className="flex-1">
               <h5 className="text-lg font-semibold text-gray-800 mb-4">
                 Informações do Produto
@@ -82,7 +82,7 @@ const ItemCarrinhoModal = ({
                 </li>
                 <li>
                   <strong>Quantidade:</strong>
-                  <span>{quantidade}</span>
+                  <span>{itemSelecionado?.quantidade}</span>
                 </li>
                 <li>
                   <strong>Preço Unitário:</strong> R${" "}
@@ -91,34 +91,42 @@ const ItemCarrinhoModal = ({
                 <li>
                   <strong>Desconto:</strong> {itemSelecionado?.produto.desconto}
                   % | R$
-                  {itemSelecionado?.produto.preco -
-                    (
-                      (itemSelecionado?.produto.desconto *
-                        itemSelecionado?.produto.preco) /
+                  {(
+                    itemSelecionado?.produto.preco -
+                    (itemSelecionado?.produto.desconto *
+                      itemSelecionado?.produto.preco) /
                       100
-                    ).toFixed(2)}
+                  ).toFixed(2)}
                 </li>
                 <li>
                   <strong>Valor das personalizações:</strong> R$
                   {itemSelecionado?.personalizacoes
-                    .reduce(
-                      (acc, personalizacao) =>
-                        acc + personalizacao?.opcaoPersonalizacao?.acrescimo,
-                      0
-                    )
-                    .toFixed(2)}
+                    ? itemSelecionado?.personalizacoes
+                        .reduce(
+                          (acc, personalizacao) =>
+                            acc +
+                            personalizacao?.opcaoPersonalizacao?.acrescimo,
+                          0
+                        )
+                        .toFixed(2)
+                    : 0.0}
                 </li>
                 <li>
                   <strong>Preço Final:</strong> R${" "}
-                  {(
-                    itemSelecionado?.produto.preco -
-                    itemSelecionado?.produto.preco *
-                      (itemSelecionado?.produto.desconto / 100) +
-                    itemSelecionado?.personalizacoes.reduce(
-                      (acc, personalizacao) =>
-                        acc + personalizacao?.opcaoPersonalizacao?.acrescimo,
-                      0
-                    )
+                  {(itemSelecionado?.produto?.preco
+                    ? itemSelecionado.produto.preco -
+                      itemSelecionado.produto.preco *
+                        (itemSelecionado.produto.desconto / 100) +
+                      (itemSelecionado.personalizacoes
+                        ? itemSelecionado.personalizacoes.reduce(
+                            (acc, personalizacao) =>
+                              acc +
+                              (personalizacao?.opcaoPersonalizacao?.acrescimo ||
+                                0),
+                            0
+                          )
+                        : 0)
+                    : 0
                   ).toFixed(2)}
                 </li>
                 <li>
@@ -127,12 +135,16 @@ const ItemCarrinhoModal = ({
                     (itemSelecionado?.produto.preco -
                       itemSelecionado?.produto.preco *
                         (itemSelecionado?.produto.desconto / 100) +
-                      itemSelecionado?.personalizacoes.reduce(
-                        (acc, personalizacao) =>
-                          acc + personalizacao?.opcaoPersonalizacao?.acrescimo,
-                        0
-                      )) *
-                    quantidade
+                      (itemSelecionado?.personalizacoes
+                        ? itemSelecionado?.personalizacoes.reduce(
+                            (acc, personalizacao) =>
+                              acc +
+                              (personalizacao?.opcaoPersonalizacao?.acrescimo ||
+                                0),
+                            0
+                          )
+                        : 0)) *
+                    itemSelecionado?.quantidade
                   ).toFixed(2)}
                 </li>
               </ul>
@@ -143,76 +155,67 @@ const ItemCarrinhoModal = ({
             <h5 className="text-lg font-semibold text-gray-800 mb-4">
               Personalizações Escolhidas
             </h5>
-            {itemSelecionado?.personalizacoes.length > 0 ? (
-              <ul className="space-y-4">
+            {itemSelecionado?.personalizacoes &&
+            itemSelecionado?.personalizacoes.length > 0 ? (
+              <ul className="space-y-6">
                 {itemSelecionado?.personalizacoes.map(
                   (personalizacao, index) => (
-                    <div key={index}>
-                      <div className="flex flex-row justify-between items-end">
-                        <li className="p-4 rounded-lg border">
-                          <h6 className="font-semibold text-gray-700 mb-2">
+                    <li
+                      key={index}
+                      className="p-4 rounded-lg border shadow-lg bg-white"
+                    >
+                      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                        <div className="flex-shrink-0">
+                          <Image
+                            src={
+                              personalizacao.opcaoPersonalizacao?.urlImagemOpcao
+                            }
+                            alt="Imagem Personalizada"
+                            width={128}
+                            height={128}
+                            objectFit="cover"
+                            className="rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
+                          />
+                        </div>
+
+                        <div className="flex-1">
+                          <h6 className="text-lg font-semibold text-gray-800 mb-2">
                             {personalizacao.personalizacao?.nomePersonalizacao}
                           </h6>
-                          <p className="text-sm text-gray-600">
-                            <strong>Detalhes:</strong>
-                            <br />
-                            Opção escolhida:{" "}
-                            {personalizacao.opcaoPersonalizacao?.nomeOpcao}
+                          <p className="text-gray-600 text-sm mb-2">
+                            <strong>Detalhes:</strong>{" "}
+                            {personalizacao.opcaoPersonalizacao?.nomeOpcao ||
+                              "N/A"}
                           </p>
                           {personalizacao.personalizacao?.tipoPersonalizacao ===
                             "Texto" && (
-                            <p>
-                              Texto Personalizado:{" "}
+                            <p className="text-gray-600 text-sm">
+                              <strong>Texto Personalizado:</strong>{" "}
                               <span className="font-medium">
                                 {personalizacao.descricaoPersonalizacao}
                               </span>
                             </p>
                           )}
-                          {personalizacao.personalizacao?.tipoPersonalizacao ===
-                            "Imagem" && (
-                            <div>
-                              <p>Imagem Personalizada:</p>
-                              <Image
-                                src={personalizacao.descricaoPersonalizacao}
-                                alt="Imagem Personalizada"
-                                width={128}
-                                height={128}
-                                objectFit="cover"
-                                className="rounded-lg"
-                              />
-                            </div>
-                          )}
-                          {personalizacao.personalizacao?.tipoPersonalizacao ===
-                            "Seleção" && (
-                            <div>
-                              <p>Opção Escolhida:</p>
-                              <p className="font-medium">
-                                {personalizacao.descricaoPersonalizacao}
-                              </p>
-                            </div>
-                          )}
-                          <p className="text-sm text-gray-600">
+                          <p className="text-gray-600 text-sm">
                             <strong>Custo Adicional:</strong> R${" "}
                             {parseFloat(
                               personalizacao.opcaoPersonalizacao?.acrescimo
                             ).toFixed(2) || "0.00"}
                           </p>
-                        </li>
-                        <li>
+                        </div>
+                        {personalizacao.personalizacao?.tipoPersonalizacao ===
+                        "Imagem" ? (
                           <Image
-                            src={
-                              personalizacao.opcaoPersonalizacao?.urlImagemOpcao
-                            }
-                            alt={personalizacao.opcaoPersonalizacao?.nomeOpcao}
+                            src={personalizacao?.descricaoPersonalizacao}
+                            alt="Imagem Personalizada"
                             width={128}
                             height={128}
                             objectFit="cover"
-                            className="rounded-lg mb-5"
+                            className="rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
                           />
-                        </li>
+                        ) : null}
                       </div>
-                      <Divider />
-                    </div>
+                    </li>
                   )
                 )}
               </ul>
@@ -222,6 +225,9 @@ const ItemCarrinhoModal = ({
               </p>
             )}
           </div>
+
+          <Divider />
+
           <div className="flex flex-col">
             <h5 className="text-lg font-semibold text-gray-800 mb-4">
               Quantidade
@@ -234,7 +240,7 @@ const ItemCarrinhoModal = ({
                 -
               </button>
               <span className="px-4 py-2 bg-white border rounded-lg shadow-md text-gray-800">
-                {quantidade}
+                {itemSelecionado?.quantidade}
               </span>
               <button
                 className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all shadow-md"
@@ -244,15 +250,14 @@ const ItemCarrinhoModal = ({
               </button>
             </div>
           </div>
-          <div className="flex justify-end gap-4 mt-4">
+
+          <div className="flex justify-end gap-4">
             <Button
-              size="sm"
-              variant="solid"
-              className="bg-[#EB6D6D] text-white"
-              startContent={<BiTrash size={20} />}
+              color="danger"
+              icon={<BiTrash />}
               onClick={() => handleRemoveItem(itemSelecionado)}
             >
-              Remover Item
+              Remover
             </Button>
           </div>
         </div>

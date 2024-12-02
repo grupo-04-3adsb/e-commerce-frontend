@@ -13,7 +13,6 @@ const ProdutosMaisVendidos = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        console.log("Carregando produtos mais vendidos...");
         const produtosDataRes = await getProdutos({
           filter: { popular: true },
           page: 0,

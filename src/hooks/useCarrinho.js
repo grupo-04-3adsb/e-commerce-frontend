@@ -6,33 +6,52 @@ import {
   removeItemFromCart,
 } from "../store/slices/Carrinho/slice";
 import useCarrinhoApi from "./api/useCarrinhoApi";
+import { useToast } from "../context/ToastContext";
+import { loading } from "../store/slices/Loading/slice";
 
 const useCarrinho = () => {
-  const { buscarCarrinhoPorIdUsuario, adicionarItemCarrinho } =
-    useCarrinhoApi();
+  const {
+    buscarCarrinhoPorIdUsuario,
+    adicionarItemCarrinho,
+    removerItemPedido,
+  } = useCarrinhoApi();
   const dispatch = useDispatch();
   const carrinho = useSelector((state) => state.carrinho);
-  const isUsuarioLogado = useSelector((state) => state.usuario);
-  const usuario = useSelector((state) => state.usuario?.usuario?.usuario)
+  const isUsuarioLogado = useSelector((state) => state?.usuario);
+  const usuario = useSelector((state) => state.usuario?.usuario?.usuario);
 
-  const addItem = (item) => {
-    console.log("Preparando item pedido:", item)
-    let objItem = construirObjItemPedido(item)
-    if (verificarUnicidade(objItem, carrinho)) {
-      alert("Produto já adicionado ao carrinho com as mesmas personalizações.");
-      throw new Error(
-        "Produto já adicionado ao carrinho com as mesmas personalizações."
-      );
-    }
-    dispatch(addItemToCart(objItem));
-    if (isUsuarioLogado) {
-      objItem = construirItemPedidoRequestDto(item);
-      console.log(objItem)
-      const response = adicionarItemCarrinho({
-        itemPedido: objItem,
-        idUsuario: usuario.idUsuario
-      });
-      console.log("Response: ", response)
+  const toast = useToast();
+
+  const addItem = async (item) => {
+    dispatch(loading(true));
+    try {
+      let objItem = construirObjItemPedido(item);
+
+      if (verificarUnicidade(objItem, carrinho)) {
+        toast.error("Este produto já foi adicionado ao carrinho!");
+        dispatch(loading(false));
+
+        return false;
+      }
+
+      dispatch(addItemToCart(objItem));
+
+      if (isUsuarioLogado && usuario) {
+        objItem = construirItemPedidoRequestDto(item);
+        await adicionarItemCarrinho({
+          itemPedido: objItem,
+          idUsuario: usuario.idUsuario,
+        });
+      }
+
+      toast.success("Produto adicionado ao carrinho com sucesso!");
+      dispatch(loading(false));
+      return true;
+    } catch (error) {
+      console.error("Erro ao adicionar item ao carrinho:", error);
+      toast.error("Erro ao adicionar o produto ao carrinho. Tente novamente.");
+      dispatch(loading(false));
+      return false;
     }
   };
 
@@ -46,60 +65,35 @@ const useCarrinho = () => {
 
   const removeItem = (item) => {
     dispatch(removeItemFromCart(item));
+    if (isUsuarioLogado && usuario) {
+      removerItemPedido(item.id);
+    }
+    toast.success("Produto removido do carrinho com sucesso!");
   };
 
   const sincronizarCarrinho = async (idUsuario) => {
-    console.log("Sincronizando carrinho do usuário:", idUsuario);
     try {
-      const carrinhoLocal = JSON.parse(localStorage.getItem("carrinho")) || [];
-
-      const response = await buscarCarrinhoPorIdUsuario(idUsuario);
-      const carrinhoBackend = response.data || [];
-
-      const carrinhoConsolidado = mesclarCarrinhos(
-        carrinhoLocal,
-        carrinhoBackend
-      );
-
-      for (const item of carrinhoConsolidado) {
-        await adicionarItemCarrinho({
-          itemPedido: construirObjItemPedido(item),
-          idUsuario,
-        });
+      for (const item of carrinho?.itens || []) {
+        if (!item.id) {
+          const objItem = construirItemPedidoRequestDto(item);
+          await adicionarItemCarrinho({
+            itemPedido: objItem,
+            idUsuario: idUsuario,
+          });
+        }
       }
 
-      setCarrinho(carrinhoConsolidado);
-      localStorage.setItem("carrinho", JSON.stringify(carrinhoConsolidado));
+      const response = await buscarCarrinhoPorIdUsuario(idUsuario);
+      const carrinhoBackend = response.data.itens || [];
+      setCarrinho(carrinhoBackend);
     } catch (error) {
       console.error("Erro ao sincronizar o carrinho:", error);
     }
   };
 
-  const mesclarCarrinhos = (local, backend) => {
-    const itensMap = new Map();
-
-    local.forEach((item) => {
-      itensMap.set(item.produto.id, { ...item });
-    });
-
-    backend?.itens.forEach((item) => {
-      if (itensMap.has(item.produto.id)) {
-        const itemExistente = itensMap.get(item.produto.id);
-        itensMap.set(item.produto.id, {
-          ...itemExistente,
-          quantidade: itemExistente.quantidade + item.quantidade,
-        });
-      } else {
-        itensMap.set(construirObjItemPedido(item));
-      }
-    });
-
-    return Array.from(itensMap.values());
-  };
-
   const construirObjItemPedido = (item) => {
     return {
-      id: item.id || new Date().getTime() + "_" + item.produto.nome,
+      id: item.id,
       quantidade: item?.quantidade || 1,
       valor: item.preco,
       valorTotal:
@@ -111,7 +105,8 @@ const useCarrinho = () => {
       custoProducao: null,
       feito: null,
       produto: item,
-      personalizacoes: item.personalizacoes,
+      personalizacoes: item.personalizacoesCliente,
+      idUnico: Math.random().toString(36).substr(2, 9),
     };
   };
 
@@ -126,15 +121,17 @@ const useCarrinho = () => {
       valorFrete: item.valorFrete || null,
       custoProducao: item.custoProducao || null,
       feito: item.feito || null,
-      fkProduto: item.id,
+      fkProduto: item?.produto?.id || item?.id || null,
       fkPedido: item.fkPedido || null,
-      personalizacoes: item?.personalizacao ? item.personalizacoes.map((personalizacao) => {
-        return {
-          descricaoPersonalizacao: personalizacao.descricaoPersonalizacao,
-          fkPersonalizacao: personalizacao.personalizacao.idPersonalizacao,
-          fkOpcaoPersonalizacao: personalizacao.opcaoPersonalizacao.idOpcao
-        }
-      }) : [],
+      personalizacoes: item?.personalizacoesCliente
+        ? item.personalizacoesCliente.map((personalizacao) => {
+            return {
+              descricaoPersonalizacao: personalizacao.descricaoPersonalizacao,
+              fkPersonalizacao: personalizacao.personalizacao.idPersonalizacao,
+              fkOpcaoPersonalizacao: personalizacao.opcaoPersonalizacao.idOpcao,
+            };
+          })
+        : [],
     };
   };
 
@@ -144,7 +141,7 @@ const useCarrinho = () => {
     for (const item of itens) {
       if (item?.produto?.id === novoItem?.produto?.id) {
         const personalizacoesExistentes = item.personalizacoes || [];
-        const personalizacoesNovas = novoItem.personalizacoes || [];
+        const personalizacoesNovas = novoItem.personalizacoesCliente || [];
 
         if (personalizacoesExistentes.length === personalizacoesNovas.length) {
           const listasIguais =
@@ -181,6 +178,23 @@ const useCarrinho = () => {
     return mesmaPersonalizacao && mesmaDescricao;
   };
 
+  const updateItemQuantity = (id, quantidade) => {
+    dispatch(updateItemQuantity({ id, quantidade }));
+    if (isUsuarioLogado && usuario) {
+      atualizarItemPedido({
+        idItemPedido: id,
+        itemPedido: { quantidade },
+      });
+    }
+  };
+
+  const refreshCart = async () => {
+    if (isUsuarioLogado && usuario?.idUsuario) {
+      clearCarrinho();
+      await sincronizarCarrinho(usuario.idUsuario);
+    }
+  };
+
   return {
     carrinho,
     addItem,
@@ -188,7 +202,9 @@ const useCarrinho = () => {
     clearCarrinho,
     removeItem,
     sincronizarCarrinho,
-    mesclarCarrinhos,
+    construirItemPedidoRequestDto,
+    updateItemQuantity,
+    refreshCart,
   };
 };
 

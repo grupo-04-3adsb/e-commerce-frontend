@@ -12,10 +12,28 @@ import {
 } from "@nextui-org/react";
 import useCarrinho from "../../hooks/useCarrinho";
 import ItemCarrinhoModal from "../Modais/ItemCarrinhoModal";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaPix } from "react-icons/fa6";
+import useFreteApi from "../../hooks/api/useFreteApi";
+import { toast } from "react-toastify";
+import OpcoesFrete from "../../components/OpcoesFrete";
+import { useSelector } from "react-redux";
+import { updateItemQuantity } from "../../store/slices/Carrinho/slice";
+import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi";
+import ModalGeneric from "../../components/Modal";
+import { FaHome } from "react-icons/fa";
+import useProdutosApi from "../../hooks/api/useProdutosApi";
+import Sugestoes from "../../components/Sugestoes";
 
 const Carrinho = () => {
-  const { carrinho, removeItem } = useCarrinho();
+  const { carrinho, removeItem, construirItemPedidoRequestDto, refreshCart } =
+    useCarrinho();
+  const { carregarInfosEnderecos } = useUsuariosInfos();
+  const { calcularFreteCarrinho } = useFreteApi();
+  const { sugerirProdutos } = useProdutosApi();
+  const [opcoesFrete, setOpcoesFrete] = useState([]);
+  const [opcaoFrete, setOpcaoFrete] = useState(null);
+  const [produtosSugeridos, setProdutosSugeridos] = useState([]);
+  const usuario = useSelector((state) => state.usuario?.usuario?.usuario);
 
   const [cep, setCep] = useState("");
   const [isModalVisualizarItem, setIsModalVisualizarItem] = useState(false);
@@ -23,6 +41,19 @@ const Carrinho = () => {
 
   const [quantidade, setQuantidade] = useState(1);
   const [imagemAtual, setImagemAtual] = useState(0);
+  const [enderecosUsuario, setEnderecosUsuario] = useState([]);
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState(null);
+
+  const [isModalEnderecosVisible, setIsModalEnderecosVisible] = useState(false);
+
+  const handleOpenModalEnderecos = () => setIsModalEnderecosVisible(true);
+  const handleCloseModalEnderecos = () => setIsModalEnderecosVisible(false);
+
+  const selecionarEndereco = (endereco) => {
+    setCep(endereco.cep);
+    setEnderecoSelecionado(endereco);
+    setIsModalEnderecosVisible(false);
+  };
 
   const imagensCarrossel = [
     { url: itemSelecionado?.produto.urlProduto },
@@ -38,21 +69,11 @@ const Carrinho = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    console.log("Item Selecionado:", itemSelecionado);
-  }, [itemSelecionado]);
-
-  const consultarFrete = async () => {
-    console.log("Consultando frete para o CEP:", cep);
-  };
-
   const handleRemoveItem = (item) => {
-    console.log("Removendo item:", item);
     removeItem(item);
   };
 
   const handleVisualizarItem = (item) => {
-    console.log("Visualizando item:", item);
     setItemSelecionado(item);
     setIsModalVisualizarItem(true);
   };
@@ -62,22 +83,99 @@ const Carrinho = () => {
     setItemSelecionado(null);
   };
 
-  const alterarQuantidade = (acao) => {
-    setQuantidade((prev) => {
-      if (acao === "incrementar") {
-        return prev + 1;
-      } else if (acao === "decrementar" && prev > 1) {
-        return prev - 1;
-      }
-      return prev;
+  const handleCalcularFrete = async () => {
+    if (!cep) {
+      toast.error("Digite um CEP válido para calcular o frete.");
+      return;
+    }
+    const payload = carrinho.itens.map((item) => {
+      return construirItemPedidoRequestDto(item);
     });
+    if (carrinho.itens.length > 0) {
+      const response = await calcularFreteCarrinho({ cep, carrinho: payload });
+      setOpcoesFrete(response);
+    }
   };
+
+  const alterarQuantidade = (acao) => {
+    if (!itemSelecionado) return;
+
+    const novaQuantidade =
+      acao === "incrementar"
+        ? quantidade + 1
+        : quantidade > 1
+        ? quantidade - 1
+        : quantidade;
+
+    setQuantidade(novaQuantidade);
+    itemSelecionado.quantidade = novaQuantidade;
+    updateItemQuantity(itemSelecionado.idUnico, novaQuantidade);
+  };
+
+  useEffect(() => {
+    const payload = carrinho.itens.map((item) => {
+      return construirItemPedidoRequestDto(item);
+    });
+
+    sugerirProdutos({ carrinho: payload })
+      .then((response) => {
+        setProdutosSugeridos(response);
+        console.log("Produtos sugeridos:", response);
+      })
+      .catch((error) => {
+        console.error("Erro ao sugerir produtos:", error);
+      });
+
+    refreshCart();
+  }, []);
+
+  useEffect(() => {
+    if (usuario) {
+      const carregarDados = async () => {
+        try {
+          const response = await carregarInfosEnderecos();
+          setEnderecosUsuario(response);
+          const enderecoPadrao = response.find(
+            (endereco) => endereco.enderecoPadrao
+          );
+
+          if (enderecoPadrao) {
+            setEnderecoSelecionado(enderecoPadrao);
+            setCep(enderecoPadrao.cep);
+
+            const payload = carrinho.itens.map((item) =>
+              construirItemPedidoRequestDto(item)
+            );
+
+            if (carrinho.itens.length > 0) {
+              const responseFrete = await calcularFreteCarrinho({
+                cep: enderecoPadrao.cep,
+                carrinho: payload,
+              });
+
+              setOpcoesFrete(responseFrete);
+
+              if (responseFrete.length > 0) {
+                setOpcaoFrete(
+                  responseFrete.find((opcao) => opcao.name === "SEDEX")
+                );
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao carregar endereços ou calcular frete:", error);
+        }
+      };
+
+      carregarDados();
+    }
+  }, [usuario]);
 
   return (
     <div className="w-full flex flex-col gap-8 p-8">
       <ItemCarrinhoModal
-        alterarQuantidade={alterarQuantidade}
         avancarImagem={avancarImagem}
+        alterarQuantidade={alterarQuantidade}
         handleCloseModalVisualizarItem={handleCloseModalVisualizarItem}
         handleRemoveItem={handleRemoveItem}
         imagemAtual={imagemAtual}
@@ -88,16 +186,67 @@ const Carrinho = () => {
         setImagemAtual={setImagemAtual}
         setQuantidade={setQuantidade}
       />
+
+      {usuario && (
+        <ModalGeneric
+          title="Selecionar Endereço"
+          body={
+            <div className="grid grid-cols-1 gap-4">
+              {enderecosUsuario.map((endereco) => (
+                <div
+                  key={endereco.id}
+                  className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
+            ${
+              endereco.enderecoPadrao
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-300"
+            } 
+            ${
+              endereco.id === enderecoSelecionado?.id
+                ? "ring-2 ring-blue-600"
+                : ""
+            }
+            hover:shadow-lg hover:border-blue-500`}
+                  onClick={() => selecionarEndereco(endereco)}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-semibold text-lg">
+                      {endereco.rua}, {endereco.numero}
+                    </h3>
+                    {endereco.enderecoPadrao && (
+                      <span className="flex items-center gap-1 text-blue-500">
+                        <FaHome />
+                        <span className="text-sm">Padrão</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    {endereco.bairro} - {endereco.cidade}/{endereco.estado}
+                  </p>
+                  <p className="text-sm text-gray-500">CEP: {endereco.cep}</p>
+                  {endereco.instrucaoEntrega && (
+                    <p className="text-xs text-gray-400 italic mt-2">
+                      {endereco.instrucaoEntrega}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          }
+          isVisible={isModalEnderecosVisible}
+          onClose={handleCloseModalEnderecos}
+        />
+      )}
+
       <h1 className="flex items-center gap-3 text-gray-800">
         <BiCart size={32} />
         Carrinho de Compras
       </h1>
-
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-1">
-          <Card variant="bordered" className="w-full h-full">
+          <Card className="w-full h-full rounded-sm">
             <CardHeader>
-              <h3 className="text-xl font-semibold">Produtos</h3>
+              <h3 className="text-md font-semibold">Produtos</h3>
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
@@ -128,7 +277,7 @@ const Carrinho = () => {
                 carrinho.itens.map((item, index) => (
                   <Card
                     key={index}
-                    className="shadow-md border rounded-xl p-6 transition-transform transform hover:scale-[1.02] bg-white"
+                    className=" border rounded-md p-6 transition-transform transform hover:scale-[1.01] "
                   >
                     <CardBody className="flex flex-col md:flex-row items-center gap-6">
                       <div className="w-28 h-28 flex-shrink-0">
@@ -151,28 +300,36 @@ const Carrinho = () => {
                         <p className="text-sm text-gray-700 mt-3">
                           <strong>Personalizações:</strong>{" "}
                           <span className="font-medium">
-                            {item.personalizacoes.length || "Nenhuma"}
+                            {item?.personalizacoes
+                              ? item.personalizacoes.length > 0
+                                ? item.personalizacoes.length
+                                : "Nenhuma"
+                              : "Nenhuma"}
                           </span>
-                          {item.personalizacoes.length > 0 && (
-                            <span className="ml-2 text-sm text-gray-600">
-                              +R$
-                              {(
-                                item.personalizacoes.reduce(
-                                  (acc, p) =>
-                                    acc + p?.opcaoPersonalizacao?.acrescimo,
-                                  0
-                                ) * item.quantidade
-                              ).toFixed(2)}
-                            </span>
-                          )}
+                          {item?.personalizacoes &&
+                            item?.personalizacoes.length > 0 && (
+                              <span className="ml-2 text-sm text-gray-600">
+                                +R$
+                                {(
+                                  item.personalizacoes.reduce(
+                                    (acc, p) =>
+                                      acc + p?.opcaoPersonalizacao?.acrescimo,
+                                    0
+                                  ) * item.quantidade
+                                ).toFixed(2)}
+                              </span>
+                            )}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-gray-800">
                           R${" "}
-                          {item?.valorTotal
-                            ? item?.valorTotal.toFixed(2)
-                            : "0.00"}
+                          {(
+                            (item?.produto.preco -
+                              item?.produto.preco *
+                                (item?.produto.desconto / 100)) *
+                            item?.quantidade
+                          ).toFixed(2)}
                         </p>
                         {item?.desconto > 0 && (
                           <p className="text-sm text-green-500 text-right mt-1">
@@ -190,13 +347,17 @@ const Carrinho = () => {
                           <span className="font-medium text-gray-900">
                             R${" "}
                             {(
-                              item.valorTotal +
-                              item.personalizacoes.reduce(
-                                (acc, p) =>
-                                  acc + p?.opcaoPersonalizacao?.acrescimo,
-                                0
-                              ) *
-                                item.quantidade
+                              (item.produto.preco -
+                                item.produto.preco *
+                                  (item.produto.desconto / 100) +
+                                (item.personalizacoes
+                                  ? item.personalizacoes.reduce(
+                                      (acc, p) =>
+                                        acc + p?.opcaoPersonalizacao?.acrescimo,
+                                      0
+                                    )
+                                  : 0)) *
+                              item.quantidade
                             ).toFixed(2)}
                           </span>
                         </p>
@@ -235,9 +396,9 @@ const Carrinho = () => {
           </Card>
         </div>
         <div className="w-full md:w-[35%]">
-          <Card variant="flat" className="w-full bg-gray-50">
+          <Card variant="flat" className="w-full rounded-sm">
             <CardHeader>
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h3 className="text-sm font-semibold text-gray-800">
                 Resumo do Pedido
               </h3>
             </CardHeader>
@@ -248,17 +409,66 @@ const Carrinho = () => {
                 <p className="font-bold text-gray-800">
                   R$
                   {carrinho.itens
-                    .reduce((acc, item) => acc + item.valorTotal, 0)
+                    .reduce(
+                      (acc, item) =>
+                        acc + item?.produto.preco * item.quantidade,
+                      0
+                    )
+                    .toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between mb-4">
+                <p className="text-gray-700">
+                  Custo adicional com personalizações:
+                </p>
+                <p className="font-bold text-gray-800">
+                  R${" "}
+                  {carrinho.itens
+                    .reduce(
+                      (acc, item) =>
+                        acc +
+                        (item?.personalizacoes
+                          ? item?.personalizacoes.reduce(
+                              (acc, personalizacao) =>
+                                acc +
+                                personalizacao?.opcaoPersonalizacao?.acrescimo,
+                              0
+                            )
+                          : 0) *
+                          item.quantidade,
+                      0
+                    )
+                    .toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between mb-4">
+                <p className="text-gray-700">Desconto:</p>
+                <p
+                  className={`font-bold text-gray-800 ${
+                    carrinho.itens.some((item) => item?.desconto > 0)
+                      ? "text-green-500"
+                      : ""
+                  }`}
+                >
+                  - R$
+                  {carrinho.itens
+                    .reduce(
+                      (acc, item) =>
+                        acc +
+                        item?.produto.preco *
+                          (item?.produto.desconto / 100) *
+                          item.quantidade,
+                      0
+                    )
                     .toFixed(2)}
                 </p>
               </div>
               <div className="flex justify-between mb-4">
                 <p className="text-gray-700">Frete:</p>
                 <p className="font-bold text-gray-800">
-                  R$
-                  {carrinho.itens
-                    .reduce((acc, item) => acc + item.valorFrete, 0)
-                    .toFixed(2)}
+                  {opcaoFrete
+                    ? `${opcaoFrete?.currency} ${opcaoFrete?.price}`
+                    : "R$ 0.00"}
                 </p>
               </div>
               <Divider className="my-4" />
@@ -266,13 +476,42 @@ const Carrinho = () => {
                 <p className="text-xl font-semibold text-gray-800">Total:</p>
                 <p className="text-xl font-bold text-gray-900">
                   R$
-                  {carrinho.itens
-                    .reduce(
-                      (acc, item) => acc + item?.valorTotal + item.valorFrete,
+                  {(
+                    carrinho.itens.reduce(
+                      (acc, item) =>
+                        acc +
+                        (item?.produto.preco -
+                          item?.produto.preco * (item?.produto.desconto / 100) +
+                          (item?.personalizacoes
+                            ? item?.personalizacoes.reduce(
+                                (acc, personalizacao) =>
+                                  acc +
+                                  personalizacao?.opcaoPersonalizacao
+                                    ?.acrescimo,
+                                0
+                              )
+                            : 0)) *
+                          item?.quantidade,
                       0
-                    )
-                    .toFixed(2)}
+                    ) + (opcaoFrete ? parseFloat(opcaoFrete?.price) : 0)
+                  ).toFixed(2)}
                 </p>
+              </div>
+              <Divider className="my-4" />
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Forma de Pagamento
+                </h3>
+                <div className="flex items-center gap-4 bg-green-50 p-4 rounded-lg shadow-md border
+                border-green-500 transition-all
+                ">
+                  <FaPix size={32} className="text-green-500" />
+                  <div>
+                    <p className="text-gray-800 font-bold text-md">
+                      Pagamento via Pix
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="mt-6">
                 <Input
@@ -285,26 +524,69 @@ const Carrinho = () => {
                   color="primary"
                 />
                 <Button
+                  isDisabled={cep.length < 8 && carrinho.itens.length === 0}
                   color="primary"
-                  onClick={consultarFrete}
-                  className="w-full bg-[#0070F3]"
+                  onClick={handleCalcularFrete}
+                  className="w-full bg-[#0070F3] mb-4"
                 >
                   Consultar Frete
                 </Button>
+                {usuario && (
+                  <Button
+                    variant="ghost"
+                    className="w-full text-gray-600"
+                    onClick={handleOpenModalEnderecos}
+                  >
+                    Escolher Endereço Salvo
+                  </Button>
+                )}
               </div>
+              {opcoesFrete.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                    Opções de Frete
+                  </h3>
+                  <OpcoesFrete
+                    opcoesFrete={opcoesFrete}
+                    opcaoSelecionada={opcaoFrete}
+                    setOpcaoFrete={setOpcaoFrete}
+                    enderecoSelecionado={enderecoSelecionado}
+                  />
+                </div>
+              )}
             </CardBody>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-1">
               <Button
                 color="danger"
-                variant="shadow"
+                variant="solid"
                 className="w-full bg-[#EB6D6D]"
+                isDisabled={
+                  carrinho.itens.length === 0 || !opcaoFrete || !usuario
+                }
               >
                 Finalizar Compra
               </Button>
+              {!usuario && (
+                <p className="text-gray-600">
+                  Faça login para finalizar a compra.
+                </p>
+              )}
+              {carrinho.itens.length === 0 && (
+                <p className="text-gray-600">
+                  Adicione itens ao carrinho para finalizar a compra.
+                </p>
+              )}
+              {!opcaoFrete && carrinho.itens.length > 0 && (
+                <p className="text-gray-600">
+                  Selecione uma opção de frete para finalizar a compra.
+                </p>
+              )}
             </CardFooter>
           </Card>
         </div>
       </div>
+      <Divider orientation="horizontal"/>
+      <Sugestoes produtosSugeridos={produtosSugeridos} />
     </div>
   );
 };
