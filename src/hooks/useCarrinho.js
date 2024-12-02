@@ -4,6 +4,7 @@ import {
   clearCart,
   setCart,
   removeItemFromCart,
+  setIdCarrinho,
 } from "../store/slices/Carrinho/slice";
 import useCarrinhoApi from "./api/useCarrinhoApi";
 import { useToast } from "../context/ToastContext";
@@ -14,6 +15,7 @@ const useCarrinho = () => {
     buscarCarrinhoPorIdUsuario,
     adicionarItemCarrinho,
     removerItemPedido,
+    atualizarCarrinho
   } = useCarrinhoApi();
   const dispatch = useDispatch();
   const carrinho = useSelector((state) => state.carrinho);
@@ -85,7 +87,8 @@ const useCarrinho = () => {
 
       const response = await buscarCarrinhoPorIdUsuario(idUsuario);
       const carrinhoBackend = response.data.itens || [];
-      setCarrinho(carrinhoBackend);
+      dispatch(setCart(carrinhoBackend));
+      dispatch(setIdCarrinho(response.data.id));
     } catch (error) {
       console.error("Erro ao sincronizar o carrinho:", error);
     }
@@ -195,6 +198,12 @@ const useCarrinho = () => {
     }
   };
 
+  const atualizarDadosCarrinho = async (carrinho) => {
+      const response = await atualizarCarrinho({ idCarrinho: carrinho.id , carrinho });
+      
+      return response;
+  }
+
   return {
     carrinho,
     addItem,
@@ -205,6 +214,7 @@ const useCarrinho = () => {
     construirItemPedidoRequestDto,
     updateItemQuantity,
     refreshCart,
+    atualizarDadosCarrinho
   };
 };
 

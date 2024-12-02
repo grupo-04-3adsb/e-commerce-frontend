@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import useUploadImage from "./useUploadImageApi";
 
 const useCarrinhoApi = () => {
-  const { token } = useSelector((state) => state?.usuario);
 
   const { uploadImage } = useUploadImage();
 
@@ -102,11 +101,25 @@ const useCarrinhoApi = () => {
     },
   });
 
+  const atualizarCarrinho = useMutation({
+    mutationFn: async ({ idCarrinho, carrinho }) => {
+      try {
+        const response = axiosInstance.put(`/pedidos/${idCarrinho}`, carrinho,
+        );
+        return true;
+      } catch (error) {
+        console.error("Erro ao atualizar carrinho:", error);
+        return false;
+      }
+    },
+  });
+
   return {
     adicionarItemCarrinho: adicionarItemCarrinho.mutateAsync,
     buscarCarrinhoPorIdUsuario: buscarCarrinhoPorIdUsuario.mutateAsync,
     removerItemPedido: removerItemPedido.mutateAsync,
     atualizarItemPedido: atualizarItemPedido.mutateAsync,
+    atualizarCarrinho: atualizarCarrinho.mutateAsync,
   };
 };
 

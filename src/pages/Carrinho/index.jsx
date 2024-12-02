@@ -25,8 +25,13 @@ import useProdutosApi from "../../hooks/api/useProdutosApi";
 import Sugestoes from "../../components/Sugestoes";
 
 const Carrinho = () => {
-  const { carrinho, removeItem, construirItemPedidoRequestDto, refreshCart } =
-    useCarrinho();
+  const {
+    carrinho,
+    removeItem,
+    construirItemPedidoRequestDto,
+    refreshCart,
+    atualizarDadosCarrinho,
+  } = useCarrinho();
   const { carregarInfosEnderecos } = useUsuariosInfos();
   const { calcularFreteCarrinho } = useFreteApi();
   const { sugerirProdutos } = useProdutosApi();
@@ -170,6 +175,44 @@ const Carrinho = () => {
       carregarDados();
     }
   }, [usuario]);
+
+  const handleFinalizarCompra = () => {
+    if (!opcaoFrete) {
+      toast.error("Selecione uma opção de frete para finalizar a compra.");
+      return;
+    }
+
+    if (!enderecoSelecionado) {
+      toast.error("Selecione um endereço para entrega.");
+      return;
+    }
+
+    const payload = {
+      id: carrinho.id,
+      itens: carrinho.itens.map((item) => {
+        return construirItemPedidoRequestDto(item);
+      }),
+      statusPedido: "CARRINHO",
+      concluido: false,
+      idsResponsaveis: [],
+      valorFrete: parseFloat(opcaoFrete.price),
+      dataPedido: new Date(),
+      cliente: usuario.nome,
+      codigoRastreio: null,
+      enderecoEntrega: enderecoSelecionado,
+    };
+
+    let valid = atualizarDadosCarrinho(payload);
+
+    if (valid) {
+      toast.success("Redirecionando para Checkout...");
+      // setTimeout(() => {
+      //   // window.location.href = "/carrinho/checkout";
+      // }, 2000);
+    } else {
+      toast.error("Ocorreu um erro, verifique os dados e tente novamente.");
+    }
+  };
 
   return (
     <div className="w-full flex flex-col gap-8 p-8">
@@ -502,9 +545,11 @@ const Carrinho = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   Forma de Pagamento
                 </h3>
-                <div className="flex items-center gap-4 bg-green-50 p-4 rounded-lg shadow-md border
+                <div
+                  className="flex items-center gap-4 bg-green-50 p-4 rounded-lg shadow-md border
                 border-green-500 transition-all
-                ">
+                "
+                >
                   <FaPix size={32} className="text-green-500" />
                   <div>
                     <p className="text-gray-800 font-bold text-md">
@@ -563,6 +608,7 @@ const Carrinho = () => {
                 isDisabled={
                   carrinho.itens.length === 0 || !opcaoFrete || !usuario
                 }
+                onClick={() => handleFinalizarCompra()}
               >
                 Finalizar Compra
               </Button>
@@ -585,7 +631,7 @@ const Carrinho = () => {
           </Card>
         </div>
       </div>
-      <Divider orientation="horizontal"/>
+      <Divider orientation="horizontal" />
       <Sugestoes produtosSugeridos={produtosSugeridos} />
     </div>
   );
