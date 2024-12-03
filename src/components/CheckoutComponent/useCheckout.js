@@ -59,7 +59,6 @@ const useCheckout = ({ idPedido }) => {
   return {
     preferenceIdBrick,
     onSubmit,
-		onReady,
 		onError,
 		isLoading
   };
