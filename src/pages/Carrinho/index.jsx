@@ -206,9 +206,9 @@ const Carrinho = () => {
 
     if (valid) {
       toast.success("Redirecionando para Checkout...");
-      // setTimeout(() => {
-      //   // window.location.href = "/carrinho/checkout";
-      // }, 2000);
+      setTimeout(() => {
+        window.location.href = "/carrinho/checkout";
+      }, 2000);
     } else {
       toast.error("Ocorreu um erro, verifique os dados e tente novamente.");
     }
