@@ -21,7 +21,6 @@ const useCarrinho = () => {
   const carrinho = useSelector((state) => state.carrinho);
   const isUsuarioLogado = useSelector((state) => state?.usuario);
   const usuario = useSelector((state) => state.usuario?.usuario?.usuario);
-
   const toast = useToast();
 
   const addItem = async (item) => {
