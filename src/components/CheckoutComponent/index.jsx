@@ -6,9 +6,9 @@ import { useParams } from "react-router";
 
 const CheckoutComponent = () => {
   const { usuario } = useSelector((state) => state.usuario);
-  const { idPedido } = useParams();
+  const idCarrinho = useSelector((state) => state.carrinho.id);
   const { preferenceIdBrick, onError, onSubmit, onReady, isLoading } = useCheckout({
-    idPedido: 1,
+    idPedido: idCarrinho,
   });
 
   const initialization = {

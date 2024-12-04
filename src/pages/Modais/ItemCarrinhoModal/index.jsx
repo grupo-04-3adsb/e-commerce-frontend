@@ -210,6 +210,7 @@ const ItemCarrinhoModal = ({
                             alt="Imagem Personalizada"
                             width={128}
                             height={128}
+                            loading="eager"
                             objectFit="cover"
                             className="rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
                           />
