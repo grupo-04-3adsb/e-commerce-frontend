@@ -136,9 +136,9 @@ function InfoUsuarios() {
                         <p className="font-bold">
                           Quantidade: {item?.quantidade}
                         </p>
-                        <p>Preço unitário: R${item.valor}</p>
+                        <p>Preço total: R${item.valorTotal.toFixed(2)}</p>
                         <p>
-                          Desconto: - <span className="text-green-600 font-bold">R${item.valorDesconto}</span>
+                          Desconto: - <span className="text-green-600 font-bold">R${item.valorDesconto.toFixed(2)}</span>
                         </p>
                       </div>
                     </div>
