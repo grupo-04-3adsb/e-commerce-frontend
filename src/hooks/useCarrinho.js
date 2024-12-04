@@ -74,9 +74,11 @@ const useCarrinho = () => {
 
   const sincronizarCarrinho = async (idUsuario) => {
     try {
+      console.log("carrinho itens: ", carrinho.itens)
       for (const item of carrinho?.itens || []) {
         if (!item.id) {
           const objItem = construirItemPedidoRequestDto(item);
+          console.log("OBJ ITEM: ", objItem)
           await adicionarItemCarrinho({
             itemPedido: objItem,
             idUsuario: idUsuario,
@@ -95,7 +97,7 @@ const useCarrinho = () => {
 
   const construirObjItemPedido = (item) => {
     return {
-      id: item.id,
+      id: null,
       quantidade: item?.quantidade || 1,
       valor: item.preco,
       valorTotal:

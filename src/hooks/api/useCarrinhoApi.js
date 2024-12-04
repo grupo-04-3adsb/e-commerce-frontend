@@ -30,6 +30,9 @@ const useCarrinhoApi = () => {
         }),
       };
 
+      console.log("Item para envio: ", itemPedidoParaEnvio);
+      console.log("ID Usuário carrinho: ", idUsuario);
+
       const response = await axiosInstance.post(
         `/item-pedidos/${idUsuario}`,
         itemPedidoParaEnvio

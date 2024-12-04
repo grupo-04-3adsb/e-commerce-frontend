@@ -1,13 +1,11 @@
 .filterContainer {
-  max-width: 100%;
-  width: 20%;
-  height: 100%;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
+  padding: 20px;
+  min-width: 314.77px;
   gap: 20px;
+  box-shadow: #0000003a 0 0 8px 0;
 }
 
 .filterHeader {
@@ -29,8 +27,6 @@
 }
 
 .filterContent {
-  max-height: 80vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -138,4 +134,8 @@ label input[type="checkbox"] {
 
 .applyFiltersButton:active {
   background-color: #C03C3C;
+}
+
+.accordion{
+  width: 200px !important;
 }

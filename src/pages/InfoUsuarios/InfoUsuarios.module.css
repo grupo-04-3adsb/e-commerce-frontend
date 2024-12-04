@@ -13,7 +13,6 @@
 .mainContent {
   display: flex;
   align-items: center;
-  justify-content: center; 
   width: 100%;
   max-width: 1200px;
   gap: 40px;
@@ -105,7 +104,7 @@
 
 .divider {
   height: 180px;
-  width: 2px;
+  width: 1px;
   border-radius: 300px;
   background-color: #6666;
 }

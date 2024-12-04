@@ -15,6 +15,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Home", label: "Informações" }],
     },
+    isVisible: true
   },
   {
     path: "/",
@@ -70,6 +71,7 @@ export const APP_ROUTES = [
     meta: {
       breadcrumb: [{ parent: "Informações", label: "Usuário" }],
     },
+    isVisible: true,
   },
   {
     path: "/carrinho/checkout",
