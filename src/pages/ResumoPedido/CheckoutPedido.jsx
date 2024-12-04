@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody, Button} from "@nextui-org/react";
+import { Card, CardHeader, CardBody, Button, Divider } from "@nextui-org/react";
 import { FaPix } from "react-icons/fa6";
 import styles from "./CheckoutPedido.module.css";
 import { useSelector } from "react-redux";
@@ -62,23 +62,73 @@ const ResumoPedido = () => {
               className={styles.input}
             />
           </div>
+          <div className="grid grid-cols-1 gap-4">
+            <h2>Endereço de entrega</h2>
+            <h3>{dadosPedido?.dataEntrega}</h3>
+            <div
+              key={dadosPedido?.enderecoEntrega?.id}
+              className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
+            ${
+              dadosPedido?.enderecoEntrega?.enderecoPadrao
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-300"
+            } 
+          `}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold text-lg">
+                  {dadosPedido?.enderecoEntrega?.rua}, {dadosPedido?.enderecoEntrega?.numero}
+                </h3>
+                {dadosPedido?.enderecoEntrega?.enderecoPadrao && (
+                  <span className="flex items-center gap-1 text-blue-500">
+                    <FaHome />
+                    <span className="text-sm">Padrão</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-500">
+                {dadosPedido?.enderecoEntrega?.bairro} - {dadosPedido?.enderecoEntrega?.cidade}/{dadosPedido?.enderecoEntrega?.estado}
+              </p>
+              <p className="text-sm text-gray-500">CEP: {dadosPedido?.enderecoEntrega?.cep}</p>
+              {dadosPedido?.enderecoEntrega?.instrucaoEntrega && (
+                <p className="text-xs text-gray-400 italic mt-2">
+                  {dadosPedido?.enderecoEntrega?.instrucaoEntrega}
+                </p>
+              )}
+            </div>
+          </div>
         </CardBody>
       </Card>
-
-      {/* Card do Resumo do Pedido */}
       <div className={styles.cardContainer}>
         <Card className={`${styles.card} ${styles.cardPedido} py-4`}>
           <CardHeader className="pb-0 pt-2 px-4">
             <h2 className={styles.titulo}>Resumo do Pedido</h2>
           </CardHeader>
           <CardBody className={`${styles.cardBody} py-2`}>
-            <hr className={styles.divider} />
+            <Divider orientation="horizontal" />
+            <h2 className="text-lg font-bold">Produtos</h2>
             {dadosPedido.itens?.map((item, index) => (
-              <div key={index} className={styles.item}>
-                <span>{item.produto.nome}</span>
-                <span>R$ {item.desconto > 0 ? (item.produto.preco -  (item.produto.preco * item.desconto / 100)).toFixed(2) : item.produto.preco}</span>
-              </div>
+              <>
+                <div key={index} className={styles.item}>
+                  <div className="flex flex-col">
+                    <span>{item.produto.nome}</span>
+                    <span>Quantidade: {item.quantidade}</span>
+                  </div>
+                  <span>
+                    R${" "}
+                    {item.desconto > 0
+                      ? (
+                          (item.produto.preco -
+                            (item.produto.preco * item.desconto) / 100) *
+                          item.quantidade
+                        ).toFixed(2)
+                      : item.produto.preco * item.quantidade}
+                  </span>
+                </div>
+                <Divider orientation="horizontal" />
+              </>
             ))}
+            <h2 className="text-lg font-bold">Informações de pagamento</h2>
             <div className={styles.item}>
               <span>Frete</span>
               <span>R$ {dadosPedido.valorFrete}</span>
@@ -90,10 +140,10 @@ const ResumoPedido = () => {
                 {dadosPedido.formaPagamento}
               </span>
             </div>
-            <hr className={styles.divider} />
+            <Divider orientation="horizontal" />
             <div className={`${styles.item} ${styles.total}`}>
               <span>Total</span>
-              <span>R$ {dadosPedido.valorTotal}</span>
+              <span>R$ {parseFloat(dadosPedido?.valorTotal).toFixed(2)}</span>
             </div>
           </CardBody>
         </Card>

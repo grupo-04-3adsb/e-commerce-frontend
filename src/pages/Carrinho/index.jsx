@@ -199,9 +199,20 @@ const Carrinho = () => {
       dataPedido: new Date(),
       cliente: usuario.nome,
       codigoRastreio: null,
-      enderecoEntrega: enderecoSelecionado,
+      enderecoEntrega: {
+        rua: enderecoSelecionado?.rua,
+        numero: enderecoSelecionado?.numero,
+        complemento: enderecoSelecionado?.complemento,
+        bairro: enderecoSelecionado?.bairro,
+        cidade: enderecoSelecionado?.cidade,
+        estado: enderecoSelecionado?.estado,
+        cep: enderecoSelecionado?.cep,
+        pais: enderecoSelecionado?.pais,
+        instrucaoEntrega: enderecoSelecionado?.instrucaoEntrega,
+        logradouro: enderecoSelecionado?.logradouro
+      },
     };
-
+    
     let valid = atualizarDadosCarrinho(payload);
 
     if (valid) {

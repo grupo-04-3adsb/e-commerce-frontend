@@ -15,7 +15,7 @@ const useCarrinho = () => {
     buscarCarrinhoPorIdUsuario,
     adicionarItemCarrinho,
     removerItemPedido,
-    atualizarCarrinho
+    atualizarCarrinho,
   } = useCarrinhoApi();
   const dispatch = useDispatch();
   const carrinho = useSelector((state) => state.carrinho);
@@ -74,11 +74,11 @@ const useCarrinho = () => {
 
   const sincronizarCarrinho = async (idUsuario) => {
     try {
-      console.log("carrinho itens: ", carrinho.itens)
+      console.log("carrinho itens: ", carrinho.itens);
       for (const item of carrinho?.itens || []) {
         if (!item.id) {
           const objItem = construirItemPedidoRequestDto(item);
-          console.log("OBJ ITEM: ", objItem)
+          console.log("OBJ ITEM: ", objItem);
           await adicionarItemCarrinho({
             itemPedido: objItem,
             idUsuario: idUsuario,
@@ -135,7 +135,7 @@ const useCarrinho = () => {
               fkOpcaoPersonalizacao: personalizacao.opcaoPersonalizacao.idOpcao,
             };
           })
-        : [],
+        : []
     };
   };
 
@@ -200,10 +200,13 @@ const useCarrinho = () => {
   };
 
   const atualizarDadosCarrinho = async (carrinho) => {
-      const response = await atualizarCarrinho({ idCarrinho: carrinho.id , carrinho });
-      
-      return response;
-  }
+    const response = await atualizarCarrinho({
+      idCarrinho: carrinho.id,
+      carrinho,
+    });
+
+    return response;
+  };
 
   return {
     carrinho,
@@ -215,7 +218,7 @@ const useCarrinho = () => {
     construirItemPedidoRequestDto,
     updateItemQuantity,
     refreshCart,
-    atualizarDadosCarrinho
+    atualizarDadosCarrinho,
   };
 };
 

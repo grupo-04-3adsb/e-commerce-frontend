@@ -84,6 +84,7 @@
   margin: 5px 0;
   font-size: 16px;
   color: #000000;
+  align-items: end;
 }
 
 .item span:last-child {
