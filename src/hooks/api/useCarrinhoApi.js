@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import useUploadImage from "./useUploadImageApi";
 
 const useCarrinhoApi = () => {
-
   const { uploadImage } = useUploadImage();
 
   const adicionarItemCarrinho = useMutation({
@@ -30,9 +29,6 @@ const useCarrinhoApi = () => {
         }),
       };
 
-      console.log("Item para envio: ", itemPedidoParaEnvio);
-      console.log("ID Usuário carrinho: ", idUsuario);
-
       const response = await axiosInstance.post(
         `/item-pedidos/${idUsuario}`,
         itemPedidoParaEnvio
@@ -40,22 +36,24 @@ const useCarrinhoApi = () => {
 
       const personalizacoesImagens = response.data.personalizacoes;
 
-      for (const personalizacao of personalizacoesImagens) {
-        const file = itemPedidoCopy.personalizacoes.find(
-          (p) =>
-            p.descricaoPersonalizacao instanceof File &&
-            p.descricaoPersonalizacao.name ===
-              personalizacao.descricaoPersonalizacao
-        );
-
-        if (file) {
-          console.log("Encontrou arquivo para upload:", file);
-          await uploadImage(
-            file.descricaoPersonalizacao,
-            "personalizacaoItem",
-            "",
-            personalizacao.id
+      if (personalizacoesImagens && personalizacoesImagens.lenght > 0) {
+        for (const personalizacao of personalizacoesImagens) {
+          const file = itemPedidoCopy.personalizacoes.find(
+            (p) =>
+              p.descricaoPersonalizacao instanceof File &&
+              p.descricaoPersonalizacao.name ===
+                personalizacao.descricaoPersonalizacao
           );
+
+          if (file) {
+            console.log("Encontrou arquivo para upload:", file);
+            await uploadImage(
+              file.descricaoPersonalizacao,
+              "personalizacaoItem",
+              "",
+              personalizacao.id
+            );
+          }
         }
       }
 
@@ -107,8 +105,7 @@ const useCarrinhoApi = () => {
   const atualizarCarrinho = useMutation({
     mutationFn: async ({ idCarrinho, carrinho }) => {
       try {
-        const response = axiosInstance.put(`/pedidos/${idCarrinho}`, carrinho,
-        );
+        const response = axiosInstance.put(`/pedidos/${idCarrinho}`, carrinho);
         return true;
       } catch (error) {
         console.error("Erro ao atualizar carrinho:", error);

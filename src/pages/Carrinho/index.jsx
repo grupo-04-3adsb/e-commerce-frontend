@@ -142,30 +142,33 @@ const Carrinho = () => {
         try {
           const response = await carregarInfosEnderecos();
           setEnderecosUsuario(response);
-          const enderecoPadrao = response.find(
-            (endereco) => endereco.enderecoPadrao
-          );
 
-          if (enderecoPadrao) {
-            setEnderecoSelecionado(enderecoPadrao);
-            setCep(enderecoPadrao.cep);
-
-            const payload = carrinho.itens.map((item) =>
-              construirItemPedidoRequestDto(item)
+          if (response) {
+            const enderecoPadrao = response.find(
+              (endereco) => endereco.enderecoPadrao
             );
 
-            if (carrinho.itens.length > 0) {
-              const responseFrete = await calcularFreteCarrinho({
-                cep: enderecoPadrao.cep,
-                carrinho: payload,
-              });
+            if (enderecoPadrao) {
+              setEnderecoSelecionado(enderecoPadrao);
+              setCep(enderecoPadrao.cep);
 
-              setOpcoesFrete(responseFrete);
+              const payload = carrinho.itens.map((item) =>
+                construirItemPedidoRequestDto(item)
+              );
 
-              if (responseFrete.length > 0) {
-                setOpcaoFrete(
-                  responseFrete.find((opcao) => opcao.name === "SEDEX")
-                );
+              if (carrinho.itens.length > 0) {
+                const responseFrete = await calcularFreteCarrinho({
+                  cep: enderecoPadrao.cep,
+                  carrinho: payload,
+                });
+
+                setOpcoesFrete(responseFrete);
+
+                if (responseFrete.length > 0) {
+                  setOpcaoFrete(
+                    responseFrete.find((opcao) => opcao.name === "SEDEX")
+                  );
+                }
               }
             }
           }
@@ -205,7 +208,7 @@ const Carrinho = () => {
       dataPedido: new Date(),
       cliente: usuario.nome,
       codigoRastreio: null,
-      tempoEntrega: opcaoFrete.delivery_range.max, 
+      tempoEntrega: opcaoFrete.delivery_range.max,
       enderecoEntrega: {
         rua: enderecoSelecionado?.rua,
         numero: enderecoSelecionado?.numero,
@@ -216,10 +219,10 @@ const Carrinho = () => {
         cep: enderecoSelecionado?.cep,
         pais: enderecoSelecionado?.pais,
         instrucaoEntrega: enderecoSelecionado?.instrucaoEntrega,
-        logradouro: enderecoSelecionado?.logradouro
+        logradouro: enderecoSelecionado?.logradouro,
       },
     };
-    
+
     let valid = atualizarDadosCarrinho(payload);
 
     if (valid) {
@@ -253,10 +256,11 @@ const Carrinho = () => {
           title="Selecionar Endereço"
           body={
             <div className="grid grid-cols-1 gap-4">
-              {enderecosUsuario.map((endereco) => (
-                <div
-                  key={endereco.id}
-                  className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
+              {enderecosUsuario
+                ? enderecosUsuario.map((endereco) => (
+                    <div
+                      key={endereco.id}
+                      className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
             ${
               endereco.enderecoPadrao
                 ? "border-blue-500 bg-blue-50"
@@ -268,30 +272,33 @@ const Carrinho = () => {
                 : ""
             }
             hover:shadow-lg hover:border-blue-500`}
-                  onClick={() => selecionarEndereco(endereco)}
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-lg">
-                      {endereco.rua}, {endereco.numero}
-                    </h3>
-                    {endereco.enderecoPadrao && (
-                      <span className="flex items-center gap-1 text-blue-500">
-                        <FaHome />
-                        <span className="text-sm">Padrão</span>
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    {endereco.bairro} - {endereco.cidade}/{endereco.estado}
-                  </p>
-                  <p className="text-sm text-gray-500">CEP: {endereco.cep}</p>
-                  {endereco.instrucaoEntrega && (
-                    <p className="text-xs text-gray-400 italic mt-2">
-                      {endereco.instrucaoEntrega}
-                    </p>
-                  )}
-                </div>
-              ))}
+                      onClick={() => selecionarEndereco(endereco)}
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-semibold text-lg">
+                          {endereco.rua}, {endereco.numero}
+                        </h3>
+                        {endereco.enderecoPadrao && (
+                          <span className="flex items-center gap-1 text-blue-500">
+                            <FaHome />
+                            <span className="text-sm">Padrão</span>
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {endereco.bairro} - {endereco.cidade}/{endereco.estado}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        CEP: {endereco.cep}
+                      </p>
+                      {endereco.instrucaoEntrega && (
+                        <p className="text-xs text-gray-400 italic mt-2">
+                          {endereco.instrucaoEntrega}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                : null}
             </div>
           }
           isVisible={isModalEnderecosVisible}
@@ -528,7 +535,9 @@ const Carrinho = () => {
                 <p className="text-gray-700">Frete:</p>
                 <p className="font-bold text-gray-800">
                   {opcaoFrete
-                    ? `${opcaoFrete?.currency || "R$"} ${opcaoFrete?.price || "0.00"}`
+                    ? `${opcaoFrete?.currency || "R$"} ${
+                        opcaoFrete?.price || "0.00"
+                      }`
                     : "R$ 0.00"}
                 </p>
               </div>
@@ -554,7 +563,7 @@ const Carrinho = () => {
                             : 0)) *
                           item?.quantidade,
                       0
-                    ) + (parseFloat(opcaoFrete?.price || 0.0))
+                    ) + parseFloat(opcaoFrete?.price || 0.0)
                   ).toFixed(2)}
                 </p>
               </div>
