@@ -32,7 +32,6 @@ const ResumoPedido = () => {
 
   return (
     <div className={styles.container}>
-      {/* Card do Pagador */}
       <Card className={`${styles.card} ${styles.cardPagador} py-4`}>
         <CardBody className="overflow-visible py-2">
           <div className={styles.fieldGroup}>
@@ -63,21 +62,21 @@ const ResumoPedido = () => {
             />
           </div>
           <div className="grid grid-cols-1 gap-4">
-            <h2>Endereço de entrega</h2>
-            <h3>{dadosPedido?.dataEntrega}</h3>
+            <div className="flex flex-row justify-between">
+              <h2>Endereço de entrega</h2>
+              <h3>
+                Data de entrega:{" "}
+                {dadosPedido?.dataEntrega}</h3>
+            </div>
             <div
               key={dadosPedido?.enderecoEntrega?.id}
-              className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
-            ${
-              dadosPedido?.enderecoEntrega?.enderecoPadrao
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-300"
-            } 
+              className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer "border-gray-300"
           `}
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-semibold text-lg">
-                  {dadosPedido?.enderecoEntrega?.rua}, {dadosPedido?.enderecoEntrega?.numero}
+                  {dadosPedido?.enderecoEntrega?.rua},{" "}
+                  {dadosPedido?.enderecoEntrega?.numero}
                 </h3>
                 {dadosPedido?.enderecoEntrega?.enderecoPadrao && (
                   <span className="flex items-center gap-1 text-blue-500">
@@ -87,9 +86,13 @@ const ResumoPedido = () => {
                 )}
               </div>
               <p className="text-sm text-gray-500">
-                {dadosPedido?.enderecoEntrega?.bairro} - {dadosPedido?.enderecoEntrega?.cidade}/{dadosPedido?.enderecoEntrega?.estado}
+                {dadosPedido?.enderecoEntrega?.bairro} -{" "}
+                {dadosPedido?.enderecoEntrega?.cidade}/
+                {dadosPedido?.enderecoEntrega?.estado}
               </p>
-              <p className="text-sm text-gray-500">CEP: {dadosPedido?.enderecoEntrega?.cep}</p>
+              <p className="text-sm text-gray-500">
+                CEP: {dadosPedido?.enderecoEntrega?.cep}
+              </p>
               {dadosPedido?.enderecoEntrega?.instrucaoEntrega && (
                 <p className="text-xs text-gray-400 italic mt-2">
                   {dadosPedido?.enderecoEntrega?.instrucaoEntrega}

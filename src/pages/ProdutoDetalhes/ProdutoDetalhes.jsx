@@ -169,7 +169,6 @@ const ProdutoDetalhes = () => {
       }));
     }
 
-    console.log(personalizacoesSelecionadas);
   };
 
   return (

@@ -23,7 +23,7 @@ const cartSlice = createSlice({
     },
     removeItemFromCart: (state, action) => {
       state.itens = state.itens.filter(
-        (item) => item.idUnico !== action.payload.idUnico && item.id !== action.payload.id
+        (item) => item.idUnico !== action.payload.idUnico
       );
     },
     updateItemQuantity: (state, action) => {

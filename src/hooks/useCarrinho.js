@@ -35,14 +35,14 @@ const useCarrinho = () => {
         return false;
       }
 
-      dispatch(addItemToCart(objItem));
-
       if (isUsuarioLogado && usuario) {
         objItem = construirItemPedidoRequestDto(item);
         await adicionarItemCarrinho({
           itemPedido: objItem,
           idUsuario: usuario.idUsuario,
         });
+      } else {
+        dispatch(addItemToCart(objItem));
       }
 
       toast.success("Produto adicionado ao carrinho com sucesso!");
@@ -65,10 +65,16 @@ const useCarrinho = () => {
   };
 
   const removeItem = (item) => {
-    dispatch(removeItemFromCart(item));
+    dispatch(loading(true));
     if (isUsuarioLogado && usuario) {
       removerItemPedido(item.id);
+      setTimeout(() => {
+        refreshCart();
+      }, 2000);
+    } else {
+      dispatch(removeItemFromCart(item));
     }
+    dispatch(loading(false));
     toast.success("Produto removido do carrinho com sucesso!");
   };
 
@@ -135,7 +141,7 @@ const useCarrinho = () => {
               fkOpcaoPersonalizacao: personalizacao.opcaoPersonalizacao.idOpcao,
             };
           })
-        : []
+        : [],
     };
   };
 

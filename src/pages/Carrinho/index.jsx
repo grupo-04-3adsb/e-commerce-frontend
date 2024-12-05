@@ -97,7 +97,9 @@ const Carrinho = () => {
       return construirItemPedidoRequestDto(item);
     });
     if (carrinho.itens.length > 0) {
+      console.log("Payload:", payload);
       const response = await calcularFreteCarrinho({ cep, carrinho: payload });
+      console.log("Opções de frete:", response);
       setOpcoesFrete(response);
     }
   };
@@ -176,6 +178,10 @@ const Carrinho = () => {
     }
   }, [usuario]);
 
+  useEffect(() => {
+    console.log("Opção de frete selecionada:", opcaoFrete);
+  }, [opcaoFrete]);
+
   const handleFinalizarCompra = () => {
     if (!opcaoFrete) {
       toast.error("Selecione uma opção de frete para finalizar a compra.");
@@ -199,6 +205,7 @@ const Carrinho = () => {
       dataPedido: new Date(),
       cliente: usuario.nome,
       codigoRastreio: null,
+      tempoEntrega: opcaoFrete.delivery_range.max, 
       enderecoEntrega: {
         rua: enderecoSelecionado?.rua,
         numero: enderecoSelecionado?.numero,
@@ -521,7 +528,7 @@ const Carrinho = () => {
                 <p className="text-gray-700">Frete:</p>
                 <p className="font-bold text-gray-800">
                   {opcaoFrete
-                    ? `${opcaoFrete?.currency} ${opcaoFrete?.price}`
+                    ? `${opcaoFrete?.currency || "R$"} ${opcaoFrete?.price || "0.00"}`
                     : "R$ 0.00"}
                 </p>
               </div>
@@ -547,7 +554,7 @@ const Carrinho = () => {
                             : 0)) *
                           item?.quantidade,
                       0
-                    ) + (opcaoFrete ? parseFloat(opcaoFrete?.price) : 0)
+                    ) + (parseFloat(opcaoFrete?.price || 0.0))
                   ).toFixed(2)}
                 </p>
               </div>

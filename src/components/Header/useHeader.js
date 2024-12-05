@@ -20,7 +20,14 @@ const useHeader = () => {
         size: limit,
       });
 
-      setItems((prevItems) => [...prevItems, ...(res?.content || [])]);
+      console.log("Resultado da pesquisa:", res);
+      setItems((prevItems) => {
+        const newItems = res?.content || [];
+        const filteredItems = newItems.filter(
+          (newItem) => !prevItems.some((prevItem) => prevItem.id === newItem.id)
+        );
+        return [...prevItems, ...filteredItems];
+      });
       setHasMore(res?.next !== null);
     } catch (error) {
       console.error("Erro no loadMore:", error);
