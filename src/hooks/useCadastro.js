@@ -33,8 +33,6 @@ const useCadastroUsuario = () => {
     setErrors({});
     setFormValues(data);
 
-    console.log(data);
-
     const validationResult = UserDTO.safeParse(data);
 
     if (!validationResult.success) {

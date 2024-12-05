@@ -1,0 +1,151 @@
+.infoUsuariosPage {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.breadcrumb {
+  align-self: flex-start;
+  margin-bottom: 20px;
+}
+
+.mainContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  gap: 40px;
+}
+
+.profilePicContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
+.profilePic {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.editIcon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.editIcon:hover {
+  transform: scale(1.1);
+  background-color: #f0f0f0; 
+}
+
+.infoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  flex: 1;
+  max-width: 800px;
+  gap: 40px;
+}
+
+.profileSection,
+.addressSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  text-align: left; 
+}
+
+.profileSection h2,
+.addressSection h2 {
+  font-size: 26px; 
+  margin: 0;
+  font-weight: bold; 
+}
+
+.profileSection p,
+.addressSection p {
+  font-family: Poppins, sans-serif;
+  font-size: 18px;
+  color: #666;
+}
+
+.addressInfo {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start; 
+}
+
+.customButton {
+  background-color: #EB6D6D !important;
+  color: white !important;
+  padding: 5px 90px !important; 
+  font-size: 18px !important; 
+  border-radius: 5px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: transform 0.3s ease, background-color 0.3s ease !important;
+  margin-top: 10px !important;
+}
+
+.customButton:hover {
+  transform: scale(1.1) !important;
+  background-color: #d45a5a !important;
+}
+
+.divider {
+  height: 180px;
+  width: 1px;
+  border-radius: 300px;
+  background-color: #6666;
+}
+
+.boldText {
+  font-weight: bold; 
+}
+
+.fileUploadLabel {
+  cursor: pointer;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .profilePicContainer {
+    margin-right: 0;
+  }
+
+  .infoContainer {
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .divider {
+    height: 2px;
+    width: 80%;
+    margin: 20px 0;
+  }
+
+  .addressInfo {
+    justify-content: center;
+  }
+
+  .customButton {
+    padding: 5px 50px !important; 
+  }
+}

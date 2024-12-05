@@ -25,7 +25,7 @@ export const Footer = () => {
           </div>
           <button
             onClick={() =>
-              (window.location.href = "mailto:contato@tcatelie.com")
+              (window.location.href = "mailto:tcatelie2023@gmail.com")
             }
           >
             CLIQUE AQUI
@@ -44,35 +44,31 @@ export const Footer = () => {
             <div className={styles["social-media-links"]}>
               <FaFacebookSquare />
               <AiFillInstagram />
-              <FaLinkedin />
-              <IoLogoTiktok />
-              <FaTwitterSquare />
-              <FaYoutube />
             </div>
           </div>
           <div className={styles["footer-column"]}>
             <h3>Navegue</h3>
             <ul>
               <li>
-                <a href="#home">Home</a>
+                <a href="/">Home</a>
               </li>
               <li>
-                <a href="#sobre">Sobre</a>
+                <a href="/sobre">Sobre</a>
               </li>
               <li>
-                <a href="#produtos">Produtos</a>
+                <a href="/produtos">Produtos</a>
               </li>
               <li>
-                <a href="#contato">Contato</a>
+                <a href="/contato">Contato</a>
               </li>
               <li>
-                <a href="#faq">FAQ</a>
+                <a href="/faq">FAQ</a>
               </li>
               <li>
-                <a href="#blog">Blog</a>
+                <a href="/blog">Blog</a>
               </li>
               <li>
-                <a href="#careers">Carreiras</a>
+                <a href="/careers">Carreiras</a>
               </li>
             </ul>
           </div>
@@ -82,7 +78,7 @@ export const Footer = () => {
               <FaPhone /> (11) 1234-5678
             </p>
             <p>
-              <FaEnvelope /> contato@tcatelie.com
+              <FaEnvelope /> tcatelie2023@gmail.com
             </p>
             <p>
               <FaMapMarkerAlt /> Rua Exemplo, 123, São Paulo, SP

@@ -37,4 +37,5 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
     console.error("Erro ao buscar produtos:", error);
     throw error;
   }
+  
 };

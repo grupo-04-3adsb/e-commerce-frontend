@@ -1,8 +1,9 @@
 import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 export const getMediaAvaliacaoPorProduto = async (produtoId) => {
   try {
-    const response = await axios.get(`http://localhost:8080/avaliacoes/produto/${produtoId}/media`);
+    const response = await axiosInstance.get(`/avaliacoes/produto/${produtoId}/media`);
 
     if (response.data !== undefined) {
       return response.data;

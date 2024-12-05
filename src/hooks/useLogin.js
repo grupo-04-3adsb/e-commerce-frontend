@@ -2,43 +2,50 @@ import { useLoginApi } from "./api/useLoginApi";
 import { useDispatch } from "react-redux";
 import { login, logout } from "../store/slices/UsuarioAutenticado/slice";
 import { loading } from "../store/slices/Loading/slice";
+import useCarrinho from "./useCarrinho";
 
 const useLogin = () => {
   const { mutateAsync, error, data } = useLoginApi();
+  const { sincronizarCarrinho } = useCarrinho();
   const dispatch = useDispatch();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     dispatch(loading(true));
     try {
-      const response = await mutateAsync(data);
+      const response = await mutateAsync(formData); 
       await dispatch(login(response));
-    } catch (err) {
-      console.error("Erro ao fazer login", err);
-    } finally {
+
+      const usuarioId = response?.usuario?.idUsuario;
+
+      if (usuarioId) {
+        console.log("Sincronizando carringo ID USUÁRIO: ", usuarioId);
+        await sincronizarCarrinho(usuarioId);
+      }
       setTimeout(() => {
-        dispatch(loading(false));
+        window.location.href = "/"
       }, 1000);
-      window.location.href = "/";
+    } catch (err) {
+      console.error("Erro ao fazer login:", err);
+    } finally {
+      dispatch(loading(false));
     }
   };
 
   const onLogout = async () => {
     dispatch(loading(true));
     try {
-      localStorage.removeItem('persist:root'); 
-      sessionStorage.removeItem('userData');
-  
+      localStorage.clear();
+      sessionStorage.clear();
+
       dispatch(logout());
+
     } catch (err) {
-      console.error("Erro ao fazer logout", err);
+      console.error("Erro ao fazer logout:", err);
     } finally {
-      setTimeout(() => {
-        dispatch(loading(false));
-      }, 1000);
-  
+      dispatch(loading(false));
       window.location.href = "/";
     }
-  };  
+  };
 
   return {
     handleSubmitLogin: onSubmit,

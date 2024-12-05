@@ -1,21 +1,19 @@
 import styles from "./CardEndereco.module.css"
+import ModalEnd from "../../components/Modal-endereco/ModalEnd.jsx";
 
 const CardEndereco = ({
-    rua,
-    bairro,
-    cidade,
-    cep }) => {
+    endereco}) => {
     return (
         <div className={styles.addressCard}>
             <div className={styles.addressHeader}>
                 <span>Casa</span>
                 <span className={styles.default}>Padrão</span>
             </div>
-            <p>RUA: {rua}</p>
-            <p>BAIRRO: {bairro}</p>
-            <p>CIDADE: {cidade}</p>
-            <p>CEP: {cep}</p>
-            <button type="button" className={styles.edit}>Editar</button>
+            <p>RUA: {endereco.rua}</p>
+            <p>BAIRRO: {endereco.bairro}</p>
+            <p>CIDADE: {endereco.cidade}</p>
+            <p>CEP: {endereco.cep}</p>
+            <ModalEnd endereco={endereco} textoBotao={"Editar"} className={styles.edit} isEditando={true}/>
         </div>
     )
 }

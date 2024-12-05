@@ -1,8 +1,9 @@
 import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 export const getSubcategorias = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/subcategorias");
+    const response = await axiosInstance.get("/subcategorias");
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar subcategorias:", error);

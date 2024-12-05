@@ -1,11 +1,11 @@
-import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 export const getAvaliacoesPorProduto = async (produtoId) => {
   try {
     
-    const response = await axios.get(`http://localhost:8080/avaliacoes/produto/${produtoId}`);
-
-    const avaliacoes = response.data.slice(0, 4);
+    const response = await axiosInstance.get(`/avaliacoes/produto/${produtoId}`);
+    console.log("Avaliações: ", response)
+    const avaliacoes = response.data.slice(0, 6);
 
     return avaliacoes;
   } catch (error) {

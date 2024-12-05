@@ -1,5 +1,8 @@
 import { Select, SelectItem } from "@nextui-org/select";
 import {
+  Autocomplete,
+  AutocompleteItem,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -40,6 +43,8 @@ import { idiomas } from "../../data/mock/idiomas";
 import useLogin from "../../hooks/useLogin";
 import useCadastroUsuario from "../../hooks/useCadastro";
 import { useSelector } from "react-redux";
+import useHeader from "./useHeader";
+import { useInfiniteScroll } from "@nextui-org/use-infinite-scroll";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,6 +53,7 @@ const Header = () => {
   const [isCadastroOpen, setIsCadastroOpen] = useState(false);
   const [isCadastroValido, setIsCadastroValido] = useState(false);
   const [isModalLogOutOpen, setIsModalLogOutOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     handleSubmitLogin,
@@ -58,6 +64,9 @@ const Header = () => {
   } = useLogin();
   const { handleSubmit, apiCadastroMessage, errors, handleValidarUsuario } =
     useCadastroUsuario();
+
+  const { hasMore, items, isLoading, onLoadMore, pesquisa, setPesquisa } =
+    useHeader();
 
   useEffect(() => {
     const handleResize = () => {
@@ -90,9 +99,17 @@ const Header = () => {
     }
   };
 
+  const [, scrollerRef] = useInfiniteScroll({
+    hasMore,
+    isEnabled: hasMore && isOpen,
+    shouldUseLoader: false,
+    onLoadMore: () => {
+      onLoadMore();
+    },
+  });
+
   return (
     <nav className={style.navContainer}>
-
       <div className={style.mainNavbar}>
         {windowWidth >= 421 && (
           <div className={style.socialLinks}>
@@ -118,22 +135,16 @@ const Header = () => {
         <div className={style.navActions}>
           {isUsuarioLogado ? (
             <>
-              <Button
-                size="sm"
-                color="white"
-                variant="flat"
-                startContent={<BiUser />}
-              >
-                <span>{usuario?.usuario?.nome}</span>
-              </Button>
-              <Button
-                className={style.btnIcon}
-                size="sm"
-                color="white"
-                variant="flat"
-                isIconOnly
-                endContent={<BiHeart />}
-              />
+              <Link to="/informacoes">
+                <Button
+                  size="sm"
+                  color="white"
+                  variant="flat"
+                  startContent={<BiUser />}
+                >
+                  <span>{usuario?.usuario?.nome}</span>
+                </Button>
+              </Link>
             </>
           ) : (
             windowWidth >= 474 && (
@@ -173,12 +184,16 @@ const Header = () => {
 
           <Button
             className={style.btnIcon}
-            size="lg"
-            color="white"
-            variant="flat"
+            size="sm"
+            color="default"
+            variant="bordered"
             isIconOnly
-            endContent={<BiCart />}
-          />
+            onClick={() => {
+              window.location.href = "/carrinho";
+            }}
+          >
+            <BiCart color="#fff" />
+          </Button>
         </div>
       </div>
       <Navbar
@@ -242,15 +257,47 @@ const Header = () => {
           </NavbarContent>
         )}
 
-        <Input
-          radius="sm"
-          type="search"
-          placeholder="Pesquisar por produto"
-          labelPlacement="outside"
-          endContent={
-            <FaSearch className="text-1xl text-default-500 pointer-events-none flex-shrink-0" />
-          }
-        />
+        <Autocomplete
+          variant="bordered"
+          isLoading={isLoading}
+          defaultItems={items}
+          placeholder="Pesquisar produto"
+          scrollRef={scrollerRef}
+          fullWidth={true}
+          items={items}
+          selectionMode="single"
+          className={style["custom-autocomplete"]}
+          onOpenChange={(open) => {
+            setIsOpen(open);
+          }}
+          onInputChange={(value) => {
+            setPesquisa(value);
+          }}
+          onSelectionChange={(item) => {
+            window.location.href = `/produtos/${item}`;
+          }}
+          startContent={<FaSearch />}
+        >
+          {(item) => (
+            <AutocompleteItem key={item?.nome} className="autocomplete-item">
+              <div className="flex flex-row items-center gap-4">
+                <img
+                  src={item?.urlProduto}
+                  alt={item?.nome}
+                  className="w-10 h-10 rounded-md object-cover"
+                />
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium text-gray-800 capitalize">
+                    {item?.nome} | {item?.sku}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    R$ {item?.preco?.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </AutocompleteItem>
+          )}
+        </Autocomplete>
 
         <NavbarMenu
           className={`${style.navbarMenu} ${
@@ -390,6 +437,7 @@ const Header = () => {
         onSubmit={handleSubmitLogin}
         isSocialLogin={true}
         error={errorsLogin}
+        defaultValues={{}}
         register={registerLogin}
         apiMessage={apiLoginMessage}
       />
