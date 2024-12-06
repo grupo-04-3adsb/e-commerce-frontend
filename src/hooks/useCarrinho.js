@@ -124,7 +124,7 @@ const useCarrinho = () => {
       quantidade: item.quantidade || 1,
       valor: item.valor,
       valorTotal: item.valorTotal,
-      desconco: item.desconto,
+      desconto: item.desconto,
       valorDesconto: item.valorDesconto,
       valorFrete: item.valorFrete || null,
       custoProducao: item.custoProducao || null,
