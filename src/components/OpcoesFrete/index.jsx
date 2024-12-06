@@ -19,8 +19,11 @@ const OpcoesFrete = ({
   );
 
   const handleSelecionar = (id) => {
+    let opcao = opcoesFrete.find((opcao) => opcao.id === id);
+    if(opcao.error) return;
+
     setSelecionado(id);
-    setOpcaoFrete(opcoesFrete.find((opcao) => opcao.id === id));
+    setOpcaoFrete(opcao);
   };
 
   if (!opcoesFrete || opcoesFrete.length === 0) {
@@ -55,7 +58,7 @@ const OpcoesFrete = ({
       )}
 
       {opcoesFrete
-        .filter((opcao) => !opcao.error && opcao.name === "SEDEX")
+        .filter((opcao) => opcao.name === "SEDEX")
         .map((opcao, index) => (
           <Card
             key={index}
