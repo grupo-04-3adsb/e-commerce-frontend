@@ -9,6 +9,8 @@ import {
   CardBody,
   CardFooter,
   Input,
+  Textarea,
+  Skeleton,
 } from "@nextui-org/react";
 import useCarrinho from "../../hooks/useCarrinho";
 import ItemCarrinhoModal from "../Modais/ItemCarrinhoModal";
@@ -16,7 +18,7 @@ import { FaEye, FaPix } from "react-icons/fa6";
 import useFreteApi from "../../hooks/api/useFreteApi";
 import { toast } from "react-toastify";
 import OpcoesFrete from "../../components/OpcoesFrete";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateItemQuantity } from "../../store/slices/Carrinho/slice";
 import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi";
 import ModalGeneric from "../../components/Modal";
@@ -24,7 +26,7 @@ import { FaHome } from "react-icons/fa";
 import useProdutosApi from "../../hooks/api/useProdutosApi";
 import Sugestoes from "../../components/Sugestoes";
 import { useViaCepApi } from "../../hooks/api/useViaCepApi";
-import { set } from "react-hook-form";
+import { loading } from "../../store/slices/Loading/slice";
 
 const Carrinho = () => {
   const {
@@ -34,6 +36,9 @@ const Carrinho = () => {
     refreshCart,
     atualizarDadosCarrinho,
   } = useCarrinho();
+
+  const dispatch = useDispatch();
+
   const { carregarInfosEnderecos } = useUsuariosInfos();
   const { calcularFreteCarrinho } = useFreteApi();
   const { sugerirProdutos } = useProdutosApi();
@@ -51,11 +56,19 @@ const Carrinho = () => {
   const [imagemAtual, setImagemAtual] = useState(0);
   const [enderecosUsuario, setEnderecosUsuario] = useState([]);
   const [enderecoSelecionado, setEnderecoSelecionado] = useState(null);
+  const [isModalEnderecoEditarVisible, setIsModalEnderecoEditarVisible] =
+    useState(false);
 
   const [isModalEnderecosVisible, setIsModalEnderecosVisible] = useState(false);
 
   const handleOpenModalEnderecos = () => setIsModalEnderecosVisible(true);
   const handleCloseModalEnderecos = () => setIsModalEnderecosVisible(false);
+
+  const [numeroEndereco, setNumeroEndereco] = useState(null);
+  const [instrucaoEntrega, setInstrucaoEntrega] = useState(null);
+  const [complemento, setComplemento] = useState(null);
+
+  const [isLoadingCarrinho, setIsLoadingCarrinho] = useState(true);
 
   const selecionarEndereco = (endereco) => {
     setCep(endereco.cep);
@@ -78,7 +91,11 @@ const Carrinho = () => {
   }, []);
 
   const handleRemoveItem = (item) => {
+    dispatch(loading(true));
+    setIsLoadingCarrinho(true);
     removeItem(item);
+    dispatch(loading(false));
+    setIsLoadingCarrinho(false);
   };
 
   const handleVisualizarItem = (item) => {
@@ -96,6 +113,13 @@ const Carrinho = () => {
       toast.error("Digite um CEP válido para calcular o frete.");
       return;
     }
+
+    const cepValido = /^[0-9]{5}-?[0-9]{3}$/.test(cep);
+    if (!cepValido) {
+      toast.error("Digite um CEP válido para calcular o frete.");
+      return;
+    }
+
     const payload = carrinho.itens.map((item) => {
       return construirItemPedidoRequestDto(item);
     });
@@ -139,9 +163,14 @@ const Carrinho = () => {
   };
 
   useEffect(() => {
+    setIsLoadingCarrinho(true);
     const payload = carrinho.itens.map((item) => {
       return construirItemPedidoRequestDto(item);
     });
+
+    setTimeout(() => {
+      console.log("Carrinho:", carrinho);
+    }, 7000);
 
     sugerirProdutos({ carrinho: payload })
       .then((response) => {
@@ -153,6 +182,7 @@ const Carrinho = () => {
       });
 
     refreshCart();
+    setIsLoadingCarrinho(false);
   }, []);
 
   useEffect(() => {
@@ -200,10 +230,6 @@ const Carrinho = () => {
     }
   }, [usuario]);
 
-  useEffect(() => {
-    console.log("Opção de frete selecionada:", opcaoFrete);
-  }, [opcaoFrete]);
-
   const handleFinalizarCompra = () => {
     if (!opcaoFrete) {
       toast.error("Selecione uma opção de frete para finalizar a compra.");
@@ -212,6 +238,14 @@ const Carrinho = () => {
 
     if (!enderecoSelecionado) {
       toast.error("Selecione um endereço para entrega.");
+      return;
+    }
+
+    if (
+      enderecoSelecionado.numero === null ||
+      enderecoSelecionado.numero === ""
+    ) {
+      setIsModalEnderecoEditarVisible(true);
       return;
     }
 
@@ -242,9 +276,6 @@ const Carrinho = () => {
       },
     };
 
-    console.log("Payload final:", payload);
-    console.log("Endereço selecionado:", enderecoSelecionado);
-
     let valid = atualizarDadosCarrinho(payload);
 
     if (valid) {
@@ -272,55 +303,132 @@ const Carrinho = () => {
         setImagemAtual={setImagemAtual}
         setQuantidade={setQuantidade}
       />
+      <ModalGeneric
+        isVisible={isModalEnderecoEditarVisible}
+        onClose={() => setIsModalEnderecoEditarVisible(false)}
+        title="Informações do endereço de entrega."
+        subtitle={`Por favor, preencha no mínimo o
+           número do endereço de entrega para continuar.`}
+        body={
+          <>
+            <Input
+              placeholder="Número do endereço"
+              value={enderecoSelecionado?.numero}
+              onChange={(e) => setNumeroEndereco(e.target.value)}
+              className="mb-4 border-zinc-500 border-1 rounded-xl"
+              variant="flat"
+              type="number"
+              radius="md"
+              color="primary"
+              required={true}
+            />
+
+            <Textarea
+              placeholder="Instruções de entrega"
+              value={instrucaoEntrega}
+              onChange={(e) => setInstrucaoEntrega(e.target.value)}
+              className="mb-4 border-zinc-500 border-1 rounded-xl"
+              variant="flat"
+              radius="md"
+              color="primary"
+            />
+            <Textarea
+              placeholder="Complemento"
+              value={complemento}
+              onChange={(e) => setComplemento(e.target.value)}
+              className="mb-4 border-zinc-500 border-1 rounded-xl"
+              variant="flat"
+              radius="md"
+              color="primary"
+            />
+            <Button
+              variant="solid"
+              color="primary"
+              className="w-full bg-[#0070F3]"
+              onClick={() => {
+                if (numeroEndereco === null || numeroEndereco === "") {
+                  toast.error("Por favor, preencha o número do endereço.");
+                  return;
+                } else {
+                  enderecoSelecionado.numero = numeroEndereco;
+                  enderecoSelecionado.instrucaoEntrega = instrucaoEntrega;
+                  enderecoSelecionado.complemento = complemento;
+                  setIsModalEnderecoEditarVisible(false);
+                }
+              }}
+            >
+              Salvar
+            </Button>
+          </>
+        }
+      />
 
       {usuario && (
         <ModalGeneric
           title="Selecionar Endereço"
           body={
             <div className="grid grid-cols-1 gap-4">
-              {enderecosUsuario
-                ? enderecosUsuario.map((endereco) => (
-                    <div
-                      key={endereco.id}
-                      className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
-            ${
-              endereco.enderecoPadrao
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-300"
-            } 
-            ${
-              endereco.id === enderecoSelecionado?.id
-                ? "ring-2 ring-blue-600"
-                : ""
-            }
-            hover:shadow-lg hover:border-blue-500`}
-                      onClick={() => selecionarEndereco(endereco)}
-                    >
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-semibold text-lg">
-                          {endereco.rua}, {endereco.numero}
-                        </h3>
-                        {endereco.enderecoPadrao && (
-                          <span className="flex items-center gap-1 text-blue-500">
-                            <FaHome />
-                            <span className="text-sm">Padrão</span>
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        {endereco.bairro} - {endereco.cidade}/{endereco.estado}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        CEP: {endereco.cep}
-                      </p>
-                      {endereco.instrucaoEntrega && (
-                        <p className="text-xs text-gray-400 italic mt-2">
-                          {endereco.instrucaoEntrega}
-                        </p>
+              {enderecosUsuario ? (
+                enderecosUsuario.map((endereco) => (
+                  <div
+                    key={endereco.id}
+                    className={`flex flex-col p-4 border rounded-lg shadow-md transition-all cursor-pointer 
+                      ${
+                        endereco.enderecoPadrao
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-300"
+                      } 
+                      ${
+                        endereco.id === enderecoSelecionado?.id
+                          ? "ring-2 ring-blue-600"
+                          : ""
+                      }
+                      hover:shadow-lg hover:border-blue-500`}
+                    onClick={() => selecionarEndereco(endereco)}
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold text-lg">
+                        {endereco.rua}, {endereco.numero}
+                      </h3>
+                      {endereco.enderecoPadrao && (
+                        <span className="flex items-center gap-1 text-blue-500">
+                          <FaHome />
+                          <span className="text-sm">Padrão</span>
+                        </span>
                       )}
                     </div>
-                  ))
-                : null}
+                    <p className="text-sm text-gray-500">
+                      {endereco.bairro} - {endereco.cidade}/{endereco.estado}
+                    </p>
+                    <p className="text-sm text-gray-500">CEP: {endereco.cep}</p>
+                    {endereco.instrucaoEntrega && (
+                      <p className="text-xs text-gray-400 italic mt-2">
+                        {endereco.instrucaoEntrega}
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="flex items-center justify-center gap-6">
+                  <div className="text-center items-center justify-center flex flex-col">
+                    <BiCart size={64} className="text-gray-400" />
+                    <h3 className="text-xl font-semibold text-gray-700 mt-4">
+                      Nenhum endereço cadastrado!
+                    </h3>
+                    <p className="text-gray-600">
+                      Adicione um endereço para entrega.
+                    </p>
+                    <Button
+                      size="sm"
+                      color="primary"
+                      variant="solid"
+                      className="mt-4"
+                    >
+                      <a href="/infos/edit">Adicionar Endereço</a>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           }
           isVisible={isModalEnderecosVisible}
@@ -340,147 +448,191 @@ const Carrinho = () => {
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
-              {carrinho.itens.length === 0 ? (
-                <CardBody className="flex flex-col items-center justify-center gap-6">
-                  <div className="text-center items-center justify-center flex flex-col">
-                    <BiCart size={64} className="text-gray-400" />
-                    <h3 className="text-xl font-semibold text-gray-700 mt-4">
-                      Seu carrinho está vazio!
-                    </h3>
-                    <p className="text-gray-600">
-                      Adicione itens ao carrinho para visualizar aqui.
-                    </p>
-                  </div>
-                  <Button
-                    size="lg"
-                    color="primary"
-                    variant="solid"
-                    className="bg-blue-500 text-white"
-                    onClick={() => {
-                      window.location.href = "/produtos";
-                    }}
-                  >
-                    Ir para Produtos
-                  </Button>
-                </CardBody>
-              ) : (
-                carrinho.itens.map((item, index) => (
-                  <Card
-                    key={index}
-                    className=" border rounded-md p-6 transition-transform transform hover:scale-[1.01] "
-                  >
-                    <CardBody className="flex flex-col md:flex-row items-center gap-6">
-                      <div className="w-28 h-28 flex-shrink-0">
-                        <Image
-                          src={item.produto?.urlProduto}
-                          alt={item.produto?.nome}
-                          width={112}
-                          height={112}
-                          objectFit="cover"
-                          className="rounded-lg border"
-                        />
+              {isLoadingCarrinho ? (
+                <>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-20 w-20 rounded-lg bg-default-300" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-6 w-3/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-4/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-2/5 rounded-lg bg-default-300" />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-lg md:text-xl font-bold text-gray-900">
-                          {item.produto?.nome}
-                        </h4>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {item.produto?.descricao}
+                    </div>
+                    <Skeleton className="h-20 w-full rounded-lg bg-default-300" />
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-20 w-20 rounded-lg bg-default-300" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-6 w-3/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-4/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-2/5 rounded-lg bg-default-300" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-20 w-full rounded-lg bg-default-300" />
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-20 w-20 rounded-lg bg-default-300" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-6 w-3/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-4/5 rounded-lg bg-default-300" />
+                        <Skeleton className="h-4 w-2/5 rounded-lg bg-default-300" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-20 w-full rounded-lg bg-default-300" />
+                  </div>
+                </>
+              ) : (
+                <Skeleton isLoaded className="rounded-lg">
+                  {carrinho.itens.length === 0 ? (
+                    <CardBody className="flex flex-col items-center justify-center gap-6">
+                      <div className="text-center items-center justify-center flex flex-col">
+                        <BiCart size={64} className="text-gray-400" />
+                        <h3 className="text-xl font-semibold text-gray-700 mt-4">
+                          Seu carrinho está vazio!
+                        </h3>
+                        <p className="text-gray-600">
+                          Adicione itens ao carrinho para visualizar aqui.
                         </p>
-                        <p className="text-sm text-gray-700 mt-3">
-                          <strong>Personalizações:</strong>{" "}
-                          <span className="font-medium">
-                            {item?.personalizacoes
-                              ? item.personalizacoes.length > 0
-                                ? item.personalizacoes.length
-                                : "Nenhuma"
-                              : "Nenhuma"}
-                          </span>
-                          {item?.personalizacoes &&
-                            item?.personalizacoes.length > 0 && (
-                              <span className="ml-2 text-sm text-gray-600">
-                                +R$
+                      </div>
+                      <Button
+                        size="lg"
+                        color="primary"
+                        variant="solid"
+                        className="bg-blue-500 text-white"
+                        onClick={() => {
+                          window.location.href = "/produtos";
+                        }}
+                      >
+                        Ir para Produtos
+                      </Button>
+                    </CardBody>
+                  ) : (
+                    carrinho.itens.map((item, index) => (
+                      <Card
+                        key={index}
+                        className=" border rounded-md p-6 transition-transform transform hover:scale-[1.01] "
+                      >
+                        <CardBody className="flex flex-col md:flex-row items-center gap-6">
+                          <div className="w-28 h-28 flex-shrink-0">
+                            <Image
+                              src={item.produto?.urlProduto}
+                              alt={item.produto?.nome}
+                              width={112}
+                              height={112}
+                              objectFit="cover"
+                              className="rounded-lg border"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg md:text-xl font-bold text-gray-900">
+                              {item.produto?.nome}
+                            </h4>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {item.produto?.descricao}
+                            </p>
+                            <p className="text-sm text-gray-700 mt-3">
+                              <strong>Personalizações:</strong>{" "}
+                              <span className="font-medium">
+                                {item?.personalizacoes
+                                  ? item.personalizacoes.length > 0
+                                    ? item.personalizacoes.length
+                                    : "Nenhuma"
+                                  : "Nenhuma"}
+                              </span>
+                              {item?.personalizacoes &&
+                                item?.personalizacoes.length > 0 && (
+                                  <span className="ml-2 text-sm text-gray-600">
+                                    +R$
+                                    {(
+                                      item.personalizacoes.reduce(
+                                        (acc, p) =>
+                                          acc +
+                                          p?.opcaoPersonalizacao?.acrescimo,
+                                        0
+                                      ) * item.quantidade
+                                    ).toFixed(2)}
+                                  </span>
+                                )}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xl font-bold text-gray-800">
+                              R${" "}
+                              {(
+                                (item?.produto.preco -
+                                  item?.produto.preco *
+                                    (item?.produto.desconto / 100)) *
+                                item?.quantidade
+                              ).toFixed(2)}
+                            </p>
+                            {item?.desconto > 0 && (
+                              <p className="text-sm text-green-500 text-right mt-1">
+                                <span className="line-through text-gray-500">
+                                  R$
+                                  {(
+                                    item.produto?.preco * item.quantidade
+                                  ).toFixed(2)}
+                                </span>
+                                <span className="ml-2">-{item.desconto}%</span>
+                              </p>
+                            )}
+                            <p className="text-sm text-gray-600 mt-2">
+                              <strong>Final com personalizações:</strong>{" "}
+                              <span className="font-medium text-gray-900">
+                                R${" "}
                                 {(
-                                  item.personalizacoes.reduce(
-                                    (acc, p) =>
-                                      acc + p?.opcaoPersonalizacao?.acrescimo,
-                                    0
-                                  ) * item.quantidade
+                                  (item.produto.preco -
+                                    item.produto.preco *
+                                      (item.produto.desconto / 100) +
+                                    (item.personalizacoes
+                                      ? item.personalizacoes.reduce(
+                                          (acc, p) =>
+                                            acc +
+                                            p?.opcaoPersonalizacao?.acrescimo,
+                                          0
+                                        )
+                                      : 0)) *
+                                  item.quantidade
                                 ).toFixed(2)}
                               </span>
-                            )}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-gray-800">
-                          R${" "}
-                          {(
-                            (item?.produto.preco -
-                              item?.produto.preco *
-                                (item?.produto.desconto / 100)) *
-                            item?.quantidade
-                          ).toFixed(2)}
-                        </p>
-                        {item?.desconto > 0 && (
-                          <p className="text-sm text-green-500 text-right mt-1">
-                            <span className="line-through text-gray-500">
-                              R$
-                              {(item.produto?.preco * item.quantidade).toFixed(
-                                2
-                              )}
-                            </span>
-                            <span className="ml-2">-{item.desconto}%</span>
-                          </p>
-                        )}
-                        <p className="text-sm text-gray-600 mt-2">
-                          <strong>Final com personalizações:</strong>{" "}
-                          <span className="font-medium text-gray-900">
-                            R${" "}
-                            {(
-                              (item.produto.preco -
-                                item.produto.preco *
-                                  (item.produto.desconto / 100) +
-                                (item.personalizacoes
-                                  ? item.personalizacoes.reduce(
-                                      (acc, p) =>
-                                        acc + p?.opcaoPersonalizacao?.acrescimo,
-                                      0
-                                    )
-                                  : 0)) *
-                              item.quantidade
-                            ).toFixed(2)}
-                          </span>
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          <strong>Quantidade:</strong>{" "}
-                          <span className="font-medium">{item.quantidade}</span>
-                        </p>
-                      </div>
-                    </CardBody>
-                    <CardFooter className="flex justify-between items-center mt-4 border-t pt-4">
-                      <Button
-                        size="sm"
-                        color="primary"
-                        variant="ghost"
-                        onClick={() => handleVisualizarItem(item)}
-                        className="flex items-center gap-2 hover:text-blue-600"
-                      >
-                        <FaEye className="text-lg" />
-                        Visualizar
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="danger"
-                        variant="solid"
-                        onClick={() => handleRemoveItem(item)}
-                        className="flex items-center gap-2 hover:bg-red-500"
-                      >
-                        <BiTrash className="text-lg" />
-                        Remover
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))
+                            </p>
+                            <p className="text-sm text-gray-600 mt-1">
+                              <strong>Quantidade:</strong>{" "}
+                              <span className="font-medium">
+                                {item.quantidade}
+                              </span>
+                            </p>
+                          </div>
+                        </CardBody>
+                        <CardFooter className="flex justify-between items-center mt-4 border-t pt-4">
+                          <Button
+                            size="sm"
+                            color="primary"
+                            variant="ghost"
+                            onClick={() => handleVisualizarItem(item)}
+                            className="flex items-center gap-2 hover:text-blue-600"
+                          >
+                            <FaEye className="text-lg" />
+                            Visualizar
+                          </Button>
+                          <Button
+                            size="sm"
+                            color="danger"
+                            variant="solid"
+                            onClick={() => handleRemoveItem(item)}
+                            className="flex items-center gap-2 hover:bg-red-500"
+                          >
+                            <BiTrash className="text-lg" />
+                            Remover
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    ))
+                  )}
+                </Skeleton>
               )}
             </CardBody>
           </Card>

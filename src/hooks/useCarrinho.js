@@ -65,7 +65,6 @@ const useCarrinho = () => {
   };
 
   const removeItem = (item) => {
-    dispatch(loading(true));
     if (isUsuarioLogado && usuario) {
       removerItemPedido(item.id);
       setTimeout(() => {
@@ -74,7 +73,6 @@ const useCarrinho = () => {
     } else {
       dispatch(removeItemFromCart(item));
     }
-    dispatch(loading(false));
     toast.success("Produto removido do carrinho com sucesso!");
   };
 

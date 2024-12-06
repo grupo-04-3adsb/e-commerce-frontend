@@ -42,19 +42,19 @@ function InfoUsuarios() {
     } catch (error) {}
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await carregarUltimoPedido();
-      console.log(response.data);
-      setPedido(response.data);
-    } catch (error) {
-      toast.error("Erro ao buscar último pedido");
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await carregarUltimoPedido();
+  //     console.log(response.data);
+  //     setPedido(response.data);
+  //   } catch (error) {
+  //     toast.error("Erro ao buscar último pedido");
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   return (
     <div className={styles.infoUsuariosPage}>
@@ -97,7 +97,7 @@ function InfoUsuarios() {
           </div>
         </div>
       </div>
-      <Divider orientation="horizontal" className="w-[90%] mt-10 bg-[#6666]" />
+      {/* <Divider orientation="horizontal" className="w-[90%] mt-10 bg-[#6666]" />
       <div className="flex flex-col w-[90%] mt-10">
         <div className="w-full flex flex-row justify-between">
           <h3 className="text-[1.5rem] font-bold text-[#121212]">
@@ -148,7 +148,7 @@ function InfoUsuarios() {
           </CardBody>
           <CardFooter></CardFooter>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

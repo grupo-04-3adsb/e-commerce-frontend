@@ -34,9 +34,15 @@ const useCarrinhoApi = () => {
         itemPedidoParaEnvio
       );
 
+      console.log("Item adicionado ao carrinho:", response.data);
+
       const personalizacoesImagens = response.data.personalizacoes;
 
-      if (personalizacoesImagens && personalizacoesImagens.lenght > 0) {
+      console.log("Personalizações com imagens:", personalizacoesImagens);
+      console.log("Personalizações do item:", itemPedidoCopy.personalizacoes);
+
+      if (personalizacoesImagens && personalizacoesImagens.length > 0) {
+        console.log("Iniciando upload de imagens de personalizações");
         for (const personalizacao of personalizacoesImagens) {
           const file = itemPedidoCopy.personalizacoes.find(
             (p) =>

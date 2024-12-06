@@ -229,7 +229,7 @@ const ItemCarrinhoModal = ({
 
           <Divider />
 
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <h5 className="text-lg font-semibold text-gray-800 mb-4">
               Quantidade
             </h5>
@@ -250,7 +250,7 @@ const ItemCarrinhoModal = ({
                 +
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex justify-end gap-4">
             <Button
