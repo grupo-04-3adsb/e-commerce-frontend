@@ -23,6 +23,8 @@ import ModalGeneric from "../../components/Modal";
 import { FaHome } from "react-icons/fa";
 import useProdutosApi from "../../hooks/api/useProdutosApi";
 import Sugestoes from "../../components/Sugestoes";
+import { useViaCepApi } from "../../hooks/api/useViaCepApi";
+import { set } from "react-hook-form";
 
 const Carrinho = () => {
   const {
@@ -35,6 +37,7 @@ const Carrinho = () => {
   const { carregarInfosEnderecos } = useUsuariosInfos();
   const { calcularFreteCarrinho } = useFreteApi();
   const { sugerirProdutos } = useProdutosApi();
+  const { buscarCep } = useViaCepApi();
   const [opcoesFrete, setOpcoesFrete] = useState([]);
   const [opcaoFrete, setOpcaoFrete] = useState(null);
   const [produtosSugeridos, setProdutosSugeridos] = useState([]);
@@ -96,6 +99,22 @@ const Carrinho = () => {
     const payload = carrinho.itens.map((item) => {
       return construirItemPedidoRequestDto(item);
     });
+
+    const retornoViaCep = await buscarCep(cep);
+
+    setEnderecoSelecionado({
+      rua: retornoViaCep.logradouro,
+      numero: null,
+      complemento: "N/A",
+      bairro: retornoViaCep.bairro,
+      cidade: retornoViaCep.localidade,
+      estado: retornoViaCep.uf,
+      cep: retornoViaCep.cep,
+      pais: "Brasil",
+      instrucaoEntrega: "N/A",
+      logradouro: null,
+    });
+
     if (carrinho.itens.length > 0) {
       console.log("Payload:", payload);
       const response = await calcularFreteCarrinho({ cep, carrinho: payload });
@@ -222,6 +241,9 @@ const Carrinho = () => {
         logradouro: enderecoSelecionado?.logradouro,
       },
     };
+
+    console.log("Payload final:", payload);
+    console.log("Endereço selecionado:", enderecoSelecionado);
 
     let valid = atualizarDadosCarrinho(payload);
 
