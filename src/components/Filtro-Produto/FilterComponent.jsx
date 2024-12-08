@@ -2,12 +2,18 @@ import styles from "./FilterComponent.module.css";
 import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
 import { useState, useEffect } from "react";
-import { Slider, Checkbox } from "@nextui-org/react";
+import {
+  Slider,
+  Checkbox,
+  Button,
+  Accordion,
+  AccordionItem,
+} from "@nextui-org/react";
 import { getProdutos } from "../../hooks/api/produtosApi";
 import { getCategorias } from "../../hooks/api/categoriasApi";
 import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
 
-export default function FilterComponent({ setFilteredProducts }) {
+export default function FilterComponent({ setFilteredProducts, setTotalProdutos }) {
   const [rating, setRating] = useState(0);
   const changeRating = (newRating) => setRating(newRating);
 
@@ -33,6 +39,7 @@ export default function FilterComponent({ setFilteredProducts }) {
       });
 
       const produtos = produtosResponse.content;
+      setTotalProdutos(produtosResponse.totalElements)
 
       setFilteredProducts((prevFilteredProducts) => {
         const prevIds = new Set(
@@ -45,7 +52,6 @@ export default function FilterComponent({ setFilteredProducts }) {
 
         return [...prevFilteredProducts, ...newProducts];
       });
-
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
     }
@@ -61,7 +67,7 @@ export default function FilterComponent({ setFilteredProducts }) {
       isNovo: novo,
       isDesconto: desconto,
       avaliacao: rating,
-    }
+    };
     fetchProdutos(filtro);
   };
 
@@ -132,99 +138,136 @@ export default function FilterComponent({ setFilteredProducts }) {
       </div>
       <div className={styles.filterContent}>
         <div className={styles.filterSection}>
-          <h3>Categorias</h3>
-          <div>
-            <Checkbox
-              size="sm"
-              color="danger"
-              isSelected={selectedCategorias.length === 0}
-              onChange={() => {
-                if (selectedCategorias.length === 0) {
-                  setSelectedCategorias(
-                    categorias.map((cat) => cat.nomeCategoria)
-                  );
-                } else {
-                  setSelectedCategorias([]);
-                }
-              }}
-            >
-              Todas as categorias
-            </Checkbox>
-            {categorias.map((cat) => (
-              <Checkbox
-                key={cat.idCategoria}
-                size="sm"
-                color="danger"
-                isSelected={selectedCategorias.includes(cat.nomeCategoria)}
-                onChange={() => handleCategoriaChange(cat.nomeCategoria)}
-              >
-                {cat.nomeCategoria}
-              </Checkbox>
-            ))}
-          </div>
+          <Accordion
+            className={styles.accordion}
+            motionProps={{
+              variants: {
+                enter: {
+                  y: 0,
+                  opacity: 1,
+                  height: "auto",
+                  transition: {
+                    height: {
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                      duration: 1,
+                    },
+                    opacity: {
+                      easings: "ease",
+                      duration: 1,
+                    },
+                  },
+                },
+                exit: {
+                  y: -10,
+                  opacity: 0,
+                  height: 0,
+                  transition: {
+                    height: {
+                      easings: "ease",
+                      duration: 0.25,
+                    },
+                    opacity: {
+                      easings: "ease",
+                      duration: 0.3,
+                    },
+                  },
+                },
+              },
+            }}
+          >
+            <AccordionItem title={<h3>Categorias</h3>}>
+              <div className={styles.filterSection}>
+                <Checkbox
+                  key={1}
+                  size="sm"
+                  color="danger"
+                  isSelected={selectedCategorias.length === 0}
+                  onChange={() => {
+                    if (selectedCategorias.length === 0) {
+                      setSelectedCategorias(
+                        categorias.map((cat) => cat.nomeCategoria)
+                      );
+                    } else {
+                      setSelectedCategorias([]);
+                    }
+                  }}
+                >
+                  <p className="text-sm">Todas as categorias</p>
+                </Checkbox>
+                {categorias.map((cat) => (
+                  <Checkbox
+                    key={cat.idCategoria}
+                    size="sm"
+                    color="danger"
+                    isSelected={selectedCategorias.includes(cat.nomeCategoria)}
+                    onChange={() => handleCategoriaChange(cat.nomeCategoria)}
+                  >
+                    <p className="text-sm">{cat.nomeCategoria}</p>
+                  </Checkbox>
+                ))}
+              </div>
+            </AccordionItem>
+            <AccordionItem title={<h3>Subcategorias</h3>}>
+              <div className={styles.filterSection}>
+                <Checkbox
+                  size="sm"
+                  color="danger"
+                  isSelected={selectedSubcategorias.length === 0}
+                  onChange={() => {
+                    if (selectedSubcategorias.length === 0) {
+                      setSelectedSubcategorias(
+                        subcategorias.map((subcat) => subcat.nomeSubcategoria)
+                      );
+                    } else {
+                      setSelectedSubcategorias([]);
+                    }
+                  }}
+                >
+                  <p className="text-sm">Todas as subcategorias</p>
+                </Checkbox>
+                {subcategorias.map((subcat) => (
+                  <Checkbox
+                    key={subcat.idSubcategoria}
+                    size="sm"
+                    color="danger"
+                    isSelected={selectedSubcategorias.includes(
+                      subcat.nomeSubcategoria
+                    )}
+                    onChange={() =>
+                      handleSubcategoriaChange(subcat.nomeSubcategoria)
+                    }
+                  >
+                    <p className="text-sm">{subcat.nomeSubcategoria}</p>
+                  </Checkbox>
+                ))}
+              </div>
+            </AccordionItem>
+          </Accordion>
         </div>
 
-        <div className={styles.filterSection}>
-          <h3>Subcategorias</h3>
-          <div>
-            <Checkbox
-              size="sm"
-              color="danger"
-              isSelected={selectedSubcategorias.length === 0} 
-              onChange={() => {
-                if (selectedSubcategorias.length === 0) {
-                  setSelectedSubcategorias(
-                    subcategorias.map((subcat) => subcat.nomeSubcategoria)
-                  );
-                } else {
-                  setSelectedSubcategorias([]);
-                }
-              }}
-            >
-              Todas as subcategorias
-            </Checkbox>
-            {subcategorias.map((subcat) => (
-              <Checkbox
-                key={subcat.idSubcategoria}
-                size="sm"
-                color="danger"
-                isSelected={selectedSubcategorias.includes(
-                  subcat.nomeSubcategoria
-                )}
-                onChange={() =>
-                  handleSubcategoriaChange(subcat.nomeSubcategoria)
-                }
-              >
-                {subcat.nomeSubcategoria}
-              </Checkbox>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.filterSection}>
+        <div className="px-2">
           <h3>Preço</h3>
           <div className="flex flex-col gap-4 w-full h-full max-w-md items-start justify-center">
-            <div>
-              <p className="text-default-500 font-medium text-small">
-                Preço:{" "}
-                {Array.isArray(preco) &&
-                  preco.map((p) => `R$ ${p}`).join(" – ")}
-              </p>
-              <Slider
-                color="danger"
-                size="sm"
-                step={10}
-                maxValue={1000}
-                minValue={0}
-                value={preco}
-                onChange={setPreco}
-                className="max-w-md"
-              />
-            </div>
+            <p className="text-default-500 font-medium text-small">
+              Preço:{" "}
+              {Array.isArray(preco) && preco.map((p) => `R$ ${p}`).join(" – ")}
+            </p>
+            <Slider
+              color="danger"
+              size="sm"
+              step={10}
+              maxValue={1000}
+              minValue={0}
+              value={preco}
+              onChange={setPreco}
+              className="w-full"
+            />
           </div>
         </div>
 
-        <div className={styles.filterSection}>
+        <div className="px-2">
           <h3>Avaliação</h3>
           <StarRatings
             rating={rating}
@@ -239,7 +282,7 @@ export default function FilterComponent({ setFilteredProducts }) {
           />
         </div>
 
-        <div className={styles.filterSection}>
+        <div className="px-2 flex flex-col">
           <h3>Outros</h3>
           <Checkbox
             defaultSelected={personalizavel}
@@ -267,12 +310,14 @@ export default function FilterComponent({ setFilteredProducts }) {
           </Checkbox>
         </div>
 
-        <button
+        <Button
           onClick={handleApplyFilters}
-          className={styles.applyFiltersButton}
+          variant="solid"
+          color="primary"
+          size="md"
         >
           Aplicar Filtros
-        </button>
+        </Button>
       </div>
     </div>
   );

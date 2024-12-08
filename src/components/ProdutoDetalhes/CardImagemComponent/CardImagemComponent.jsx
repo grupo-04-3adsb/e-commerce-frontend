@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import style from './CardImagemComponent.module.css';
+import React, { useState, useEffect } from "react";
 
 const CardImagemComponent = ({ imagens, nome }) => {
   const [imagemPrincipal, setImagemPrincipal] = useState(imagens[0]);
@@ -23,20 +22,28 @@ const CardImagemComponent = ({ imagens, nome }) => {
   };
 
   return (
-    <div className={style.cardImagem}>
-      <div className={style.thumbnailImages}>
+    <div className="flex flex-wrap gap-5 p-5 w-full max-w-[1200px] mx-auto">
+      <div className="flex flex-col gap-3 mr-3">
         {imagens.slice(1).map((url, index) => (
           <div
             key={index}
-            className={style.thumbnail}
+            className="w-36 h-36 bg-gray-200 rounded-md transition-transform hover:scale-110 hover:shadow-lg cursor-pointer"
             onClick={() => handleThumbnailClick(url, index + 1)}
           >
-            <img src={url} alt={`${nome} thumbnail ${index + 1}`} />
+            <img
+              src={url}
+              alt={`${nome} thumbnail ${index + 1}`}
+              className="w-full h-full object-cover rounded-md"
+            />
           </div>
         ))}
       </div>
-      <div className={style.mainImage}>
-        <img src={imagemPrincipal} alt={nome} />
+      <div className="flex flex-1 w-[800px] h-[700px] overflow-hidden rounded-xl">
+        <img
+          src={imagemPrincipal}
+          alt={nome}
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );

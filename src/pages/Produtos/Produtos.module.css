@@ -21,7 +21,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #e0e0e0;
-  margin-bottom: 20px;
   overflow: hidden;
 }
 
@@ -95,15 +94,15 @@ body {
 .produtosContainer {
   display: flex;
   justify-content: space-between;
-  margin: 40px 0;
   width: 100%;
-  padding: 0 20px;
   gap: 40px;
   box-sizing: border-box;
+  overflow: auto;
 }
 
 .produtos {
   flex: 1;
+  height: auto;
   box-sizing: border-box;
 }
 
@@ -113,13 +112,15 @@ body {
   grid-gap: 30px;
   justify-items: center;
   width: 100%; 
+  margin-bottom: 40px;
 }
 
 .tituloProdutos {
   font-size: 1.5rem;
   font-weight: bold;
+  margin-top: 20px;
+  line-height: 1.5;
   color: #121212;
-  margin-bottom: 20px;
 }
 
 @media (max-width: 1200px) {

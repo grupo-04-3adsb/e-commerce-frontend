@@ -167,6 +167,7 @@
     border-radius: 5px;
     font-size: 14px;
     outline: none;
+    width: 100%;
     color: #C15757;
 }
 
@@ -180,6 +181,7 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
     font-weight: bold;
+    width: 100%;
 }
 
 .newsletter-form button:hover {

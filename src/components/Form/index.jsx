@@ -21,8 +21,15 @@ const FormComponent = ({
   const [isVisible, setIsVisible] = useState(visible);
   const [messageVisible, setMessageVisible] = useState(false);
   const [messageType, setMessageType] = useState("success");
-  const [formData, setFormData] = useState(defaultValues);
-  const [passwordVisibility, setPasswordVisibility] = useState({}); // State for individual password visibility
+  const [formData, setFormData] = useState(() => {
+    return fields.reduce((acc, row) => {
+      row.forEach((field) => {
+        acc[field.name] = defaultValues[field.name] || "";
+      });
+      return acc;
+    }, {});
+  });
+  const [passwordVisibility, setPasswordVisibility] = useState({});
   const { googleError, googleData } = useGoogle();
 
   useEffect(() => {
@@ -46,17 +53,16 @@ const FormComponent = ({
       return () => clearInterval(intervalId);
     }
   }, [visible]);
-
+  
   useEffect(() => {
-    const isFormDataDifferent = Object.keys(defaultValues).some(
-      (key) => formData[key] !== defaultValues[key]
-    );
-
-    if (isFormDataDifferent) {
-      setFormData(defaultValues);
-    }
+    setFormData((prevState) => {
+      const isDifferent = Object.keys(defaultValues).some(
+        (key) => prevState[key] !== defaultValues[key]
+      );
+      return isDifferent ? { ...prevState, ...defaultValues } : prevState;
+    });
   }, [defaultValues]);
-
+  
   useEffect(() => {
     if (apiMessage?.error || apiMessage?.success) {
       setMessageVisible(true);
@@ -113,7 +119,7 @@ const FormComponent = ({
           <form onSubmit={handleSubmit}>
             <h1>{title}</h1>
             {fields.map((fieldRow, rowIndex) => (
-              <div key={rowIndex} className={style.row}>
+              <div key={rowIndex + fieldRow} className={style.row}>
                 {fieldRow.map((field, index) =>
                   field.type === "select" ? (
                     <Select
@@ -145,9 +151,9 @@ const FormComponent = ({
                           passwordVisibility[field.name] ? "text" : "password"
                         }
                         style={{
-                          width: "100%", // Força o campo a ocupar 100% da largura disponível
+                          width: "100%",
                         }}
-                        fullWidth={true} // Garante que o campo expanda na largura completa
+                        fullWidth={true}
                         variant="bordered"
                         label={field.label}
                         name={field.name}
@@ -188,9 +194,7 @@ const FormComponent = ({
                         variant="bordered"
                         label={field.label}
                         name={field.name}
-                        value={
-                          formData[field.name] || defaultValues[field.name]
-                        }
+                        value={formData[field.name] ?? ""}
                         onChange={(e) =>
                           handleChange(field.name, e.target.value)
                         }

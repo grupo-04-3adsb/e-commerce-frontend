@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Produto from '../../Card-produto/index';
+import Produto from '../../Card-produto';
 import { getProdutos } from '../../../hooks/api/produtosApi';
 import '../SectionProdutosMaisVendidos/SectionProdutosMaisVendidos.modules.css';
 import Slider from 'react-slick';
@@ -13,7 +13,6 @@ const ProdutosMaisVendidos = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        console.log("Carregando produtos mais vendidos...");
         const produtosDataRes = await getProdutos({
           filter: { popular: true },
           page: 0,
@@ -35,10 +34,13 @@ const ProdutosMaisVendidos = () => {
     infinite: true,
     speed: 500,
     slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true, 
+    autoplaySpeed: 2000, 
+    pauseOnHover: true,
     arrows: true,
     dots: true,
     centerMode: true,
-    slidesToScroll: 1,
     responsive: [
       {
         breakpoint: 1024,
@@ -76,7 +78,7 @@ const ProdutosMaisVendidos = () => {
           <p>OS MELHORES</p>
         </div>
         <div className="ver-mais">
-          <a href="#">VER MAIS</a>
+          <a href="/produtos">VER MAIS</a>
         </div>
       </div>
       <div className="cards">
@@ -85,16 +87,7 @@ const ProdutosMaisVendidos = () => {
         ) : produtos.length > 0 ? (
           <Slider {...settings}>
             {produtos.map((produto) => (
-              <Produto
-                key={produto.id}
-                nome={produto.nome}
-                preco={produto.preco}
-                desconto={produto.desconto}
-                urlProduto={produto.urlProduto}
-                status={produto.status || "NOVO"}
-                avaliacao={produto.avaliacao || "(0)"}
-                imagensAdicionais={produto.imagensAdicionais}
-              />
+              <Produto key={produto.id} produto={produto} />
             ))}
           </Slider>
         ) : (
@@ -103,6 +96,6 @@ const ProdutosMaisVendidos = () => {
       </div>
     </div>
   );
-}
+};
 
 export default ProdutosMaisVendidos;

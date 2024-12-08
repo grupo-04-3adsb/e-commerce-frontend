@@ -28,7 +28,6 @@ const ProductRating = ({ productId }) => {
     const fetchRating = async () => {
       try {
         const media = await getMediaAvaliacaoPorProduto(productId);
-        console.log('Resposta da API:', media);
 
         const ratingValue = Number(media);
         
@@ -59,10 +58,10 @@ const ProductRating = ({ productId }) => {
   return (
     <div>
       {rating !== null && (
-        <>
+        <div className='flex gap-2 items-center'>
           <StarRating rating={rating} />
           <p>{rating} de 5</p>
-        </>
+        </div>
       )}
     </div>
   );

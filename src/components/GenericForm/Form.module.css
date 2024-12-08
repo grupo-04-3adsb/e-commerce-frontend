@@ -1,0 +1,87 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.inputField {
+    width: 100%;
+    margin-right: 2%;
+}
+
+.inputField:last-child {
+    margin-right: 0;
+}
+
+.switchRow,
+.checkboxRow {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.switchLabel,
+.checkboxLabel {
+    margin-left: 10px;
+}
+
+.rangeRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.rangeRow span {
+    margin-top: 5px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type='range'] {
+    width: 100%;
+}
+
+.iconSelectionContainer {
+    display: flex;
+    gap: 8px;
+}
+
+.iconSelected {
+    color: gold;
+}
+
+.iconUnselected {
+    color: gray;
+    opacity: 0.4;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 12px;
+}
+
+.imagePreviewContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.imagePreview {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

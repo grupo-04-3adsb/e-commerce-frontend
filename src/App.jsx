@@ -7,14 +7,9 @@ import { loading } from "./store/slices/Loading/slice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import NotFound404 from "./pages/NotFound404";
-import Home from "./pages/Home/Home";
-import Produtos from "./pages/Produtos/Produtos";
-import InfoUsuarios from "./pages/InfoUsuarios/InfoUsuarios";
-import ProdutoDetalhes from "./pages/ProdutoDetalhes/ProdutoDetalhes"; // Importa o componente ProdutoDetalhes
-import UserInfo from "./pages/UserInfo/UserInfo";
 import { APP_ROUTES } from "./data/models/appRoute";
 import AppBreadcrumb from "./components/CustomBreadCrumbs/BreadCrumbs";
-
+import { ToastProvider } from "./context/ToastContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,21 +21,22 @@ function App() {
   return (
     <div className="app">
       <Router>
-        <Loading />
-        <Header />
-        <AppBreadcrumb />
-        <Routes>
-            {/* <Route path="/produtos/:nomeProduto" element={<ProdutoDetalhes />} /> */}
-              {APP_ROUTES.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  element={<route.component />}
-                />
-              ))}
-            </Routes>
-        <Footer />
+        <ToastProvider>
+          <Loading />
+          <Header />
+          <AppBreadcrumb />
+          <Routes>
+            {APP_ROUTES.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+          </Routes>
+        </ToastProvider>
       </Router>
+      <Footer />
     </div>
   );
 }
