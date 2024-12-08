@@ -2,10 +2,9 @@ import { Payment } from "@mercadopago/sdk-react";
 import { useSelector } from "react-redux";
 import useCheckout from "./useCheckout";
 import { Button, Spinner } from "@nextui-org/react";
-import { useParams } from "react-router";
 
 const CheckoutComponent = () => {
-  const { usuario } = useSelector((state) => state.usuario);
+  const { usuario } = useSelector((state) => state.usuario.usuario);
   const idCarrinho = useSelector((state) => state.carrinho.id);
   const { preferenceIdBrick, onError, onSubmit, onReady, isLoading } = useCheckout({
     idPedido: idCarrinho,

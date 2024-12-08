@@ -9,6 +9,7 @@ import {
 import useCarrinhoApi from "./api/useCarrinhoApi";
 import { useToast } from "../context/ToastContext";
 import { loading } from "../store/slices/Loading/slice";
+import { useState } from "react";
 
 const useCarrinho = () => {
   const {
@@ -21,6 +22,7 @@ const useCarrinho = () => {
   const carrinho = useSelector((state) => state.carrinho);
   const isUsuarioLogado = useSelector((state) => state?.usuario);
   const usuario = useSelector((state) => state.usuario?.usuario?.usuario);
+  const [loadingCarrinho, setLoadingCarrinho] = useState(false);
   const toast = useToast();
 
   const addItem = async (item) => {
@@ -77,8 +79,9 @@ const useCarrinho = () => {
   };
 
   const sincronizarCarrinho = async (idUsuario) => {
+    
     try {
-      console.log("carrinho itens: ", carrinho.itens);
+      setLoadingCarrinho(true);
       for (const item of carrinho?.itens || []) {
         if (!item.id) {
           const objItem = construirItemPedidoRequestDto(item);
@@ -96,6 +99,8 @@ const useCarrinho = () => {
       dispatch(setIdCarrinho(response.data.id));
     } catch (error) {
       console.error("Erro ao sincronizar o carrinho:", error);
+    } finally {
+      setLoadingCarrinho(false);
     }
   };
 
@@ -223,6 +228,7 @@ const useCarrinho = () => {
     updateItemQuantity,
     refreshCart,
     atualizarDadosCarrinho,
+    loadingCarrinho
   };
 };
 

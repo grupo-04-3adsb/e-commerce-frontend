@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Produto from '../../Card-produto';
-import { getProdutos } from '../../../hooks/api/produtosApi';
-import '../SectionProdutosMaisVendidos/SectionProdutosMaisVendidos.modules.css';
-import Slider from 'react-slick';
+import "../SectionProdutosMaisVendidos/SectionProdutosMaisVendidos.modules.css";
+import React, { useState, useEffect } from "react";
+import Produto from "../../Card-produto";
+import { getProdutos } from "../../../hooks/api/produtosApi";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Button, Card, Skeleton } from "@nextui-org/react";
+import { FaEye } from "react-icons/fa";
+import CardLoading from "../../CardLoading";
 
 const ProdutosMaisVendidos = () => {
   const [produtos, setProdutos] = useState([]);
@@ -35,12 +38,12 @@ const ProdutosMaisVendidos = () => {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
-    autoplay: true, 
-    autoplaySpeed: 2000, 
+    autoplay: true,
+    autoplaySpeed: 2000,
     pauseOnHover: true,
     arrows: true,
-    dots: true,
-    centerMode: true,
+    dots: false,
+    centerMode: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -55,16 +58,15 @@ const ProdutosMaisVendidos = () => {
         breakpoint: 768,
         settings: {
           slidesToShow: 2,
-          centerMode: true,
           slidesToScroll: 1,
-          initialSlide: 2,
+          infinite: true,
+          dots: true,
         },
       },
       {
         breakpoint: 480,
         settings: {
           slidesToShow: 1,
-          centerMode: true,
           slidesToScroll: 1,
         },
       },
@@ -72,26 +74,46 @@ const ProdutosMaisVendidos = () => {
   };
 
   return (
-    <div className="bannerNovidade">
-      <div className="top-card">
-        <div className="produtos-mais-vendidos">
-          <p>OS MELHORES</p>
+    <div className="w-[90%] my-2 max-w-full px-4 mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col items-start">
+          <p className="text-red-600 text-2xl font-semibold mb-2">
+            OS MELHORES
+          </p>
+          <div className="w-16 h-1 bg-red-600 rounded-full"></div>
         </div>
-        <div className="ver-mais">
-          <a href="/produtos">VER MAIS</a>
+        <div className="text-right">
+          <Button
+            color="primary"
+            variant="bordered"
+            size="md"
+            startContent={<FaEye />}
+            onClick={() => (window.location.href = "/produtos")}
+          >
+            Ver mais
+          </Button>
         </div>
       </div>
-      <div className="cards">
+
+      <div className="w-full flex justify-center items-center px-5 flex-wrap">
         {loading ? (
-          <p>Carregando produtos...</p>
+          <Slider {...settings}>
+            {Array(4)
+              .fill(0)
+              .map((_, index) => (
+                <CardLoading key={index} index={index} />
+              ))}
+          </Slider>
         ) : produtos.length > 0 ? (
           <Slider {...settings}>
             {produtos.map((produto) => (
-              <Produto key={produto.id} produto={produto} />
+              <div className="flex justify-center px-3" key={produto.id}>
+                <Produto produto={produto} />
+              </div>
             ))}
           </Slider>
         ) : (
-          <p>Nenhum produto encontrado</p>
+          <p className="text-center text-gray-600">Nenhum produto encontrado</p>
         )}
       </div>
     </div>

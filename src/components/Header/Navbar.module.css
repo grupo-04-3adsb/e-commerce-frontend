@@ -142,6 +142,7 @@
 
 @media (max-width: 463px) {
     .navbarMenu {
-        top: 140px !important;
+        top: 12% !important;
+        height: 100%;
     }
 }

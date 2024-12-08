@@ -36,10 +36,7 @@ import {
 } from "../../models/forms/cadastroUsuarioFields";
 import loginFields from "../../models/forms/loginUsuarioFields";
 
-import { categoriaMocks } from "../../data/mock/categorias";
 import { menuItems } from "../../data/menu";
-import { moedas } from "../../data/mock/moedas";
-import { idiomas } from "../../data/mock/idiomas";
 import useLogin from "../../hooks/useLogin";
 import useCadastroUsuario from "../../hooks/useCadastro";
 import { useSelector } from "react-redux";
@@ -119,6 +116,7 @@ const Header = () => {
               color="white"
               variant="flat"
               isIconOnly
+              onClick={() => { window.location.href = "https://www.facebook.com/" }}
               endContent={<FaFacebook />}
             />
             <Button
@@ -127,11 +125,14 @@ const Header = () => {
               color="white"
               variant="flat"
               isIconOnly
+              onClick={() => (window.location.href = "https://www.instagram.com/tcatelie23/")}
               endContent={<FaInstagram />}
             />
           </div>
         )}
-        <h6>TCAteliê</h6>
+        <h6 onClick={() => window.location.href = "/"}>
+          TCAteliê
+        </h6>
         <div className={style.navActions}>
           {isUsuarioLogado ? (
             <>
@@ -209,6 +210,9 @@ const Header = () => {
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             className={windowWidth > 968 ? "sm:hidden" : ""}
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         </NavbarContent>
         {windowWidth > 968 && (
@@ -227,17 +231,6 @@ const Header = () => {
               <Link to="/produtos">
                 <span>Produtos</span>
               </Link>
-            </NavbarItem>
-            <NavbarItem>
-              <Select
-                size="sm"
-                className={style.selectCategory}
-                placeholder="Categorias"
-              >
-                {categoriaMocks.map((categoria) => (
-                  <SelectItem key={categoria.key}>{categoria.label}</SelectItem>
-                ))}
-              </Select>
             </NavbarItem>
             <NavbarItem>
               <Link to="/contato">
@@ -304,24 +297,66 @@ const Header = () => {
             isMenuOpen ? style.menuOpen : style.menuClosed
           }`}
         >
-          {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                className="w-full"
-                href="/home"
-                size="lg"
-              >
-                {item}
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          <NavbarMenuItem>
+            <Link
+              className="w-full"
+              to="/"
+              size="lg"
+            >
+              Home
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              className="w-full"
+              to="/sobre"
+              size="lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Sobre
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              className="w-full"
+              to="/produtos"
+              size="lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Produtos
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              className="w-full"
+              onClick={() => setIsMenuOpen(false)}
+              to="/contato"
+              size="lg"
+            >
+              Contato
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              className="w-full"
+              to="/lancamentos"
+              size="lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Lançamentos
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              className="w-full
+            "
+              to="/meus-pedidos"
+              size="lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Meus pedidos
+            </Link>
+          </NavbarMenuItem>
           <br />
           {!isUsuarioLogado && windowWidth < 474 && (
             <>
@@ -365,6 +400,7 @@ const Header = () => {
                 color="white"
                 variant="flat"
                 isIconOnly
+                onClick={() => { window.location.href = "https://www.facebook.com/" }}
                 endContent={<FaFacebook />}
               />
               <Button
@@ -373,6 +409,7 @@ const Header = () => {
                 color="white"
                 variant="flat"
                 isIconOnly
+                onClick={() => (window.location.href = "https://www.instagram.com/tcatelie23/")}
                 endContent={<FaInstagram />}
               />
             </NavbarItem>

@@ -42,8 +42,14 @@ export const Footer = () => {
               Comprometidos com a qualidade e a satisfação dos nossos clientes.
             </p>
             <div className={styles["social-media-links"]}>
-              <FaFacebookSquare />
-              <AiFillInstagram />
+              <FaFacebookSquare onClick={
+                () => (window.location.href = "https://www.facebook.com/")
+              } />
+              <AiFillInstagram
+                onClick={() =>
+                  (window.location.href = "https://www.instagram.com/tcatelie23/")
+                }
+              />
             </div>
           </div>
           <div className={styles["footer-column"]}>
@@ -67,21 +73,18 @@ export const Footer = () => {
               <li>
                 <a href="/blog">Blog</a>
               </li>
-              <li>
-                <a href="/careers">Carreiras</a>
-              </li>
             </ul>
           </div>
           <div className={styles["footer-column"]}>
             <h3>Contato</h3>
             <p>
-              <FaPhone /> (11) 1234-5678
+              <FaPhone /> (11) 98283-7122
             </p>
             <p>
               <FaEnvelope /> tcatelie2023@gmail.com
             </p>
             <p>
-              <FaMapMarkerAlt /> Rua Exemplo, 123, São Paulo, SP
+              <FaMapMarkerAlt /> Rua Londres, 68, Diadema, SP
             </p>
             <p>Horário de Funcionamento: Seg - Sex, 9h - 18h</p>
           </div>

@@ -35,6 +35,7 @@ const Carrinho = () => {
     construirItemPedidoRequestDto,
     refreshCart,
     atualizarDadosCarrinho,
+    loadingCarrinho,
   } = useCarrinho();
 
   const dispatch = useDispatch();
@@ -67,8 +68,8 @@ const Carrinho = () => {
   const [numeroEndereco, setNumeroEndereco] = useState(null);
   const [instrucaoEntrega, setInstrucaoEntrega] = useState(null);
   const [complemento, setComplemento] = useState(null);
-
-  const [isLoadingCarrinho, setIsLoadingCarrinho] = useState(true);
+  const [isSugestaoLoading, setIsSugestaoLoading] = useState(true);
+  const [isSugestaoFreteLoading, setIsSugestaoFreteLoading] = useState(false);
 
   const selecionarEndereco = (endereco) => {
     setCep(endereco.cep);
@@ -92,10 +93,8 @@ const Carrinho = () => {
 
   const handleRemoveItem = (item) => {
     dispatch(loading(true));
-    setIsLoadingCarrinho(true);
     removeItem(item);
     dispatch(loading(false));
-    setIsLoadingCarrinho(false);
   };
 
   const handleVisualizarItem = (item) => {
@@ -140,10 +139,10 @@ const Carrinho = () => {
     });
 
     if (carrinho.itens.length > 0) {
-      console.log("Payload:", payload);
+      setIsSugestaoFreteLoading(true);
       const response = await calcularFreteCarrinho({ cep, carrinho: payload });
-      console.log("Opções de frete:", response);
       setOpcoesFrete(response);
+      setIsSugestaoFreteLoading(false);
     }
   };
 
@@ -163,26 +162,21 @@ const Carrinho = () => {
   };
 
   useEffect(() => {
-    setIsLoadingCarrinho(true);
+    setIsSugestaoLoading(true);
     const payload = carrinho.itens.map((item) => {
       return construirItemPedidoRequestDto(item);
     });
 
-    setTimeout(() => {
-      console.log("Carrinho:", carrinho);
-    }, 7000);
-
     sugerirProdutos({ carrinho: payload })
       .then((response) => {
         setProdutosSugeridos(response);
-        console.log("Produtos sugeridos:", response);
+        setIsSugestaoLoading(false);
       })
       .catch((error) => {
         console.error("Erro ao sugerir produtos:", error);
       });
 
     refreshCart();
-    setIsLoadingCarrinho(false);
   }, []);
 
   useEffect(() => {
@@ -448,7 +442,7 @@ const Carrinho = () => {
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
-              {isLoadingCarrinho ? (
+              {loadingCarrinho ? (
                 <>
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
@@ -484,155 +478,149 @@ const Carrinho = () => {
                     <Skeleton className="h-20 w-full rounded-lg bg-default-300" />
                   </div>
                 </>
-              ) : (
+              ) : carrinho.itens.length === 0 ? (
                 <Skeleton isLoaded className="rounded-lg">
-                  {carrinho.itens.length === 0 ? (
-                    <CardBody className="flex flex-col items-center justify-center gap-6">
-                      <div className="text-center items-center justify-center flex flex-col">
-                        <BiCart size={64} className="text-gray-400" />
-                        <h3 className="text-xl font-semibold text-gray-700 mt-4">
-                          Seu carrinho está vazio!
-                        </h3>
-                        <p className="text-gray-600">
-                          Adicione itens ao carrinho para visualizar aqui.
-                        </p>
+                  <CardBody className="flex flex-col items-center justify-center gap-6">
+                    <div className="text-center items-center justify-center flex flex-col">
+                      <BiCart size={64} className="text-gray-400" />
+                      <h3 className="text-xl font-semibold text-gray-700 mt-4">
+                        Seu carrinho está vazio!
+                      </h3>
+                      <p className="text-gray-600">
+                        Adicione itens ao carrinho para visualizar aqui.
+                      </p>
+                    </div>
+                    <Button
+                      size="lg"
+                      color="primary"
+                      variant="solid"
+                      className="bg-blue-500 text-white"
+                      onClick={() => {
+                        window.location.href = "/produtos";
+                      }}
+                    >
+                      Ir para Produtos
+                    </Button>
+                  </CardBody>
+                </Skeleton>
+              ) : (
+                carrinho.itens.map((item, index) => (
+                  <Card
+                    key={index}
+                    className=" border rounded-md p-6 transition-transform transform hover:scale-[1.01] "
+                  >
+                    <CardBody className="flex flex-col md:flex-row items-center gap-6">
+                      <div className="w-28 h-28 flex-shrink-0">
+                        <Image
+                          src={item.produto?.urlProduto}
+                          alt={item.produto?.nome}
+                          width={112}
+                          height={112}
+                          objectFit="cover"
+                          className="rounded-lg border"
+                        />
                       </div>
-                      <Button
-                        size="lg"
-                        color="primary"
-                        variant="solid"
-                        className="bg-blue-500 text-white"
-                        onClick={() => {
-                          window.location.href = "/produtos";
-                        }}
-                      >
-                        Ir para Produtos
-                      </Button>
-                    </CardBody>
-                  ) : (
-                    carrinho.itens.map((item, index) => (
-                      <Card
-                        key={index}
-                        className=" border rounded-md p-6 transition-transform transform hover:scale-[1.01] "
-                      >
-                        <CardBody className="flex flex-col md:flex-row items-center gap-6">
-                          <div className="w-28 h-28 flex-shrink-0">
-                            <Image
-                              src={item.produto?.urlProduto}
-                              alt={item.produto?.nome}
-                              width={112}
-                              height={112}
-                              objectFit="cover"
-                              className="rounded-lg border"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="text-lg md:text-xl font-bold text-gray-900">
-                              {item.produto?.nome}
-                            </h4>
-                            <p className="text-sm text-gray-600 mt-1">
-                              {item.produto?.descricao}
-                            </p>
-                            <p className="text-sm text-gray-700 mt-3">
-                              <strong>Personalizações:</strong>{" "}
-                              <span className="font-medium">
-                                {item?.personalizacoes
-                                  ? item.personalizacoes.length > 0
-                                    ? item.personalizacoes.length
-                                    : "Nenhuma"
-                                  : "Nenhuma"}
-                              </span>
-                              {item?.personalizacoes &&
-                                item?.personalizacoes.length > 0 && (
-                                  <span className="ml-2 text-sm text-gray-600">
-                                    +R$
-                                    {(
-                                      item.personalizacoes.reduce(
-                                        (acc, p) =>
-                                          acc +
-                                          p?.opcaoPersonalizacao?.acrescimo,
-                                        0
-                                      ) * item.quantidade
-                                    ).toFixed(2)}
-                                  </span>
-                                )}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-xl font-bold text-gray-800">
-                              R${" "}
-                              {(
-                                (item?.produto.preco -
-                                  item?.produto.preco *
-                                    (item?.produto.desconto / 100)) *
-                                item?.quantidade
-                              ).toFixed(2)}
-                            </p>
-                            {item?.desconto > 0 && (
-                              <p className="text-sm text-green-500 text-right mt-1">
-                                <span className="line-through text-gray-500">
-                                  R$
-                                  {(
-                                    item.produto?.preco * item.quantidade
-                                  ).toFixed(2)}
-                                </span>
-                                <span className="ml-2">-{item.desconto}%</span>
-                              </p>
-                            )}
-                            <p className="text-sm text-gray-600 mt-2">
-                              <strong>Final com personalizações:</strong>{" "}
-                              <span className="font-medium text-gray-900">
-                                R${" "}
+                      <div className="flex-1">
+                        <h4 className="text-lg md:text-xl font-bold text-gray-900">
+                          {item.produto?.nome}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {item.produto?.descricao}
+                        </p>
+                        <p className="text-sm text-gray-700 mt-3">
+                          <strong>Personalizações:</strong>{" "}
+                          <span className="font-medium">
+                            {item?.personalizacoes
+                              ? item.personalizacoes.length > 0
+                                ? item.personalizacoes.length
+                                : "Nenhuma"
+                              : "Nenhuma"}
+                          </span>
+                          {item?.personalizacoes &&
+                            item?.personalizacoes.length > 0 && (
+                              <span className="ml-2 text-sm text-gray-600">
+                                +R$
                                 {(
-                                  (item.produto.preco -
-                                    item.produto.preco *
-                                      (item.produto.desconto / 100) +
-                                    (item.personalizacoes
-                                      ? item.personalizacoes.reduce(
-                                          (acc, p) =>
-                                            acc +
-                                            p?.opcaoPersonalizacao?.acrescimo,
-                                          0
-                                        )
-                                      : 0)) *
-                                  item.quantidade
+                                  item.personalizacoes.reduce(
+                                    (acc, p) =>
+                                      acc + p?.opcaoPersonalizacao?.acrescimo,
+                                    0
+                                  ) * item.quantidade
                                 ).toFixed(2)}
                               </span>
-                            </p>
-                            <p className="text-sm text-gray-600 mt-1">
-                              <strong>Quantidade:</strong>{" "}
-                              <span className="font-medium">
-                                {item.quantidade}
-                              </span>
-                            </p>
-                          </div>
-                        </CardBody>
-                        <CardFooter className="flex justify-between items-center mt-4 border-t pt-4">
-                          <Button
-                            size="sm"
-                            color="primary"
-                            variant="ghost"
-                            onClick={() => handleVisualizarItem(item)}
-                            className="flex items-center gap-2 hover:text-blue-600"
-                          >
-                            <FaEye className="text-lg" />
-                            Visualizar
-                          </Button>
-                          <Button
-                            size="sm"
-                            color="danger"
-                            variant="solid"
-                            onClick={() => handleRemoveItem(item)}
-                            className="flex items-center gap-2 hover:bg-red-500"
-                          >
-                            <BiTrash className="text-lg" />
-                            Remover
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    ))
-                  )}
-                </Skeleton>
+                            )}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-gray-800">
+                          R${" "}
+                          {(
+                            (item?.produto.preco -
+                              item?.produto.preco *
+                                (item?.produto.desconto / 100)) *
+                            item?.quantidade
+                          ).toFixed(2)}
+                        </p>
+                        {item?.desconto > 0 && (
+                          <p className="text-sm text-green-500 text-right mt-1">
+                            <span className="line-through text-gray-500">
+                              R$
+                              {(item.produto?.preco * item.quantidade).toFixed(
+                                2
+                              )}
+                            </span>
+                            <span className="ml-2">-{item.desconto}%</span>
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600 mt-2">
+                          <strong>Final com personalizações:</strong>{" "}
+                          <span className="font-medium text-gray-900">
+                            R${" "}
+                            {(
+                              (item.produto.preco -
+                                item.produto.preco *
+                                  (item.produto.desconto / 100) +
+                                (item.personalizacoes
+                                  ? item.personalizacoes.reduce(
+                                      (acc, p) =>
+                                        acc + p?.opcaoPersonalizacao?.acrescimo,
+                                      0
+                                    )
+                                  : 0)) *
+                              item.quantidade
+                            ).toFixed(2)}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>Quantidade:</strong>{" "}
+                          <span className="font-medium">{item.quantidade}</span>
+                        </p>
+                      </div>
+                    </CardBody>
+                    <CardFooter className="flex justify-between items-center mt-4 border-t pt-4">
+                      <Button
+                        size="sm"
+                        color="primary"
+                        variant="ghost"
+                        onClick={() => handleVisualizarItem(item)}
+                        className="flex items-center gap-2 hover:text-blue-600"
+                      >
+                        <FaEye className="text-lg" />
+                        Visualizar
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="danger"
+                        variant="solid"
+                        onClick={() => handleRemoveItem(item)}
+                        className="flex items-center gap-2 hover:bg-red-500"
+                      >
+                        <BiTrash className="text-lg" />
+                        Remover
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))
               )}
             </CardBody>
           </Card>
@@ -787,7 +775,21 @@ const Carrinho = () => {
                   </Button>
                 )}
               </div>
-              {opcoesFrete.length > 0 && (
+              {isSugestaoFreteLoading ? (
+                <div className="flex flex-col space-y-4 gap-4 mt-4">
+                  {Array(3)
+                    .fill(0)
+                    .map((_, index) => (
+                      <Card
+                        key={index}
+                        className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-100 animate-pulse"
+                      >
+                        <Skeleton className="w-3/4 h-6 mb-2" />
+                        <Skeleton className="w-1/2 h-4" />
+                      </Card>
+                    ))}
+                </div>
+              ) : opcoesFrete.length > 0 ? (
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4">
                     Opções de Frete
@@ -798,6 +800,15 @@ const Carrinho = () => {
                     setOpcaoFrete={setOpcaoFrete}
                     enderecoSelecionado={enderecoSelecionado}
                   />
+                </div>
+              ) : (
+                <div className="mt-6 text-center text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Nenhuma opção de frete disponível
+                  </h3>
+                  <p className="text-sm">
+                    Verifique as informações do endereço ou tente novamente.
+                  </p>
                 </div>
               )}
             </CardBody>
@@ -833,7 +844,10 @@ const Carrinho = () => {
         </div>
       </div>
       <Divider orientation="horizontal" />
-      <Sugestoes produtosSugeridos={produtosSugeridos} />
+      <Sugestoes
+        produtosSugeridos={produtosSugeridos}
+        loading={isSugestaoLoading}
+      />
     </div>
   );
 };

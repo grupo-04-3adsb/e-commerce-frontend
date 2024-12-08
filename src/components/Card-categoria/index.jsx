@@ -1,4 +1,4 @@
-import React from 'react';// Estilo importado// Estilo importado
+import React from 'react';
 import './categoria.modules.css';
 
 const CardCategoria = ({ categoryName, onClick }) => {

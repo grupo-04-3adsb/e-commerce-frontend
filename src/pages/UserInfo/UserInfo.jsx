@@ -6,13 +6,11 @@ import { useSelector } from "react-redux";
 import { useUsuariosInfos } from "../../hooks/api/useUsuarioInfosApi.js";
 import  { transformarData }  from "../../assets/utils/globals.js";
 import ModalEnd from "../../components/Modal-endereco/ModalEnd.jsx";
-// import { handleSalvar } from "./useUserInfos.js";
 
 
 function UserInfo() {
 
   const { token } = useSelector((state) => state?.usuario.token)
-  // const userInfos = useSelector((state) => state?.usuario.usuario.usuario)
   const [userInfos, setUserInfos] = useState();
 
   const [nomeInput, setNomeInput] = useState("");

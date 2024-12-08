@@ -3,8 +3,10 @@ import Produto from "../../Card-produto";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../SectionNovidades/SectionNovidades.modules.css";
 import { getProdutos } from "../../../hooks/api/produtosApi";
+import { Button, Card, Skeleton } from "@nextui-org/react";
+import { FaAd, FaEye } from "react-icons/fa";
+import CardLoading from "../../CardLoading";
 
 const ProdutosNovidade = () => {
   const [produtos, setProdutos] = useState([]);
@@ -17,7 +19,7 @@ const ProdutosNovidade = () => {
           filter: {},
           page: 0,
           size: 10,
-          sort: 'id,desc',
+          sort: "id,desc",
         });
 
         setProdutos(produtosDataRes.content);
@@ -39,8 +41,8 @@ const ProdutosNovidade = () => {
     autoplay: true,
     autoplaySpeed: 2000,
     arrows: true,
-    dots: true,
-    centerMode: true,
+    dots: false,
+    centerMode: false,
     pauseOnHover: true,
     responsive: [
       {
@@ -48,7 +50,6 @@ const ProdutosNovidade = () => {
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
-          centerMode: false,
           infinite: true,
           dots: true,
         },
@@ -57,16 +58,15 @@ const ProdutosNovidade = () => {
         breakpoint: 768,
         settings: {
           slidesToShow: 2,
-          centerMode: true,
           slidesToScroll: 1,
-          initialSlide: 2,
+          infinite: true,
+          dots: true,
         },
       },
       {
         breakpoint: 480,
         settings: {
           slidesToShow: 1,
-          centerMode: true,
           slidesToScroll: 1,
         },
       },
@@ -74,26 +74,44 @@ const ProdutosNovidade = () => {
   };
 
   return (
-    <div className="bannerNovidade">
-      <div className="top-card">
-        <div className="today">
-          <p>NOVIDADES</p>
+    <div className="w-[90%] my-2 mt-4 max-w-full px-4 mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col items-start">
+          <p className="text-red-600 text-2xl font-semibold mb-2">Novidades</p>
+          <div className="w-16 h-1 bg-red-600 rounded-full"></div>
         </div>
-        <div className="ver-mais">
-          <a href="/produtos">VER MAIS</a>
+        <div className="text-right">
+          <Button
+            color="primary"
+            variant="bordered"
+            size="md"
+            startContent={<FaEye />}
+            onClick={() => (window.location.href = "/produtos")}
+          >
+            Ver mais
+          </Button>
         </div>
       </div>
-      <div className="cards">
+
+      <div className="w-full flex justify-center items-center px-5 flex-wrap">
         {loading ? (
-          <p>Carregando produtos...</p>
+          <Slider {...settings}>
+            {Array(4)
+              .fill(0)
+              .map((_, index) => (
+                <CardLoading key={index} index={index} />
+              ))}
+          </Slider>
         ) : produtos.length > 0 ? (
           <Slider {...settings}>
             {produtos.map((produto) => (
-              <Produto key={produto.id} produto={produto} />
+              <div className="flex justify-center px-3" key={produto.id}>
+                <Produto produto={produto} />
+              </div>
             ))}
           </Slider>
         ) : (
-          <p>Nenhum produto encontrado</p>
+          <p className="text-center text-gray-600">Nenhum produto encontrado</p>
         )}
       </div>
     </div>

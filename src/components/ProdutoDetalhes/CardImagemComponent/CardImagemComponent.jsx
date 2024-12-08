@@ -27,7 +27,7 @@ const CardImagemComponent = ({ imagens, nome }) => {
         {imagens.slice(1).map((url, index) => (
           <div
             key={index}
-            className="w-36 h-36 bg-gray-200 rounded-md transition-transform hover:scale-110 hover:shadow-lg cursor-pointer"
+            className="w-24 sm:w-36 h-24 sm:h-36 bg-gray-200 rounded-md transition-transform hover:scale-110 hover:shadow-lg cursor-pointer"
             onClick={() => handleThumbnailClick(url, index + 1)}
           >
             <img
@@ -38,7 +38,7 @@ const CardImagemComponent = ({ imagens, nome }) => {
           </div>
         ))}
       </div>
-      <div className="flex flex-1 w-[800px] h-[700px] overflow-hidden rounded-xl">
+      <div className="flex flex-1 w-full sm:w-[800px] h-72 sm:h-[700px] overflow-hidden rounded-xl">
         <img
           src={imagemPrincipal}
           alt={nome}

@@ -1,7 +1,6 @@
-import styles from "./FilterComponent.module.css";
+import { useState, useEffect } from "react";
 import filterImage from "../../assets/images/filtro.png";
 import StarRatings from "react-star-ratings";
-import { useState, useEffect } from "react";
 import {
   Slider,
   Checkbox,
@@ -13,7 +12,11 @@ import { getProdutos } from "../../hooks/api/produtosApi";
 import { getCategorias } from "../../hooks/api/categoriasApi";
 import { getSubcategorias } from "../../hooks/api/subCategoriasApi";
 
-export default function FilterComponent({ setFilteredProducts, setTotalProdutos }) {
+export default function FilterComponent({
+  setFilteredProducts,
+  setTotalProdutos,
+  setIsLoading,
+}) {
   const [rating, setRating] = useState(0);
   const changeRating = (newRating) => setRating(newRating);
 
@@ -33,13 +36,14 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
 
   const fetchProdutos = async (filtro = {}) => {
     try {
+      setIsLoading(true);
       const produtosResponse = await getProdutos({
         filter: filtro,
         page,
       });
 
       const produtos = produtosResponse.content;
-      setTotalProdutos(produtosResponse.totalElements)
+      setTotalProdutos(produtosResponse.totalElements);
 
       setFilteredProducts((prevFilteredProducts) => {
         const prevIds = new Set(
@@ -54,6 +58,8 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
       });
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
+    } finally{
+      setIsLoading(false);
     }
   };
 
@@ -131,56 +137,19 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
   };
 
   return (
-    <div className={styles.filterContainer}>
-      <div className={styles.filterHeader}>
-        <img src={filterImage} alt="Filtro" className={styles.filterImage} />
-        <h2 className={styles.filterTitle}>Filtro</h2>
+    <div className="flex flex-col gap-5 p-5 min-w-[314.77px] shadow-md rounded-md">
+      <div className="flex items-center gap-2">
+        <img src={filterImage} alt="Filtro" className="w-6 h-6" />
+        <h2 className="text-xl font-bold text-gray-800">Filtro</h2>
       </div>
-      <div className={styles.filterContent}>
-        <div className={styles.filterSection}>
-          <Accordion
-            className={styles.accordion}
-            motionProps={{
-              variants: {
-                enter: {
-                  y: 0,
-                  opacity: 1,
-                  height: "auto",
-                  transition: {
-                    height: {
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 30,
-                      duration: 1,
-                    },
-                    opacity: {
-                      easings: "ease",
-                      duration: 1,
-                    },
-                  },
-                },
-                exit: {
-                  y: -10,
-                  opacity: 0,
-                  height: 0,
-                  transition: {
-                    height: {
-                      easings: "ease",
-                      duration: 0.25,
-                    },
-                    opacity: {
-                      easings: "ease",
-                      duration: 0.3,
-                    },
-                  },
-                },
-              },
-            }}
-          >
-            <AccordionItem title={<h3>Categorias</h3>}>
-              <div className={styles.filterSection}>
+      <div className="flex flex-col gap-5">
+        <div>
+          <Accordion className="w-full">
+            <AccordionItem
+              title={<h3 className="text-lg font-bold">Categorias</h3>}
+            >
+              <div className="flex flex-col gap-3">
                 <Checkbox
-                  key={1}
                   size="sm"
                   color="danger"
                   isSelected={selectedCategorias.length === 0}
@@ -209,8 +178,10 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
                 ))}
               </div>
             </AccordionItem>
-            <AccordionItem title={<h3>Subcategorias</h3>}>
-              <div className={styles.filterSection}>
+            <AccordionItem
+              title={<h3 className="text-lg font-bold">Subcategorias</h3>}
+            >
+              <div className="flex flex-col gap-3">
                 <Checkbox
                   size="sm"
                   color="danger"
@@ -248,9 +219,9 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
         </div>
 
         <div className="px-2">
-          <h3>Preço</h3>
-          <div className="flex flex-col gap-4 w-full h-full max-w-md items-start justify-center">
-            <p className="text-default-500 font-medium text-small">
+          <h3 className="text-lg font-bold">Preço</h3>
+          <div className="flex flex-col gap-4 w-full max-w-md">
+            <p className="text-sm text-gray-500 font-medium">
               Preço:{" "}
               {Array.isArray(preco) && preco.map((p) => `R$ ${p}`).join(" – ")}
             </p>
@@ -268,7 +239,7 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
         </div>
 
         <div className="px-2">
-          <h3>Avaliação</h3>
+          <h3 className="text-lg font-bold">Avaliação</h3>
           <StarRatings
             rating={rating}
             starRatedColor="gold"
@@ -283,7 +254,7 @@ export default function FilterComponent({ setFilteredProducts, setTotalProdutos 
         </div>
 
         <div className="px-2 flex flex-col">
-          <h3>Outros</h3>
+          <h3 className="text-lg font-bold">Outros</h3>
           <Checkbox
             defaultSelected={personalizavel}
             size="sm"
