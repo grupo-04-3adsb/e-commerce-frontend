@@ -202,6 +202,7 @@ const Header = () => {
         position="sticky"
         className={style.searchBar}
         onMenuOpenChange={setIsMenuOpen}
+        isMenuOpen={isMenuOpen}
       >
         <NavbarContent
           className={windowWidth > 968 ? "sm:hidden" : ""}
@@ -293,15 +294,18 @@ const Header = () => {
         </Autocomplete>
 
         <NavbarMenu
+          
           className={`${style.navbarMenu} ${
             isMenuOpen ? style.menuOpen : style.menuClosed
           }`}
         >
-          <NavbarMenuItem>
+          <NavbarMenuItem
+          >
             <Link
               className="w-full"
               to="/"
               size="lg"
+              onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
