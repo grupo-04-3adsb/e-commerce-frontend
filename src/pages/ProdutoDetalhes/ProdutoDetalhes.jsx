@@ -253,8 +253,8 @@ const ProdutoDetalhes = () => {
         <h2 className="text-xl mb-2">Produtos</h2>
         <Produtos produtoAtualId={produto.id} />
       </div>
-      <div className="w-full flex mt-5">
-        <Button className="bg-[#D57878] text-white py-3 px-8 rounded-md text-lg transition-transform hover:scale-105 hover:bg-[#d46a6a]">
+      <div className="w-full flex justify-center mt-5">
+        <Button className="bg-[#D57878] text-white py-3 px-6 md:px-8 lg:px-10 rounded-md text-base md:text-lg transition-transform hover:scale-105 hover:bg-[#d46a6a] w-full sm:w-auto">
           Ver mais
         </Button>
       </div>
