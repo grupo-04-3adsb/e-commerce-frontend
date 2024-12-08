@@ -11,9 +11,6 @@ const useUploadImage = () => {
     formData.append("nomeProduto", nomeProduto);
     formData.append("idEntidade", idEntidade);
 
-    console.log("formData", formData);
-    console.log("token", token);
-    console.log("idEntidade", idEntidade);
     try {
       const response = await axiosInstance.post("/api/upload/image", formData, {
         headers: {

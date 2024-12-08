@@ -19,9 +19,8 @@ export const useUsuariosInfos = () => {
     },
 
     onError: (error) => {
-      console.log(
-        "Erro ao cadastrar produtos:",
-        error.response?.data || error.message
+      console.error(
+        "Erro ao cadastrar produtos:"
       );
     },
   });
@@ -37,9 +36,8 @@ export const useUsuariosInfos = () => {
     },
 
     onError: (error) => {
-      console.log(
-        "Erro ao cadastrar produtos:",
-        error.response?.data || error.message
+      console.error(
+        "Erro ao cadastrar produtos:"
       );
     },
   });

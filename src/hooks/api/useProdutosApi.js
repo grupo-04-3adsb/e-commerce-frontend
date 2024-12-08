@@ -30,9 +30,8 @@ const useProdutosApi = () => {
       return response.data;
     },
     onError: (error) => {
-      console.log(
-        "Erro ao sugerir produtos:",
-        error.response?.data || error.message
+      console.error(
+        "Erro ao sugerir produtos:"
       );
     },
   });

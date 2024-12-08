@@ -132,10 +132,6 @@ const ConfiguracaoUsuario = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(usuario);
-  }, []);
-
   return (
     <div className="p-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-5 mb-10">

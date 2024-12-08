@@ -18,7 +18,6 @@ const useLogin = () => {
       const usuarioId = response?.usuario?.idUsuario;
 
       if (usuarioId) {
-        console.log("Sincronizando carringo ID USUÁRIO: ", usuarioId);
         await sincronizarCarrinho(usuarioId);
       }
       setTimeout(() => {

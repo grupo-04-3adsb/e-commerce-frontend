@@ -30,8 +30,6 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
 
   try {
     const response = await axiosInstance.get(`/produtos?${params.toString()}`);
-    console.log("Filtro: ", filter);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar produtos:", error);

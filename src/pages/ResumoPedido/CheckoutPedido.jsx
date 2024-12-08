@@ -13,16 +13,11 @@ const ResumoPedido = () => {
   const carrinhoId = useSelector((state) => state.carrinho.id);
 
   useEffect(() => {
-    console.log("CarrinhoId", carrinhoId);
-  }, [carrinhoId]);
-
-  useEffect(() => {
     const fetchPedido = async () => {
       try {
         setIsLoading(true);
         const pedidoData = await buscarCarrinhoPorIdUsuario(usuario.idUsuario);
         setDadosPedido(pedidoData.data);
-        console.log(pedidoData);
       } catch (error) {
         console.error("Erro ao carregar o pedido:", error);
       } finally {

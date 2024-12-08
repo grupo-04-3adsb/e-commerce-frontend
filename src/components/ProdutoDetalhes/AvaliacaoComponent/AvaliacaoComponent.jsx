@@ -12,7 +12,6 @@ export default function AvaliacaoComponent({ produtoId }) {
       try {
         const dados = await getAvaliacoesPorProduto(produtoId);
         setAvaliacoes(dados);
-        console.log("Avaliação: ", dados)
       } catch (error) {
         console.error("Erro ao buscar avaliações:", error);
       }

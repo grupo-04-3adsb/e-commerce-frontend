@@ -47,11 +47,9 @@ const ProdutoDetalhes = () => {
 
   useEffect(() => {
     const fetchProduto = async () => {
-      console.log("Valor do product name: " + productName);
       try {
         const data = await getProdutoByName(productName);
         setProduto(data);
-        console.log(data);
       } catch (error) {
         console.error("Erro ao carregar o produto:", error);
         setProduto(null);

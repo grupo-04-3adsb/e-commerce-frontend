@@ -4,7 +4,6 @@ export const getAvaliacoesPorProduto = async (produtoId) => {
   try {
     
     const response = await axiosInstance.get(`/avaliacoes/produto/${produtoId}`);
-    console.log("Avaliações: ", response)
     const avaliacoes = response.data.slice(0, 6);
 
     return avaliacoes;

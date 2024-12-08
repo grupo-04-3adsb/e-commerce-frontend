@@ -31,8 +31,6 @@ export const getProdutosDetalhes = async ({ filter = {}, page = 0, size = 15, so
 
   try {
     const response = await axiosInstance.get(`/produtos?${params.toString()}`);
-    console.log("Filtro:", filter);
-    console.log("Resposta da API:", response.data);
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar detalhes dos produtos:", error);

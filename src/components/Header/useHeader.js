@@ -20,7 +20,6 @@ const useHeader = () => {
         size: limit,
       });
 
-      console.log("Resultado da pesquisa:", res);
       setItems((prevItems) => {
         const newItems = res?.content || [];
         const filteredItems = newItems.filter(

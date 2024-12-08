@@ -34,15 +34,9 @@ const useCarrinhoApi = () => {
         itemPedidoParaEnvio
       );
 
-      console.log("Item adicionado ao carrinho:", response.data);
 
       const personalizacoesImagens = response.data.personalizacoes;
-
-      console.log("Personalizações com imagens:", personalizacoesImagens);
-      console.log("Personalizações do item:", itemPedidoCopy.personalizacoes);
-
       if (personalizacoesImagens && personalizacoesImagens.length > 0) {
-        console.log("Iniciando upload de imagens de personalizações");
         for (const personalizacao of personalizacoesImagens) {
           const file = itemPedidoCopy.personalizacoes.find(
             (p) =>
@@ -52,7 +46,6 @@ const useCarrinhoApi = () => {
           );
 
           if (file) {
-            console.log("Encontrou arquivo para upload:", file);
             await uploadImage(
               file.descricaoPersonalizacao,
               "personalizacaoItem",
@@ -75,7 +68,6 @@ const useCarrinhoApi = () => {
       const response = await axiosInstance.get(
         `/pedidos/carrinho/${idUsuario}`
       );
-      console.log("Carrinho do usuário:", response.data);
       return response;
     },
     onError: (error) => {

@@ -9,10 +9,7 @@ export const useLoginApi = () => {
     },
     onError: (error) => {
       console.error("Erro ao fazer login");
-    },
-    onSuccess: (data) => {
-      console.log("Login bem-sucedido");
-    },
+    }
   });
 
   return mutation;

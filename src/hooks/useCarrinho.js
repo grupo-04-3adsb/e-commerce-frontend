@@ -85,7 +85,6 @@ const useCarrinho = () => {
       for (const item of carrinho?.itens || []) {
         if (!item.id) {
           const objItem = construirItemPedidoRequestDto(item);
-          console.log("OBJ ITEM: ", objItem);
           await adicionarItemCarrinho({
             itemPedido: objItem,
             idUsuario: idUsuario,

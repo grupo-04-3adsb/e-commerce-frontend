@@ -8,10 +8,7 @@ export const useGoogleApi = () => {
       return response.data;
     },
     onError: (error) => {
-      console.log("Erro ao fazer login com o google");
-    },
-    onSuccess: (data) => {
-      console.log("Login com google realizado: ");
+      console.error("Erro ao fazer login com o google");
     },
   });
   return mutation;

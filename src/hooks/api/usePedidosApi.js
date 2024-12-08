@@ -14,9 +14,6 @@ const usePedidoApi = () => {
         onError: (error) => {
             console.error("Erro ao fazer pedido")
         },
-        onSuccess: (data) => {
-            console.log("Pedido bem-sucedido")
-        },
     })
 
     const processarPagamento = useMutation({
@@ -26,9 +23,6 @@ const usePedidoApi = () => {
         },
         onError: (error) => {
             console.error("Erro ao processar pagamento")
-        },
-        onSuccess: (data) => {
-            console.log("Pagamento processado com sucesso")
         },
     })
 

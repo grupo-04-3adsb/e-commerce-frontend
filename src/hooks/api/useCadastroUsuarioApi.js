@@ -14,9 +14,6 @@ export const useCadastroUsuarioApi = () => {
         error.response?.data || "Erro desconhecido. Tente novamente mais tarde."
       );
     },
-    onSuccess: (data) => {
-      console.log("Cadastro realizado com sucesso");
-    },
   });
 
   const validarCPFEmail = useMutation({
@@ -31,9 +28,6 @@ export const useCadastroUsuarioApi = () => {
       throw new Error(
         error.response?.data || "Erro desconhecido. Tente novamente mais tarde."
       );
-    },
-    onSuccess: (data) => {
-      console.log("Usuário verificado com sucesso");
     },
   });
 
