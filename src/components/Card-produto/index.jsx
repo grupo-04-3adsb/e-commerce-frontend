@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProductRating from '../../components/ProdutoDetalhes/StarRatingComponent/StarRatingComponent';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CardProduto = ({ produto }) => {
-  const { id, nome, preco, desconto, urlProduto, status, imagensAdicionais } = produto;
+  const { id, nome, preco, desconto, urlProduto, status, imagensAdicionais, avaliacao } = produto;
   const [imagemAtual, setImagemAtual] = useState(0);
-  const [intervalId, setIntervalId] = useState(null);
+  const intervalRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -15,19 +14,18 @@ const CardProduto = ({ produto }) => {
 
   useEffect(() => {
     if (isHovered && imagensAdicionais.length > 1) {
-      const idInterval = setInterval(trocarImagem, 3000);
-      setIntervalId(idInterval);
-
-      return () => clearInterval(idInterval);
+      intervalRef.current = setInterval(trocarImagem, 3000);
+    } else {
+      clearInterval(intervalRef.current);
     }
+
+    return () => clearInterval(intervalRef.current);
   }, [isHovered, imagensAdicionais]);
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
     setIsHovered(false);
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
+    clearInterval(intervalRef.current);
   };
 
   const handleClick = () => {
@@ -41,7 +39,7 @@ const CardProduto = ({ produto }) => {
 
   return (
     <div
-      className=" rounded-lg p-4 transform transition-all duration-300 hover:scale-105 cursor-pointer"
+      className="rounded-lg p-4 transform transition-all duration-300 hover:scale-105 cursor-pointer"
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -69,8 +67,8 @@ const CardProduto = ({ produto }) => {
         </div>
 
         <div className="flex items-center mt-2">
-          {id ? (
-            <ProductRating productId={id} />
+          {avaliacao ? (
+            <span className="text-yellow-500">⭐ {avaliacao.toFixed(1)} / 5</span>
           ) : (
             <p className="text-sm text-gray-500">Avaliação indisponível</p>
           )}

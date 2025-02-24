@@ -5,7 +5,7 @@ import { getProdutos } from "../../../hooks/api/produtosApi";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Button, Card, Skeleton } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { FaEye } from "react-icons/fa";
 import CardLoading from "../../CardLoading";
 

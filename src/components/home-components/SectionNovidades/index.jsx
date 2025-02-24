@@ -1,37 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getProdutos } from "../../../hooks/api/produtosApi";
 import Produto from "../../Card-produto";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getProdutos } from "../../../hooks/api/produtosApi";
-import { Button, Card, Skeleton } from "@nextui-org/react";
-import { FaAd, FaEye } from "react-icons/fa";
+import { Button } from "@nextui-org/react";
+import { FaEye } from "react-icons/fa";
 import CardLoading from "../../CardLoading";
 
 const ProdutosNovidade = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: produtosData, isLoading } = useQuery({
+    queryKey: ["produtos-novidade"],
+    queryFn: () =>
+      getProdutos({
+        filter: {},
+        page: 0,
+        size: 10,
+        sort: "id,desc",
+      }),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    const fetchProdutos = async () => {
-      try {
-        const produtosDataRes = await getProdutos({
-          filter: {},
-          page: 0,
-          size: 10,
-          sort: "id,desc",
-        });
-
-        setProdutos(produtosDataRes.content);
-      } catch (error) {
-        console.error("Erro ao carregar produtos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProdutos();
-  }, []);
+  const produtos = produtosData?.content || [];
 
   const settings = {
     infinite: true,
@@ -94,7 +85,7 @@ const ProdutosNovidade = () => {
       </div>
 
       <div className="w-full flex justify-center items-center px-5 flex-wrap">
-        {loading ? (
+        {isLoading ? (
           <Slider {...settings}>
             {Array(4)
               .fill(0)
