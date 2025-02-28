@@ -1,14 +1,18 @@
 import axiosInstance from "../../axiosConfig";
 
-export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
+export const getProdutos = async ({ filter, page = 0, size = 9, sortBy, sortOrder }) => {
   const params = new URLSearchParams();
 
   params.append("size", size);
   params.append("page", page);
 
-  if (sort) {
-    params.append("sort", sort);
+  if (sortBy) {
+    params.append("sortBy", sortBy);
   }
+  if (sortOrder) {
+    params.append("sortOrder", sortOrder);
+  }
+
   if (filter.nomeCategoria) {
     params.append("nomeCategoria", filter.nomeCategoria);
   }
@@ -35,5 +39,4 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sort }) => {
     console.error("Erro ao buscar produtos:", error);
     throw error;
   }
-  
 };
