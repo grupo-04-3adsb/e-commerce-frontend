@@ -33,13 +33,21 @@ export default function FilterComponent({
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [allProducts, setAllProducts] = useState([]);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
 
   const fetchProdutos = async (filtro = {}) => {
     try {
       setIsLoading(true);
+
+      const { sortBy, sortOrder, ...rest } = filtro;
+
       const produtosResponse = await getProdutos({
-        filter: filtro,
+        filter: rest,
         page,
+        size: 10,
+        sortBy,
+        sortOrder,
       });
 
       const produtos = produtosResponse.content;
@@ -58,21 +66,23 @@ export default function FilterComponent({
       });
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
-    } finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
   const applyFilters = async () => {
     const filtro = {
-      nomeCategoria: selectedCategorias[0],
-      nomeSubcategoria: selectedSubcategorias[0],
+      nomeCategoria: selectedCategorias.length > 0 ? selectedCategorias[0] : undefined,
+      nomeSubcategoria: selectedSubcategorias.length > 0 ? selectedSubcategorias[0] : undefined,
       precoMinimo: preco[0],
       precoMaximo: preco[1],
       isPersonalizavel: personalizavel,
       isNovo: novo,
       isDesconto: desconto,
       avaliacao: rating,
+      sortBy,
+      sortOrder,
     };
     fetchProdutos(filtro);
   };
@@ -92,7 +102,7 @@ export default function FilterComponent({
   }, [hasMore]);
 
   useEffect(() => {
-    applyFilters(true);
+    applyFilters();
   }, [page]);
 
   useEffect(() => {
@@ -117,24 +127,46 @@ export default function FilterComponent({
     setPage(0);
     setHasMore(true);
     setFilteredProducts([]);
-    applyFilters(true);
+    applyFilters();
   };
 
   const handleCategoriaChange = (categoria) => {
     setSelectedCategorias((prev) =>
-      prev.includes(categoria)
-        ? prev.filter((cat) => cat !== categoria)
-        : [...prev, categoria]
+      prev.includes(categoria) ? [] : [categoria]
     );
   };
 
   const handleSubcategoriaChange = (subcategoria) => {
     setSelectedSubcategorias((prev) =>
-      prev.includes(subcategoria)
-        ? prev.filter((subcat) => subcat !== subcategoria)
-        : [...prev, subcategoria]
+      prev.includes(subcategoria) ? [] : [subcategoria]
     );
   };
+
+  const handleOutrosChange = (filterName) => {
+    const isSorting = filterName.includes("-");
+    const newState = {
+      personalizavel: false,
+      novo: false,
+      desconto: false,
+      sortBy: "",
+      sortOrder: "",
+    };
+  
+    if (isSorting) {
+      const [newSortBy, newSortOrder] = filterName.split("-");
+      newState.sortBy = sortBy === newSortBy && sortOrder === newSortOrder ? "" : newSortBy;
+      newState.sortOrder = sortBy === newSortBy && sortOrder === newSortOrder ? "" : newSortOrder;
+    } else {
+      newState[filterName] = !eval(filterName);
+    }
+  
+    setPersonalizavel(newState.personalizavel);
+    setNovo(newState.novo);
+    setDesconto(newState.desconto);
+    setSortBy(newState.sortBy);
+    setSortOrder(newState.sortOrder);
+  };
+  
 
   return (
     <div className="flex flex-col gap-5 p-5 min-w-[314.77px] shadow-md rounded-md">
@@ -153,15 +185,7 @@ export default function FilterComponent({
                   size="sm"
                   color="danger"
                   isSelected={selectedCategorias.length === 0}
-                  onChange={() => {
-                    if (selectedCategorias.length === 0) {
-                      setSelectedCategorias(
-                        categorias.map((cat) => cat.nomeCategoria)
-                      );
-                    } else {
-                      setSelectedCategorias([]);
-                    }
-                  }}
+                  onChange={() => setSelectedCategorias([])}
                 >
                   <p className="text-sm">Todas as categorias</p>
                 </Checkbox>
@@ -186,15 +210,7 @@ export default function FilterComponent({
                   size="sm"
                   color="danger"
                   isSelected={selectedSubcategorias.length === 0}
-                  onChange={() => {
-                    if (selectedSubcategorias.length === 0) {
-                      setSelectedSubcategorias(
-                        subcategorias.map((subcat) => subcat.nomeSubcategoria)
-                      );
-                    } else {
-                      setSelectedSubcategorias([]);
-                    }
-                  }}
+                  onChange={() => setSelectedSubcategorias([])}
                 >
                   <p className="text-sm">Todas as subcategorias</p>
                 </Checkbox>
@@ -255,30 +271,78 @@ export default function FilterComponent({
 
         <div className="px-2 flex flex-col">
           <h3 className="text-lg font-bold">Outros</h3>
-          <Checkbox
-            defaultSelected={personalizavel}
-            size="sm"
-            color="danger"
-            onChange={(e) => setPersonalizavel(e.target.checked)}
-          >
-            Personalizável
-          </Checkbox>
-          <Checkbox
-            defaultSelected={novo}
-            size="sm"
-            color="danger"
-            onChange={(e) => setNovo(e.target.checked)}
-          >
-            Novo
-          </Checkbox>
-          <Checkbox
-            defaultSelected={desconto}
-            size="sm"
-            color="danger"
-            onChange={(e) => setDesconto(e.target.checked)}
-          >
-            Desconto
-          </Checkbox>
+          <div className="flex flex-col gap-2">
+            <div>
+              <Checkbox
+                isSelected={personalizavel}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("personalizavel")}
+              >
+                Personalizável
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={novo}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("novo")}
+              >
+                Novo
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={desconto}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("desconto")}
+              >
+                Desconto
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={sortBy === "nome" && sortOrder === "asc"}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("nome-asc")}
+              >
+                Nome do produto (A - Z)
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={sortBy === "nome" && sortOrder === "desc"}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("nome-desc")}
+              >
+                Nome do produto (Z - A)
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={sortBy === "preco" && sortOrder === "asc"}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("preco-asc")}
+              >
+                Preço (Menor - Maior)
+              </Checkbox>
+            </div>
+            <div>
+              <Checkbox
+                isSelected={sortBy === "preco" && sortOrder === "desc"}
+                size="sm"
+                color="danger"
+                onChange={() => handleOutrosChange("preco-desc")}
+              >
+                Preço (Maior - Menor)
+              </Checkbox>
+            </div>
+          </div>
         </div>
 
         <Button
