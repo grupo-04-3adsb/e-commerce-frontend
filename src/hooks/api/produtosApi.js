@@ -34,9 +34,19 @@ export const getProdutos = async ({ filter, page = 0, size = 9, sortBy, sortOrde
 
   try {
     const response = await axiosInstance.get(`/produtos?${params.toString()}`);
-    return response.data;
+    const produtos = response.data.content;
+
+    const produtosComAvaliacoes = produtos.map((produto) => {
+      produto.avaliacao = produto.avaliacoes?.length
+        ? produto.avaliacoes.reduce((acc, aval) => acc + aval.nota, 0) / produto.avaliacoes.length
+        : 0;
+      return produto;
+    });
+
+    return { ...response.data, content: produtosComAvaliacoes };
   } catch (error) {
     console.error("Erro ao buscar produtos:", error);
     throw error;
   }
 };
+
