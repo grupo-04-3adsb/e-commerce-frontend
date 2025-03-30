@@ -1,41 +1,28 @@
 import { useEffect, useState } from "react";
+import useFAQApi from "../../hooks/api/useFAQApi";
 
 const useFAQ = () => {
-  const [perguntas, setPerguntas] = useState([
-    {
-      titulo: "Como faço para trocar a senha?",
-      resposta:
-        "Para trocar a senha, acesse o menu de configurações e clique em 'Alterar senha'.",
-    },
-    {
-      titulo: "Quais formas de pagamento são aceitas?",
-      resposta: "Aceitamos cartões de crédito, débito, boleto bancário e Pix.",
-    },
-    {
-      titulo: "Qual o prazo de entrega dos produtos?",
-      resposta:
-        "O prazo de entrega varia conforme a localização e o método de envio escolhido. Consulte o prazo estimado no momento da compra.",
-    },
-    {
-      titulo: "Como posso rastrear meu pedido?",
-      resposta:
-        "Após a confirmação do envio, você receberá um código de rastreamento por e-mail para acompanhar seu pedido no site da transportadora.",
-    },
-    {
-      titulo: "Posso devolver um produto?",
-      resposta:
-        "Sim, aceitamos devoluções dentro do prazo de 7 dias corridos após o recebimento. O produto deve estar em perfeitas condições e com a embalagem original.",
-    },
-    {
-      titulo: "O site é seguro para compras?",
-      resposta:
-        "Sim, utilizamos criptografia SSL para garantir a segurança de suas informações durante a compra.",
-    },
-  ]);
+  const [perguntas, setPerguntas] = useState([]);
 
   const [perguntasFiltradas, setPerguntasFiltradas] = useState(perguntas);
 
   const [pesquisa, setPesquisa] = useState("");
+
+  const { getAllFAQ } = useFAQApi();
+
+  const fetchData = async () => {
+    try {
+      const response = await getAllFAQ();
+      setPerguntas(response);
+      setPerguntasFiltradas(response);
+    } catch (error) {
+      console.error("Erro ao buscar perguntas frequentes", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (pesquisa) {

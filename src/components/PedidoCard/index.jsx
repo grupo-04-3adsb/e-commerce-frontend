@@ -3,34 +3,7 @@ import { Badge, Card, CardBody, Button, Skeleton } from "@nextui-org/react";
 import { FaCheckCircle, FaEye, FaStopCircle, FaTruck } from "react-icons/fa";
 
 export const PedidoCard = ({
-  pedido = {
-    id: 6,
-    valorTotal: 0.01,
-    valorDesconto: 10.0,
-    valorFrete: 20.0,
-    status: "EM_ROTA",
-    dataPedido: "19:38 | 29/03/2025",
-    enderecoEntrega: {
-      rua: "Rua Londres",
-      numero: "68",
-      bairro: "Bairro Jardim das Nações",
-      cidade: "Diadema",
-      estado: "SP",
-      cep: "09930-220",
-    },
-    itens: [
-      {
-        id: 28,
-        quantidade: 2,
-        valorTotal: 200.0,
-        produto: {
-          nome: "Caneca Playstation",
-          urlProduto:
-            "https://cdn.awsli.com.br/600x450/1225/1225697/produto/130152295/9ee6196526.jpg",
-        },
-      },
-    ],
-  },
+  pedido = {},
 }) => {
   const [loading, setLoading] = useState(true);
 
@@ -165,7 +138,7 @@ export const PedidoCard = ({
               Itens do Pedido
             </h4>
           )}
-          <ul className="list-none space-y-2">
+          <ul className="list-none space-y-2 flex flex-wrap">
             {loading
               ? Array.from({ length: 3 }).map((_, index) => (
                   <li

@@ -51,7 +51,7 @@ function InfoUsuarios() {
               animated
               width={176}
               height={176}
-              css={{
+              style={{
                 borderRadius: "50%",
                 display: "flex",
                 justifyContent: "center",
