@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_API_URL
+const apiUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
    // "http://localhost:8080",
-  baseURL: API_URL,
+  baseURL: apiUrl,
   headers: {
     "Content-Type": "application/json",
   },
