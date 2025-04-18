@@ -1,9 +1,8 @@
 import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
    // "http://localhost:8080",
-  baseURL: apiUrl,
+  baseURL: "https://tcatelieback-eub2epddgsdfamd3.canadacentral-01.azurewebsites.net",
   headers: {
     "Content-Type": "application/json",
   },
