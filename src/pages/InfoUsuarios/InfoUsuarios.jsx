@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaRegEdit } from "react-icons/fa";
 import ModalEnd from "../../components/Modal-endereco/ModalEnd";
 import { Button, Divider, Image, Skeleton } from "@nextui-org/react";
 import useUploadImage from "../../hooks/api/useUploadImageApi";
 import { PedidoCard } from "../../components/PedidoCard";
 import useInfoUsuarios from "./useInfoUsuarios";
+import { updateUsuario } from "../../store/slices/UsuarioAutenticado/slice";
 
 function InfoUsuarios() {
   const { usuario } = useSelector((state) => state.usuario);
@@ -16,6 +17,7 @@ function InfoUsuarios() {
   const [loading, setLoading] = useState(true);
 
   const { pedidos } = useInfoUsuarios();
+  const dispatch = useDispatch();
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -29,7 +31,9 @@ function InfoUsuarios() {
         "",
         usuario?.usuario?.idUsuario
       );
-      setImgUrl(response?.url);
+      console.log({response})
+      setImgUrl(response);
+      dispatch(updateUsuario({imgUrl: response}));
     } catch (error) {
       console.error("Erro ao carregar a imagem:", error);
     }
@@ -59,11 +63,13 @@ function InfoUsuarios() {
               }}
               classNames={{ base: "bg-gray-200" }}
             >
-              <Image
-                src={imgUrl || "/src/assets/images/default_user_img.jpg"}
-                alt="Profile"
-                className="w-44 rounded-full object-cover border-4 border-[#EB6D6D] shadow-md"
-              />
+              <div className="w-44 h-44 rounded-full overflow-hidden border-4 border-[#EB6D6D] shadow-md">
+                <Image
+                  src={imgUrl || "/src/assets/images/default_user_img.jpg"}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </Skeleton>
             <div
               className={`absolute bottom-2 right-2 bg-white z-[10] rounded-full p-2 transition-all transform ${
@@ -173,6 +179,7 @@ function InfoUsuarios() {
               >
                 <ModalEnd
                   endereco={endereco}
+                  isEditando={true}
                   textoBotao="Editar Endereço"
                   className="bg-[#EB6D6D] text-white py-3 px-8 text-lg font-semibold rounded-lg shadow-md transition-all transform hover:scale-105 hover:bg-[#d45a5a] focus:outline-none focus:ring-2 focus:ring-[#EB6D6D]"
                 />
