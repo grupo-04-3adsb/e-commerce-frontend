@@ -1,0 +1,20 @@
+services:
+  ecommerce:
+    image: ecommerce-frontend
+    container_name: ecommerce-frontend
+    ports:
+      - "5173:80"
+    networks:
+      - ebuy-network
+
+  dashboard:
+    image: dashboard-frontend
+    container_name: dashboard-frontend
+    ports:
+      - "5174:80"
+    networks:
+      - ebuy-network
+
+networks:
+  ebuy-network:
+    driver: bridge
