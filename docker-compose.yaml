@@ -1,0 +1,12 @@
+services:
+  frontend:
+    container_name: frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - ebuy-network
+
+networks:
+  ebuy-network:
+    driver: bridge
