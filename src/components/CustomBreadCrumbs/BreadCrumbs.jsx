@@ -45,7 +45,9 @@ const buildBreadcrumb = (currentPath) => {
   return breadcrumbs;
 };
 
-const AppBreadcrumb = () => {
+const AppBreadcrumb = ({
+  isVisible = null,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -53,7 +55,7 @@ const AppBreadcrumb = () => {
   if (
     !breadcrumbs.length ||
     !APP_ROUTES.find(
-      (route) => matchRoute(route.path, location.pathname) && route.isVisible
+      (route) => matchRoute(route.path, location.pathname) && (route.isVisible || isVisible)
     )
   ) {
     return null;

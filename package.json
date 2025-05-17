@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@heroui/drawer": "^2.2.13",
     "@hookform/resolvers": "^3.9.0",
     "@mercadopago/sdk-react": "^0.0.19",
     "@nextui-org/react": "^2.4.8",

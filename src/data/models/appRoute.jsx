@@ -7,6 +7,8 @@ import ProdutoDetalhes from "../../pages/ProdutoDetalhes/ProdutoDetalhes";
 import InfoUsuarios from "../../pages/InfoUsuarios/InfoUsuarios";
 import ConcluirPagamento from "../../pages/ConcluirPagamento";
 import ResumoPedido from "../../pages/ResumoPedido/CheckoutPedido";
+import { SobreNos } from "../../pages/SobreNos/indes";
+import { Faq } from "../../pages/FAQ";
 
 export const APP_ROUTES = [
   {
@@ -81,4 +83,20 @@ export const APP_ROUTES = [
     },
     isVisible: true,
   },
+  {
+    path: "/sobre",
+    component: SobreNos,
+    meta: {
+      breadcrumb: [{ parent: "Home", label: "Sobre" }],
+    },
+    isVisible: false,
+  },
+  {
+    path: "/faq",
+    component: Faq,
+    meta: {
+      breadcrumb: [{ parent: "Home", label: "FAQ" }],
+    },
+    isVisible: true,
+  }
 ];

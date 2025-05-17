@@ -1,16 +1,11 @@
-import { Select, SelectItem } from "@nextui-org/select";
 import {
   Autocomplete,
   AutocompleteItem,
-  Image,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
-import {
   Button,
   Navbar,
   NavbarContent,
@@ -23,7 +18,7 @@ import {
 import style from "./Navbar.module.css";
 
 import { FaFacebook, FaInstagram, FaSearch } from "react-icons/fa";
-import { BiCart, BiHeart, BiLogIn, BiLogOut, BiUser } from "react-icons/bi";
+import { BiCart, BiLogIn, BiLogOut, BiUser } from "react-icons/bi";
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -36,7 +31,6 @@ import {
 } from "../../models/forms/cadastroUsuarioFields";
 import loginFields from "../../models/forms/loginUsuarioFields";
 
-import { menuItems } from "../../data/menu";
 import useLogin from "../../hooks/useLogin";
 import useCadastroUsuario from "../../hooks/useCadastro";
 import { useSelector } from "react-redux";
@@ -62,8 +56,7 @@ const Header = () => {
   const { handleSubmit, apiCadastroMessage, errors, handleValidarUsuario } =
     useCadastroUsuario();
 
-  const { hasMore, items, isLoading, onLoadMore, pesquisa, setPesquisa } =
-    useHeader();
+  const { hasMore, items, isLoading, onLoadMore, setPesquisa } = useHeader();
 
   useEffect(() => {
     const handleResize = () => {
@@ -116,7 +109,9 @@ const Header = () => {
               color="white"
               variant="flat"
               isIconOnly
-              onClick={() => { window.location.href = "https://www.facebook.com/" }}
+              onClick={() => {
+                window.location.href = "https://www.facebook.com/";
+              }}
               endContent={<FaFacebook />}
             />
             <Button
@@ -125,14 +120,14 @@ const Header = () => {
               color="white"
               variant="flat"
               isIconOnly
-              onClick={() => (window.location.href = "https://www.instagram.com/tcatelie23/")}
+              onClick={() =>
+                (window.location.href = "https://www.instagram.com/tcatelie23/")
+              }
               endContent={<FaInstagram />}
             />
           </div>
         )}
-        <h6 onClick={() => window.location.href = "/"}>
-          TCAteliê
-        </h6>
+        <h6 onClick={() => (window.location.href = "/")}>TCAteliê</h6>
         <div className={style.navActions}>
           {isUsuarioLogado ? (
             <>
@@ -243,11 +238,13 @@ const Header = () => {
                 <span>Lançamentos</span>
               </Link>
             </NavbarItem>
-            <NavbarItem>
-              <Link to="/meus-pedidos">
-                <span>Meus pedidos</span>
-              </Link>
-            </NavbarItem>
+            {isUsuarioLogado && (
+              <NavbarItem>
+                <Link to="/meus-pedidos">
+                  <span>Meus pedidos</span>
+                </Link>
+              </NavbarItem>
+            )}
           </NavbarContent>
         )}
 
@@ -294,13 +291,11 @@ const Header = () => {
         </Autocomplete>
 
         <NavbarMenu
-          
           className={`${style.navbarMenu} ${
             isMenuOpen ? style.menuOpen : style.menuClosed
           }`}
         >
-          <NavbarMenuItem
-          >
+          <NavbarMenuItem>
             <Link
               className="w-full"
               to="/"
@@ -350,17 +345,19 @@ const Header = () => {
               Lançamentos
             </Link>
           </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link
-              className="w-full
-            "
-              to="/meus-pedidos"
-              size="lg"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Meus pedidos
-            </Link>
-          </NavbarMenuItem>
+          {isUsuarioLogado &&
+            <NavbarMenuItem>
+              <Link
+                className="w-full
+              "
+                to="/meus-pedidos"
+                size="lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Meus pedidos
+              </Link>
+            </NavbarMenuItem>
+          }
           <br />
           {!isUsuarioLogado && windowWidth < 474 && (
             <>
@@ -404,7 +401,9 @@ const Header = () => {
                 color="white"
                 variant="flat"
                 isIconOnly
-                onClick={() => { window.location.href = "https://www.facebook.com/" }}
+                onClick={() => {
+                  window.location.href = "https://www.facebook.com/";
+                }}
                 endContent={<FaFacebook />}
               />
               <Button
@@ -413,7 +412,10 @@ const Header = () => {
                 color="white"
                 variant="flat"
                 isIconOnly
-                onClick={() => (window.location.href = "https://www.instagram.com/tcatelie23/")}
+                onClick={() =>
+                  (window.location.href =
+                    "https://www.instagram.com/tcatelie23/")
+                }
                 endContent={<FaInstagram />}
               />
             </NavbarItem>

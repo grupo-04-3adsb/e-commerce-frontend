@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../axiosConfig";
-import { useSelector } from "react-redux";
 import useUploadImage from "./useUploadImageApi";
 
 const useCarrinhoApi = () => {
