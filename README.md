@@ -12,7 +12,7 @@
 
 ---
 
-## <img src="https://i.gifer.com/origin/28/2860d2d8c3a1e402e0fc8913cd92cd7a_w200.gif" width="30" height="30"> Sobre o Projeto
+## ❗ Sobre o Projeto
 
 Esse repositório contém o front-end do projeto **TC Ateliê**, uma aplicação de e-commerce desenvolvida com foco em performance e experiência do usuário. Os usuários podem cadastrar produtos, adicionar personalizações, editar informações e futuramente realizar pedidos.
 
