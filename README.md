@@ -71,24 +71,3 @@ src/
 └── App.jsx             # Componente raiz da aplicação
 ```
 
----
-
-## 📫 Contato
-
-<div>
-  <a href="https://www.instagram.com/httpskaua_/" target="_blank"><img src="https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white" /></a>
-  <a href="mailto:kaua.sptech071@gmail.com"><img src="https://img.shields.io/badge/-Gmail-%23333?style=for-the-badge&logo=gmail&logoColor=white" /></a>
-  <a href="https://www.linkedin.com/in/kaununes/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-</div>
-
----
-
-## ✨ Créditos
-
-Projeto desenvolvido por **Kauã Nunes** e equipe. Para mais projetos, acesse meu [portfólio](https://github.com/kauanuness?tab=repositories) ou meu [LinkedIn](https://www.linkedin.com/in/kaununes/).
-
----
-
-## 📜 Licença
-
-Este projeto está sob a licença MIT.
