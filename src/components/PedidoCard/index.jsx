@@ -74,15 +74,15 @@ export const PedidoCard = ({
               classNames={{ base: "bg-gray-200" }}
             >
               <p>
-                <strong>Data:</strong> {pedido.dataPedido}
+                <strong>Data:</strong> {pedido?.dataPedido}
               </p>
               <p>
-                <strong>Endereço:</strong> {pedido.enderecoEntrega.rua},{" "}
-                {pedido.enderecoEntrega.numero}, {pedido.enderecoEntrega.bairro}
+                <strong>Endereço:</strong> {pedido.enderecoEntrega?.rua},{" "}
+                {pedido.enderecoEntrega?.numero}, {pedido.enderecoEntrega?.bairro}
               </p>
               <p>
-                <strong>Cidade:</strong> {pedido.enderecoEntrega.cidade} -{" "}
-                {pedido.enderecoEntrega.estado}, {pedido.enderecoEntrega.cep}
+                <strong>Cidade:</strong> {pedido.enderecoEntrega?.cidade} -{" "}
+                {pedido.enderecoEntrega?.estado}, {pedido.enderecoEntrega?.cep}
               </p>
             </Skeleton>
           </div>
@@ -96,13 +96,13 @@ export const PedidoCard = ({
               classNames={{ base: "bg-gray-200" }}
             >
               <p>
-                <strong>Valor Total:</strong> R$ {pedido.valorTotal.toFixed(2)}
+                <strong>Valor Total:</strong> R$ {pedido.valorTotal?.toFixed(2)}
               </p>
               <p>
-                <strong>Desconto:</strong> R$ {pedido.valorDesconto.toFixed(2)}
+                <strong>Desconto:</strong> R$ {pedido.valorDesconto?.toFixed(2)}
               </p>
               <p>
-                <strong>Frete:</strong> R$ {pedido.valorFrete.toFixed(2)}
+                <strong>Frete:</strong> R$ {pedido.valorFrete?.toFixed(2)}
               </p>
             </Skeleton>
           </div>
@@ -211,7 +211,7 @@ export const PedidoCard = ({
                         {item.produto.nome} (x{item.quantidade})
                       </p>
                       <p className="text-xs text-gray-500">
-                        R$ {item.valorTotal.toFixed(2)}
+                        R$ {item.valorTotal?.toFixed(2)}
                       </p>
                     </div>
                   </li>

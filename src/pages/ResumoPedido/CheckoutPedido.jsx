@@ -168,7 +168,7 @@ const ResumoPedido = () => {
               <>
                 <div className="flex justify-between items-end text-gray-800 text-base">
                   <span>Frete</span>
-                  <span>R$ {(dadosPedido.valorFrete).toFixed(2)}</span>
+                  <span>R$ {(dadosPedido.valorFrete)?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-end text-gray-800 text-base">
                   <span>Forma de Pagamento</span>
